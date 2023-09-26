@@ -1,0 +1,228 @@
+# User-specific files
+*ReSharper*
+*.suo
+*.user
+*.sln.docstates
+*.sln.cache
+*.vspscc
+*config.artgri-pc.yml
+
+*.orig
+tmp
+node_modules
+.sass-cache
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+x64/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+
+# MSTest test Results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+#NUNIT
+*.VisualState.xml
+TestResult.xml
+
+# Build Results of an ATL Project
+[Dd]ebugPS/
+[Rr]eleasePS/
+dlldata.c
+
+
+*.license
+*_i.c
+*_p.c
+*_i.h
+*.ilk
+*.meta
+*.obj
+*.pch
+*.pdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*.log
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.svclog
+*.scc
+
+# Chutzpah Test files
+_Chutzpah*
+
+# Visual C++ cache files
+ipch/
+*.aps
+*.ncb
+*.opensdf
+*.sdf
+*.cachefile
+
+# Visual Studio profiler
+*.psess
+*.vsp
+*.vspx
+
+# TFS 2012 Local Workspace
+$tf/
+
+# Guidance Automation Toolkit
+*.gpState
+
+# ReSharper is a .NET coding add-in
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# JustCode is a .NET coding addin-in
+.JustCode
+
+# TeamCity is a build add-in
+_TeamCity*
+
+# DotCover is a Code Coverage Tool
+*.dotCover
+
+# NCrunch
+*.ncrunch*
+_NCrunch_*
+.*crunch*.local.xml
+
+# MightyMoose
+*.mm.*
+AutoTest.Net/
+
+# Web workbench (sass)
+.sass-cache/
+
+# Installshield output folder
+[Ee]xpress/
+
+# DocProject is a documentation generator add-in
+DocProject/buildhelp/
+DocProject/Help/*.HxT
+DocProject/Help/*.HxC
+DocProject/Help/*.hhc
+DocProject/Help/*.hhk
+DocProject/Help/*.hhp
+DocProject/Help/Html2
+DocProject/Help/html
+
+# Click-Once directory
+publish/
+
+# Publish Web Output
+*.[Pp]ublish.xml
+*.azurePubxml
+
+# NuGet Packages Directory
+packages/*
+!packages/repositories.config
+
+# Windows Azure Build Output
+csx/
+*.build.csdef
+
+# Windows Store app package directory
+AppPackages/
+
+# Others
+sql/
+*.Cache
+ClientBin/
+[Ss]tyle[Cc]op.*
+~$*
+*~
+*.dbmdl
+*.dbproj.schemaview
+*.pfx
+*.publishsettings
+node_modules/
+
+# RIA/Silverlight projects
+Generated_Code/
+
+# Backup & report files from converting an old project file to a newer
+# Visual Studio version. Backup files are not needed, because we have git ;-)
+_UpgradeReport_Files/
+Backup*/
+UpgradeLog*.XML
+UpgradeLog*.htm
+
+# SQL Server files
+*.mdf
+*.ldf
+
+# Business Intelligence projects
+*.rdl.data
+*.bim.layout
+*.bim_*.settings
+
+# Microsoft Fakes
+FakesAssemblies/
+
+# VS2015 settings folder
+.vs
+
+EPiServerCMSSite/
+.NET-API/src/EPiServer.Find.Cloud.UI/ClientResources/.idea/
+.NET-API/src/Testing/EPiServer.Find.Statistics.Specs/App.config
+*.DS_Store*
+.NET-API/src/Testing/EPiServer.Find.Commerce.Specs/License.config
+.NET-API/src/Testing/Services/elasticsearch*/plugins/head/
+.NET-API/src/Testing/Services/elasticsearch*/data/**
+.NET-API/src/Testing/Services/elasticsearch*/logs/**
+.NET-API/src/Testing/Services/elasticsearch/**
+.NET-API/src/Testing/Services/Find.Proxy/**
+.NET-API/VPP/Truffler.EPiServer.Specs/Documents
+.NET-API/VPP/Truffler.EPiServer.Specs/Global
+*.pp
+msbuild/Tools/
+.idea
+/.NET-API/src/.vs/config/applicationhost.config
+/.NET-API/src/Templates/QuickSilver/appdata/SiteDebug.log
+/.NET-API/src/Templates/QuickSilver/appdata/SiteErrors.log
+/.NET-API/src/Templates/QuickSilver/EPiServer.Reference.Commerce.Site/App_Data/
+
+# Generated data files
+/.NET-API/src/Templates/*/App_Data/
+/.NET-API/src/Templates/*/appdata/
+License.config
+
+artifacts/
+/.NET-API/src/Testing/Services/elasticsearch-0.90.12/plugins/*
+/.NET-API/src/EPiServer.Find.Cms/Resources/FindSqlUpdateScripts.zip
+/.NET-API/src/EPiServer.Find.UI/ClientResources/dojo.js
+/.NET-API/src/Templates/EPiServer.Templates.Alloy/modules/
+/.NET-API/src/Templates/EPiServer.Find.Templates/modules/
+/.NET-API/src/Testing/EPiServerIntegration.Site/modules/
+/.NET-API/src/Templates/QuickSilver/EPiServer.Reference.Commerce.Site/modules/
+/.NET-API/src/Templates/EPiServer.Templates.Alloy/Controllers/InternalFindSearchPageController.cs
+/.NET-API/src/Templates/QuickSilver/EPiServer.Reference.Commerce.Site/wwwroot/css/css.min.css
+/.NET-API/src/Templates/QuickSilver/EPiServer.Reference.Commerce.Site/wwwroot/js/script.min.js
+/.NET-API/src/Testing/EPiServer.Find.Optimizations.Specs/appsettings.json
+/.NET-API/src/Templates/EPiServer.Templates.Alloy/appsettings.json
+/.NET-API/src/Templates/QuickSilver/EPiServer.Reference.Commerce.Site/appsettings.json
+/.NET-API/src/Testing/EPiServerIntegration.Specs/appsettings.json
+/.NET-API/src/Testing/EPiServer.Find.Statistics.Specs/appsettings.json
+/.NET-API/src/Testing/Specs.Integration/appsettings.json
+/.NET-API/src/Testing/Specs.InMemory/appsettings.json
+/.NET-API/src/Testing/Stories/appsettings.json
+/.NET-API/src/EPiServer.Find.Cloud.UI/ClientResources/episerver-buildscripts
+zipoutput/
+.NET-API/src/Testing/EPiServerIntegration.Specs/modules/_protected
