@@ -1,0 +1,188 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\Works\\Find\\opti-graph-netclient\\APIs\\src\\Tetsing\\EpiServer.ContentGraph.UnitTests\\EpiServer.ContentGraph.UnitTests.csproj": {}
+  },
+  "projects": {
+    "D:\\Works\\Find\\opti-graph-netclient\\APIs\\src\\EpiServer.ContentGraph\\EPiServer.ContentGraph.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Works\\Find\\opti-graph-netclient\\APIs\\src\\EpiServer.ContentGraph\\EPiServer.ContentGraph.csproj",
+        "projectName": "EPiServer.ContentGraph",
+        "projectPath": "D:\\Works\\Find\\opti-graph-netclient\\APIs\\src\\EpiServer.ContentGraph\\EPiServer.ContentGraph.csproj",
+        "packagesPath": "C:\\Users\\MaNV\\.nuget\\packages\\",
+        "outputPath": "D:\\Works\\Find\\opti-graph-netclient\\APIs\\src\\EpiServer.ContentGraph\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\MaNV\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "http://nuget.ep.se/nuget": {},
+          "http://nuget.episerver.com/feed/packages.svc/": {},
+          "https://api.nuget.optimizely.com/v3/index.json": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "GraphQL": {
+              "target": "Package",
+              "version": "[7.6.1, )"
+            },
+            "Microsoft.AspNetCore.Http.Abstractions": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.Extensions.Caching.Abstractions": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "Microsoft.Extensions.Primitives": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.404\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\Works\\Find\\opti-graph-netclient\\APIs\\src\\Tetsing\\EpiServer.ContentGraph.UnitTests\\EpiServer.ContentGraph.UnitTests.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Works\\Find\\opti-graph-netclient\\APIs\\src\\Tetsing\\EpiServer.ContentGraph.UnitTests\\EpiServer.ContentGraph.UnitTests.csproj",
+        "projectName": "EpiServer.ContentGraph.UnitTests",
+        "projectPath": "D:\\Works\\Find\\opti-graph-netclient\\APIs\\src\\Tetsing\\EpiServer.ContentGraph.UnitTests\\EpiServer.ContentGraph.UnitTests.csproj",
+        "packagesPath": "C:\\Users\\MaNV\\.nuget\\packages\\",
+        "outputPath": "D:\\Works\\Find\\opti-graph-netclient\\APIs\\src\\Tetsing\\EpiServer.ContentGraph.UnitTests\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\MaNV\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "http://nuget.ep.se/nuget": {},
+          "http://nuget.episerver.com/feed/packages.svc/": {},
+          "https://api.nuget.optimizely.com/v3/index.json": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "D:\\Works\\Find\\opti-graph-netclient\\APIs\\src\\EpiServer.ContentGraph\\EPiServer.ContentGraph.csproj": {
+                "projectPath": "D:\\Works\\Find\\opti-graph-netclient\\APIs\\src\\EpiServer.ContentGraph\\EPiServer.ContentGraph.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "MSTest.TestAdapter": {
+              "target": "Package",
+              "version": "[3.1.1, )"
+            },
+            "MSTest.TestFramework": {
+              "target": "Package",
+              "version": "[3.1.1, )"
+            },
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.7.2, )"
+            },
+            "Moq": {
+              "target": "Package",
+              "version": "[4.17.2, )"
+            },
+            "xunit.assert": {
+              "target": "Package",
+              "version": "[2.5.1, )"
+            },
+            "xunit.core": {
+              "target": "Package",
+              "version": "[2.5.1, )"
+            },
+            "xunit.runner.console": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.5.1, )"
+            },
+            "xunit.runner.visualstudio": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.5.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.404\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,71 @@
+﻿using EPiServer.ContentGraph.Api.Autocomplete;
+using EPiServer.ContentGraph.Api.Filters;
+
+namespace EPiServer.ContentGraph.Helpers
+{
+    public static class ConvertNestedFieldToString
+    {
+        public static string ConvertNestedFieldForQuery(string fieldName)
+        {
+            if (fieldName.Contains("."))
+            {
+                var nestedObjest = new List<string>(fieldName.Split("."));
+                nestedObjest.Reverse();
+                string combined = string.Empty;
+                foreach (var field in nestedObjest)
+                {
+                    if (combined.IsNullOrEmpty())
+                    {
+                        combined = $"{field}";
+                    }
+                    else
+                    {
+                        combined = $"{field}" + $"{{{combined}}}";
+                    }
+                }
+                return combined;
+            }
+            return fieldName;
+        }
+        public static string ConvertNestedFieldFilter(string fieldName, IFilterOperator filterOperator)
+        {
+            var nestedObjest = new List<string>(fieldName.Split("."));
+            nestedObjest.Reverse();
+            string combined = string.Empty;
+            foreach (var field in nestedObjest)
+            {
+                if (combined.IsNullOrEmpty())
+                {
+                    combined = $"{field}:{{{filterOperator.Query}}}";
+                }
+                else
+                {
+                    combined = $"{field}:" + $"{{{combined}}}";
+                }
+            }
+            return combined;
+        }
+        public static string ConvertNestedFieldForAutoComplete(string fieldName, AutoCompleteOperators autoCompleteOperator)
+        {
+            if (fieldName.Contains("."))
+            {
+                var nestedObject = new List<string>(fieldName.Split("."));
+                nestedObject.Reverse();
+                string combined = string.Empty;
+                foreach (var field in nestedObject)
+                {
+                    if (combined.IsNullOrEmpty())
+                    {
+                        combined = $"{field}({autoCompleteOperator.Query})";
+                    }
+                    else
+                    {
+                        combined = $"{field}" + $"{{{combined}}}";
+                    }
+                }
+                return combined;
+            }
+            return fieldName;
+        }
+    }
+}
