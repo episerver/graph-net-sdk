@@ -24,12 +24,19 @@ namespace EPiServer.ContentGraph.Api.Filters
         }
         public StringFilterOperators Exists(bool value)
         {
-            _query += _query.IsNullOrEmpty() ? $"exist: {value}" : $",exist: {value}";
+            _query += _query.IsNullOrEmpty() ? $"exist: {value.ToString().ToLower()}" : $",exist: {value.ToString().ToLower()}";
             return this;
         }
         public StringFilterOperators In(string value)
         {
             _query += _query.IsNullOrEmpty() ? $"in: \"{value}\"" : $",in: \"{value}\"";
+            return this;
+        }
+        public StringFilterOperators In(params string[] values)
+        {
+            values.ValidateNotNullOrEmptyArgument("values");
+            values = values.Select(x => $"\"{x}\"").ToArray();
+            _query += _query.IsNullOrEmpty() ? $"in: [{string.Join(',',values)}]" : $",in: [{string.Join(',', values)}]";
             return this;
         }
         public StringFilterOperators Like(string value)
@@ -45,6 +52,13 @@ namespace EPiServer.ContentGraph.Api.Filters
         public StringFilterOperators NotIn(string value)
         {
             _query += _query.IsNullOrEmpty() ? $"notIn: \"{value}\"" : $",notIn: \"{value}\"";
+            return this;
+        }
+        public StringFilterOperators NotIn(params string[] values)
+        {
+            values.ValidateNotNullOrEmptyArgument("values");
+            values = values.Select(x => $"\"{x}\"").ToArray();
+            _query += _query.IsNullOrEmpty() ? $"notIn: [{string.Join(',', values)}]" : $",notIn: [{string.Join(',', values)}]";
             return this;
         }
         public StringFilterOperators StartWith(string value)

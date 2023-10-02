@@ -6,24 +6,17 @@ using System.Linq.Expressions;
 using System.Globalization;
 using EPiServer.ContentGraph.Api.Autocomplete;
 using EPiServer.ContentGraph.Api.Facets;
-using System.Text;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {
     //TODO: Very important=> remove all quotes, prefix wilcard and script-injection for security
-    public class TypeQueryBuilder<T> : ITypeQueryBuilder
+    public class TypeQueryBuilder<T> : AbstractTypeQueryBuilder
     {
-        private readonly ContentGraphQuery graphObject;
-        private readonly GraphQLRequest _query;
-        public TypeQueryBuilder(GraphQLRequest request)
-        {
-            _query = request;
-            graphObject = new ContentGraphQuery();
+        public TypeQueryBuilder(GraphQLRequest request): base(request)
+        {  
         }
-        public TypeQueryBuilder()
+        public TypeQueryBuilder():base()
         {
-            _query = new GraphQLRequest();
-            graphObject = new ContentGraphQuery();
         }
         public TypeQueryBuilder<T> Field(Expression<Func<T, object>> fieldSelector)
         {
@@ -41,40 +34,83 @@ namespace EPiServer.ContentGraph.Api.Querying
             
             return this;
         }
+        public TypeQueryBuilder<T> Fields(params Expression<Func<T, object>>[] fieldSelectors)
+        {
+            fieldSelectors.ValidateNotNullArgument("fieldSelectors");
+            foreach (var fieldSelector in fieldSelectors)
+            {
+                fieldSelector.ValidateNotNullArgument("fieldSelector");
+                fieldSelector.Compile();
+                var propertyName = fieldSelector.GetFieldPath();
+                if (graphObject.SelectItems.IsNullOrEmpty())
+                {
+                    graphObject.SelectItems = $"{ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName)}";
+                }
+                else
+                {
+                    graphObject.SelectItems += $" {ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName)}";
+                }
+            }
+            return this;
+        }
         public TypeQueryBuilder<T> Field(string propertyName)
         {
             graphObject.SelectItems = string.Concat(graphObject.SelectItems, $" {ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName)}");
             return this;
         }
-        public TypeQueryBuilder<T> ForSubType<TSub>(string propertyName)
+        /// <summary>
+        /// Select fields in a subtype
+        /// </summary>
+        /// <typeparam name="TSub">Subtype must be inherited from type <typeparamref name="T"/></typeparam>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
+        public TypeQueryBuilder<T> ForSubType<TSub>(string propertyName) where TSub : T
         {
             string subTypeName = typeof(TSub).Name;
             graphObject.SelectItems = string.Concat(graphObject.SelectItems, $"... on {subTypeName}{{{ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName)}}}");
             return this;
         }
         /// <summary>
-        /// Select field for a sub type
+        /// Select fields in a subtype
         /// </summary>
-        /// <typeparam name="TSub"></typeparam>
+        /// <typeparam name="TSub">Subtype must be inherited from type <typeparamref name="T"/></typeparam>
         /// <param name="fieldSelector"></param>
         /// <returns></returns>
-        public TypeQueryBuilder<T> ForSubType<TSub>(Expression<Func<TSub, object>> fieldSelector)
+        public TypeQueryBuilder<T> ForSubType<TSub>(Expression<Func<TSub, object>> fieldSelector) where TSub:T
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
+            //if (!typeof(TSub).IsAssignableTo(typeof(T)))
+            //{
+            //    throw new ArgumentException($"Type [{typeof(TSub).Name}] is not inherit from type [{typeof(T).Name}]");
+            //}
             fieldSelector.Compile();
             var propertyName = ConvertNestedFieldToString.ConvertNestedFieldForQuery(fieldSelector.GetFieldPath());
             string subTypeName = typeof(TSub).Name;
-            graphObject.SelectItems = string.Concat(graphObject.SelectItems, $"... on {subTypeName}{{{propertyName}}}");
+            graphObject.SelectItems = graphObject.SelectItems.IsNullOrEmpty() ?
+                $"... on {subTypeName}{{{propertyName}}}" :
+                $"{graphObject.SelectItems} ... on {subTypeName}{{{propertyName}}}";
             return this;
         }
-        public TypeQueryBuilder<T> ForSubType<TSub>(SubTypeQueryBuilder<TSub> subTypeQuery)
+        /// <summary>
+        /// Select fields in a subtype
+        /// </summary>
+        /// <typeparam name="TSub">Subtype must be inherited from type <typeparamref name="T"/></typeparam>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
+        public TypeQueryBuilder<T> ForSubType<TSub>(SubTypeQueryBuilder<TSub> subTypeQuery) where TSub : T
         {
             subTypeQuery.ValidateNotNullArgument("subTypeQuery");
+            //if (!typeof(TSub).IsAssignableTo(typeof(T)))
+            //{
+            //    throw new ArgumentException($"Type [{typeof(TSub).Name}] is not inherit from type [{typeof(T).Name}]");
+            //}
             string subTypeName = typeof(TSub).Name;
-            graphObject.SelectItems = string.Concat(graphObject.SelectItems, $"... on {subTypeName}{{{subTypeQuery.Query}}}");
+            graphObject.SelectItems = graphObject.SelectItems.IsNullOrEmpty() ?
+                $"... on {subTypeName}{{{subTypeQuery.Query}}}" :
+                $"{graphObject.SelectItems} ... on {subTypeName}{{{subTypeQuery.Query}}}";
             return this;
         }
-        public TypeQueryBuilder<T> Skip(int skip)
+        public TypeQueryBuilder<T> Skip(long skip)
         {
             if (graphObject.Filter.IsNullOrEmpty())
             {
@@ -198,7 +234,43 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             return this;
         }
-        public TypeQueryBuilder<T> Where(Expression<Func<T, object>> fieldSelector, IFilterOperator filterOperator)
+        public TypeQueryBuilder<T> Where(Expression<Func<T, string>> fieldSelector, StringFilterOperators filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            filterOperator.ValidateNotNullArgument("filterOperator");
+            fieldSelector.Compile();
+            var combinedQuery = ConvertNestedFieldToString.ConvertNestedFieldFilter(fieldSelector.GetFieldPath(), filterOperator);
+
+            if (graphObject.WhereClause.IsNullOrEmpty())
+            {
+                graphObject.WhereClause = $"{combinedQuery}";
+            }
+            else
+            {
+                graphObject.WhereClause += $",{combinedQuery}";
+            }
+
+            return this;
+        }
+        public TypeQueryBuilder<T> Where(Expression<Func<T, long>> fieldSelector, NumericFilterOperators filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            filterOperator.ValidateNotNullArgument("filterOperator");
+            fieldSelector.Compile();
+            var combinedQuery = ConvertNestedFieldToString.ConvertNestedFieldFilter(fieldSelector.GetFieldPath(), filterOperator);
+
+            if (graphObject.WhereClause.IsNullOrEmpty())
+            {
+                graphObject.WhereClause = $"{combinedQuery}";
+            }
+            else
+            {
+                graphObject.WhereClause += $",{combinedQuery}";
+            }
+
+            return this;
+        }
+        public TypeQueryBuilder<T> Where(Expression<Func<T, string>> fieldSelector, DateFilterOperators filterOperator)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             filterOperator.ValidateNotNullArgument("filterOperator");
@@ -258,13 +330,13 @@ namespace EPiServer.ContentGraph.Api.Querying
             fieldSelector.Compile();
             var propertyName = fieldSelector.GetFieldPath();
 
-            if (graphObject.Filter.IsNullOrEmpty())
+            if (graphObject.OrderBy.IsNullOrEmpty())
             {
-                graphObject.Filter = $"orderBy:{{{propertyName}:{orderMode}}}";
+                graphObject.OrderBy = $"orderBy:{{{propertyName}:{orderMode}}}";
             }
             else
             {
-                graphObject.Filter += $",orderBy:{{{propertyName}:{orderMode}}}";
+                graphObject.OrderBy += $",orderBy:{{{propertyName}:{orderMode}}}";
             }
 
             return this;
@@ -273,10 +345,14 @@ namespace EPiServer.ContentGraph.Api.Querying
         /// Build the query for current type
         /// </summary>
         /// <returns></returns>
-        public GraphQueryBuilder Build()
+        public override GraphQueryBuilder Build()
         {
+            if (graphObject.SelectItems.IsNullOrEmpty())
+            {
+                throw new ArgumentNullException("Can not build query with none of field");
+            }
             graphObject.TypeName = typeof(T).Name;
-            graphObject.SelectItems = $"items {{{graphObject.SelectItems}}}";
+            graphObject.SelectItems = $"items{{{graphObject.SelectItems}}}";
 
             if (!graphObject.WhereClause.IsNullOrEmpty())
             {
@@ -292,37 +368,45 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             if (!graphObject.Filter.IsNullOrEmpty() || !graphObject.WhereClause.IsNullOrEmpty())
             {
-                graphObject.Filter = $"({graphObject.Filter}{graphObject.WhereClause})";
+                graphObject.Filter = $"({graphObject.Filter}{graphObject.WhereClause}{graphObject.OrderBy})";
             }
             if (!graphObject.Facets.IsNullOrEmpty())
             {
-                graphObject.Facets = $"facets {{{graphObject.Facets}}}";
+                graphObject.Facets = $"facets{{{graphObject.Facets}}}";
             }
             if (!graphObject.Autocomplete.IsNullOrEmpty())
             {
-                graphObject.Autocomplete = $"autocomplete {{{graphObject.Autocomplete}}}";
+                graphObject.Autocomplete = $"autocomplete{{{graphObject.Autocomplete}}}";
             }
             _query.Query = graphObject.ToString();
             return new GraphQueryBuilder(_query);
         }
-        public GraphQLRequest GetQuery()
+        public override GraphQLRequest GetQuery()
         {
             return _query;
         }
         #region Queries
-        public TypeQueryBuilder<T> Facets(Expression<Func<T, object>> fieldSelector)
+        /// <summary>
+        /// Simple facet for one field
+        /// </summary>
+        /// <param name="fieldSelector"></param>
+        /// <returns></returns>
+        public TypeQueryBuilder<T> Facet(Expression<Func<T, object>> fieldSelector)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             fieldSelector.Compile();
-            var propertyName = ConvertNestedFieldToString.ConvertNestedFieldForQuery(fieldSelector.GetFieldPath());
-            //TODO: remove fixed prop name+count, it should come from fieldSelector
-            graphObject.Facets += $"{propertyName}{{{"name count"}}}";
+            var facet = ConvertNestedFieldToString.ConvertNestedFieldForFacet(fieldSelector.GetFieldPath());
+            graphObject.Facets = graphObject.Facets.IsNullOrEmpty() ? 
+                $"{facet}" : 
+                $"{graphObject.Facets} {facet}";
             return this;
         }
-        public TypeQueryBuilder<T> Facets(string propertyName)
+        public TypeQueryBuilder<T> Facet(string propertyName)
         {
-            //TODO: remove fixed prop name+count, it should come from fieldSelector
-            graphObject.Facets += $"{propertyName}{{{"name count"}}}";
+            string facet = ConvertNestedFieldToString.ConvertNestedFieldForFacet(propertyName);
+            graphObject.Facets = graphObject.Facets.IsNullOrEmpty() ?
+                $"{facet}" :
+                $"{graphObject.Facets} {facet}";
             return this;
         }
         public TypeQueryBuilder<T> Total(bool? isAll = null)
@@ -333,7 +417,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             }
             else
             {
-                graphObject.Total = $"total(all:{isAll})";
+                graphObject.Total = $"total(all:{isAll.Value.ToString().ToLower()})";
             }
 
             return this;
@@ -350,14 +434,23 @@ namespace EPiServer.ContentGraph.Api.Querying
         #endregion
 
         #region Filters
-        public TypeQueryBuilder<T> Facets(Expression<Func<T, object>> fieldSelector, FacetFilter facetFilter)
+        /// <summary>
+        /// Facets with facet filters inside
+        /// </summary>
+        /// <param name="fieldSelector"></param>
+        /// <param name="facetFilter"></param>
+        /// <returns></returns>
+        public TypeQueryBuilder<T> Facet(Expression<Func<T, object>> fieldSelector, FacetFilter facetFilter)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             facetFilter.ValidateNotNullArgument("facetFilter");
             fieldSelector.Compile();
             var propertyName = fieldSelector.GetFieldPath();
+            string facets = ConvertNestedFieldToString.ConvertNestedFieldForFacet(propertyName, facetFilter);
             //TODO: remove fixed prop name+count, it should come from fieldSelector
-            graphObject.Facets += $"{propertyName}({facetFilter.Query}) {{{"name count"}}}";
+            graphObject.Facets = graphObject.Facets.IsNullOrEmpty() ?
+                $"{facets}" :
+                $"{graphObject.Facets} {facets}";
             return this;
         }
         #endregion

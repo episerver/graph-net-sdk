@@ -4,14 +4,14 @@ using Newtonsoft.Json.Linq;
 
 namespace EPiServer.ContentGraph.Api.Result
 {
-    public class GraphResult<T>
+    public class ContentGraphResult<T>
     {
         [JsonIgnore]
-        Dictionary<string, GraphHits<T>> rs = null;
+        Dictionary<string, ContentGraphHits<T>> rs = null;
 
         [JsonProperty("data")]
         private Dictionary<string, JObject> RawData { get; set; }
-        public Dictionary<string, GraphHits<T>> Content
+        public Dictionary<string, ContentGraphHits<T>> Content
         {
             get
             {
@@ -21,11 +21,11 @@ namespace EPiServer.ContentGraph.Api.Result
                 }
                 if (RawData != null)
                 {
-                    rs = new Dictionary<string, GraphHits<T>>();
+                    rs = new Dictionary<string, ContentGraphHits<T>>();
                     DataTypes = RawData.Keys.ToStringArray();
                     foreach (var key in DataTypes)
                     {
-                        rs.Add(key, RawData[key].ToObject<GraphHits<T>>());
+                        rs.Add(key, RawData[key].ToObject<ContentGraphHits<T>>());
                     }
                 }
                 return rs;

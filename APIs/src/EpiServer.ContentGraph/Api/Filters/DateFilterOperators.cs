@@ -23,22 +23,22 @@ namespace EPiServer.ContentGraph.Api.Filters
         }
         public DateFilterOperators Gt(string value)
         {
-            _query += _query.IsNullOrEmpty() ? $"gt: {value}" : $",gt: {value}";
+            _query += _query.IsNullOrEmpty() ? $"gt: \"{value}\"" : $",gt: \"{value}\"";
             return this;
         }
         public DateFilterOperators Gte(string value)
         {
-            _query += _query.IsNullOrEmpty() ? $"gte: {value}" : $",gte: {value}";
+            _query += _query.IsNullOrEmpty() ? $"gte: \"{value}\"" : $",gte: \"{value}\"";
             return this;
         }
         public DateFilterOperators Lt(string value)
         {
-            _query += _query.IsNullOrEmpty() ? $"lt: {value}" : $",lt: {value}";
+            _query += _query.IsNullOrEmpty() ? $"lt: \"{value}\"" : $",lt: \"{value}\"";
             return this;
         }
         public DateFilterOperators Lte(string value)
         {
-            _query += _query.IsNullOrEmpty() ? $"lte: {value}" : $",lte: {value}";
+            _query += _query.IsNullOrEmpty() ? $"lte: \"{value}\"" : $",lte: \"{value}\"";
             return this;
         }
     }

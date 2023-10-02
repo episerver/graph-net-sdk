@@ -14,12 +14,12 @@ namespace EPiServer.ContentGraph.Api.Filters
             _query += _query.IsNullOrEmpty() ? $"boost: {value}" : $",boost: {value}";
             return this;
         }
-        public NumericFilterOperators Eq(string value)
+        public NumericFilterOperators Eq(long value)
         {
             _query += _query.IsNullOrEmpty() ? $"eq: {value}" : $",eq: {value}";
             return this;
         }
-        public NumericFilterOperators NotEq(string value)
+        public NumericFilterOperators NotEq(long value)
         {
             _query += _query.IsNullOrEmpty() ? $"notEq: {value}" : $",notEq: {value}";
             return this;
@@ -46,15 +46,15 @@ namespace EPiServer.ContentGraph.Api.Filters
         }
         public NumericFilterOperators Exists(bool value)
         {
-            _query += _query.IsNullOrEmpty() ? $"exist: {value}" : $",exist: {value}";
+            _query += _query.IsNullOrEmpty() ? $"exist: {value.ToString().ToLower()}" : $",exist: {value.ToString().ToLower()}";
             return this;
         }
-        public NumericFilterOperators In(long[] values)
+        public NumericFilterOperators In(params long[] values)
         {
             _query += _query.IsNullOrEmpty() ? $"in: [{string.Join(',',values)}]" : $",in: [{string.Join(',', values)}]";
             return this;
         }
-        public NumericFilterOperators NotIn(long[] values)
+        public NumericFilterOperators NotIn(params long[] values)
         {
             _query += _query.IsNullOrEmpty() ? $"notIn: [{string.Join(',', values)}]" : $",notIn: [{string.Join(',', values)}]";
             return this;

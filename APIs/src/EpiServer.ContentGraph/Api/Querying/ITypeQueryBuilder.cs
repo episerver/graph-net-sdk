@@ -3,7 +3,7 @@
 
 namespace EPiServer.ContentGraph.Api.Querying
 {
-    public interface ITypeQueryBuilder
+    public interface ITypeQueryBuilder : IQuery
     {
         public GraphQLRequest GetQuery();
         public GraphQueryBuilder Build();

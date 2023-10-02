@@ -11,14 +11,12 @@ namespace EPiServer.ContentGraph.Api.Autocomplete
 
         public AutoCompleteOperators Value(string value)
         {
-            _query = _query.IsNullOrEmpty() ? $"value:\"{value}\"" : string.Join(_query, $",value:\"{value}\"");
+            _query = _query.IsNullOrEmpty() ? $"value:\"{value}\"" : $"{_query},value:\"{value}\"";
             return this;
         }
         public AutoCompleteOperators Limit(int limit)
         {
-            _query = _query.IsNullOrEmpty() ? 
-                $"limit:{limit}" : 
-                string.Concat(_query, $",limit:{limit}");
+            _query = _query.IsNullOrEmpty() ? $"limit:{limit}" : $"{_query},limit:{limit}";
             return this;
         }
     }

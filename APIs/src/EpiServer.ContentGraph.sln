@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EpiServer.ContentGraph.Unit
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTest", "UnitTest", "{A405F7CD-1CFC-4FAD-805F-8DB9E92B6273}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPiServer.ContentGraph.IntegrationTests", "Tetsing\EPiServer.ContentGraph.IntegrationTests\EPiServer.ContentGraph.IntegrationTests.csproj", "{C0E72669-C15B-45EE-B237-27422EE2AC1D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{9DB802DC-7DE1-4DE0-A8F4-2E561D43F747}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9DB802DC-7DE1-4DE0-A8F4-2E561D43F747}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9DB802DC-7DE1-4DE0-A8F4-2E561D43F747}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0E72669-C15B-45EE-B237-27422EE2AC1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0E72669-C15B-45EE-B237-27422EE2AC1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0E72669-C15B-45EE-B237-27422EE2AC1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0E72669-C15B-45EE-B237-27422EE2AC1D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,6 +38,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{9DB802DC-7DE1-4DE0-A8F4-2E561D43F747} = {A405F7CD-1CFC-4FAD-805F-8DB9E92B6273}
 		{A405F7CD-1CFC-4FAD-805F-8DB9E92B6273} = {E03C9A42-0ED2-48C8-B9B0-73898D515784}
+		{C0E72669-C15B-45EE-B237-27422EE2AC1D} = {E03C9A42-0ED2-48C8-B9B0-73898D515784}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {83DA2D12-E065-460F-9F20-A6E98D43E0A8}

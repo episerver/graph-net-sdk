@@ -92,9 +92,6 @@ _ReSharper*/
 # JustCode is a .NET coding addin-in
 .JustCode
 
-# TeamCity is a build add-in
-_TeamCity*
-
 # DotCover is a Code Coverage Tool
 *.dotCover
 
@@ -183,3 +180,4 @@ FakesAssemblies/
 msbuild/Tools/
 .idea
 License.config
+/bin/*

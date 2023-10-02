@@ -1,11 +1,12 @@
 ﻿using EPiServer.ContentGraph.Helpers;
 using EPiServer.ContentGraph.Helpers.Reflection;
+using GraphQL.Transport;
 using System.Linq.Expressions;
 using System.Text;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {
-    public class SubTypeQueryBuilder<T>
+    public class SubTypeQueryBuilder<T> : AbstractTypeQueryBuilder
     {
         private StringBuilder builder;
         public SubTypeQueryBuilder()
@@ -13,6 +14,13 @@ namespace EPiServer.ContentGraph.Api.Querying
             builder = new StringBuilder();
         }
         public string Query { get { return builder.ToString(); } }
+
+        public override GraphQueryBuilder Build()
+        {
+            _query.Query = builder.ToString();
+            return new GraphQueryBuilder(_query);
+        }
+
         public SubTypeQueryBuilder<T> Field(Expression<Func<T, object>> fieldSelector)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
@@ -23,6 +31,21 @@ namespace EPiServer.ContentGraph.Api.Querying
                 builder.Append(' ');
             }
             builder.Append(ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName));
+            return this;
+        }
+        public SubTypeQueryBuilder<T> Fields(params Expression<Func<T, object>>[] fieldSelectors)
+        {
+            fieldSelectors.ValidateNotNullArgument("fieldSelectors");
+            foreach (var fieldSelector in fieldSelectors)
+            {
+                fieldSelector.Compile();
+                var propertyName = fieldSelector.GetFieldPath();
+                if (builder.Length > 0)
+                {
+                    builder.Append(' ');
+                }
+                builder.Append(ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName));
+            }
             return this;
         }
     }

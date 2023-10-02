@@ -4,22 +4,23 @@ using EPiServer.ContentGraph.Connection;
 using GraphQL.Transport;
 using Newtonsoft.Json;
 using System.Net;
+using EPiServer.ContentGraph.Helpers;
+using System.Text;
+using EPiServer.ContentGraph.Configuration;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {
-    public class GraphQueryBuilder
+    public class GraphQueryBuilder : IQuery
     {
         private GraphQLRequest _query;
+        private OptiGraphOptions optiGraphOptions;
         ITypeQueryBuilder typeQueryBuilder;
-
-        public GraphQueryBuilder()
+        public GraphQueryBuilder(OptiGraphOptions optiGraphOptions)
         {
-            _query = new GraphQLRequest();
+            this.optiGraphOptions = optiGraphOptions;
         }
-        public GraphQueryBuilder(GraphQLRequest request)
-        {
-            _query = request;
-        }
+        public GraphQueryBuilder() => _query = new GraphQLRequest();
+        public GraphQueryBuilder(GraphQLRequest request) => _query = request;
         public TypeQueryBuilder<T> ForType<T>()
         {
             typeQueryBuilder = new TypeQueryBuilder<T>(_query);
@@ -31,16 +32,26 @@ namespace EPiServer.ContentGraph.Api.Querying
             _query.OperationName = op;
             return this;
         }
-        public GraphResult<TResult> GetResult<TResult>()
+        private string GetServiceUrl()
         {
-            string url = "https://rc-3-0-0.cg.optimizely.com/content/v2";
+            return optiGraphOptions.ServiceUrl;
+            //return "https://rc-3-0-0.cg.optimizely.com/content/v2";
+        }
+        private string GetAuthorization()
+        {
+            return optiGraphOptions.Authorization;
+            //return "epi-single TGRpDCCMxB2j0HOiVuR2CnobFBQRHK3sS2fMtcyjOQCRNYay";
+        }
+        public ContentGraphResult<TResult> GetResult<TResult>()
+        {
+            string url = GetServiceUrl();
 
             using (JsonRequest jsonRequest = new JsonRequest(url, HttpVerbs.Post, null))
             {
                 try
                 {
-                    jsonRequest.AddRequestHeader("Authorization", "epi-single TGRpDCCMxB2j0HOiVuR2CnobFBQRHK3sS2fMtcyjOQCRNYay");
-                    var settings = new Newtonsoft.Json.JsonSerializerSettings();
+                    jsonRequest.AddRequestHeader("Authorization", GetAuthorization());
+                    var settings = new JsonSerializerSettings();
                     settings.ContractResolver = new LowercaseContractResolver();
                     string body = JsonConvert.SerializeObject(_query, settings);
                     jsonRequest.WriteBody(body);
@@ -48,33 +59,32 @@ namespace EPiServer.ContentGraph.Api.Querying
                     using (var reader = new StreamReader(jsonRequest.GetResponseStream(), jsonRequest.Encoding))
                     {
                         var jsonReader = new JsonTextReader(reader);
-                        return JsonSerializer.CreateDefault().Deserialize<GraphResult<TResult>>(jsonReader);
+                        return JsonSerializer.CreateDefault().Deserialize<ContentGraphResult<TResult>>(jsonReader);
                     }
                 }
                 catch (WebException originalException)
                 {
-                    //var message = originalException.Message;
+                    var message = originalException.Message;
 
-                    //if (originalException.Response.IsNotNull())
-                    //{
-                    //    var responseStream = originalException.Response.GetResponseStream();
-                    //    StreamReader streamReader = new StreamReader(responseStream, Encoding.UTF8);
-                    //    var response = streamReader.ReadToEnd();
-                    //    if (!string.IsNullOrEmpty(response))
-                    //    {
-                    //        try
-                    //        {
-                    //            response = JsonConvert.DeserializeObject<ServiceError>(response).Error;
-                    //        }
-                    //        catch (Exception)
-                    //        {
+                    if (originalException.Response.IsNotNull())
+                    {
+                        var responseStream = originalException.Response.GetResponseStream();
+                        StreamReader streamReader = new StreamReader(responseStream, Encoding.UTF8);
+                        var response = streamReader.ReadToEnd();
+                        if (!string.IsNullOrEmpty(response))
+                        {
+                            try
+                            {
+                                response = JsonConvert.DeserializeObject<ServiceError>(response).Errors;
+                            }
+                            catch (Exception)
+                            {
 
-                    //        }
-                    //    }
-                    //    message = message + Environment.NewLine + response;
-                    //}
-                    //throw new ServiceException(message, originalException);
-                    throw originalException;
+                            }
+                        }
+                        message = message + Environment.NewLine + response;
+                    }
+                    throw new ServiceException(message, originalException);
                 }
             }
         }

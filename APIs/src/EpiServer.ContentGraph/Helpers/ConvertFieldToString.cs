@@ -1,31 +1,29 @@
 ﻿using EPiServer.ContentGraph.Api.Autocomplete;
+using EPiServer.ContentGraph.Api.Facets;
 using EPiServer.ContentGraph.Api.Filters;
 
 namespace EPiServer.ContentGraph.Helpers
 {
     public static class ConvertNestedFieldToString
     {
+        const string facetProperties = "name count";
         public static string ConvertNestedFieldForQuery(string fieldName)
         {
-            if (fieldName.Contains("."))
+            var nestedObjest = new List<string>(fieldName.Split("."));
+            nestedObjest.Reverse();
+            string combined = string.Empty;
+            foreach (var field in nestedObjest)
             {
-                var nestedObjest = new List<string>(fieldName.Split("."));
-                nestedObjest.Reverse();
-                string combined = string.Empty;
-                foreach (var field in nestedObjest)
+                if (combined.IsNullOrEmpty())
                 {
-                    if (combined.IsNullOrEmpty())
-                    {
-                        combined = $"{field}";
-                    }
-                    else
-                    {
-                        combined = $"{field}" + $"{{{combined}}}";
-                    }
+                    combined = $"{field}";
                 }
-                return combined;
+                else
+                {
+                    combined = $"{field}" + $"{{{combined}}}";
+                }
             }
-            return fieldName;
+            return combined;
         }
         public static string ConvertNestedFieldFilter(string fieldName, IFilterOperator filterOperator)
         {
@@ -47,25 +45,58 @@ namespace EPiServer.ContentGraph.Helpers
         }
         public static string ConvertNestedFieldForAutoComplete(string fieldName, AutoCompleteOperators autoCompleteOperator)
         {
-            if (fieldName.Contains("."))
+            var nestedObject = new List<string>(fieldName.Split("."));
+            nestedObject.Reverse();
+            string combined = string.Empty;
+            foreach (var field in nestedObject)
             {
-                var nestedObject = new List<string>(fieldName.Split("."));
-                nestedObject.Reverse();
-                string combined = string.Empty;
-                foreach (var field in nestedObject)
+                if (combined.IsNullOrEmpty())
                 {
-                    if (combined.IsNullOrEmpty())
-                    {
-                        combined = $"{field}({autoCompleteOperator.Query})";
-                    }
-                    else
-                    {
-                        combined = $"{field}" + $"{{{combined}}}";
-                    }
+                    combined = $"{field}({autoCompleteOperator.Query})";
                 }
-                return combined;
+                else
+                {
+                    combined = $"{field}" + $"{{{combined}}}";
+                }
             }
-            return fieldName;
+            return combined;
+        }
+        public static string ConvertNestedFieldForFacet(string fieldName)
+        {
+            var nestedObject = new List<string>(fieldName.Split("."));
+            nestedObject.Reverse();
+            string combined = string.Empty;
+            foreach (var field in nestedObject)
+            {
+                if (combined.IsNullOrEmpty())
+                {
+                    combined = $"{field}{{{facetProperties}}}";
+                }
+                else
+                {
+                    combined = $"{field}{{{combined}}}";
+                }
+            }
+            return combined;
+        }
+        public static string ConvertNestedFieldForFacet(string fieldName, FacetFilter facetFilter)
+        {
+            const string facetProperties = "name count";
+            var nestedObject = new List<string>(fieldName.Split("."));
+            nestedObject.Reverse();
+            string combined = string.Empty;
+            foreach (var field in nestedObject)
+            {
+                if (combined.IsNullOrEmpty())
+                {
+                    combined = $"{field}({facetFilter.Query}){{{facetProperties}}}";
+                }
+                else
+                {
+                    combined = $"{field}{{{combined}}}";
+                }
+            }
+            return combined;
         }
     }
 }
