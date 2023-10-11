@@ -9,7 +9,7 @@
 
 *.orig
 tmp
-node_modules
+modules/*
 .sass-cache
 
 # Build results

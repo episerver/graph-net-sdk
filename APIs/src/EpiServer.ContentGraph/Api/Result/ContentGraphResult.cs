@@ -8,7 +8,8 @@ namespace EPiServer.ContentGraph.Api.Result
     {
         [JsonIgnore]
         Dictionary<string, ContentGraphHits<T>> rs = null;
-
+        [JsonIgnore]
+        public int StatusCode { get; set; } = 200;
         [JsonProperty("data")]
         private Dictionary<string, JObject> RawData { get; set; }
         public Dictionary<string, ContentGraphHits<T>> Content

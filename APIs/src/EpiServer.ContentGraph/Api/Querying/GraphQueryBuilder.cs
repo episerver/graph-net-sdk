@@ -13,13 +13,15 @@ namespace EPiServer.ContentGraph.Api.Querying
     public class GraphQueryBuilder : IQuery
     {
         private GraphQLRequest _query;
-        private OptiGraphOptions optiGraphOptions;
+        private static OptiGraphOptions _optiGraphOptions;
         ITypeQueryBuilder typeQueryBuilder;
         public GraphQueryBuilder(OptiGraphOptions optiGraphOptions)
         {
-            this.optiGraphOptions = optiGraphOptions;
+            _optiGraphOptions = optiGraphOptions;
+            _query = new GraphQLRequest();
+            _query.OperationName = "SampleQuery";
         }
-        public GraphQueryBuilder() => _query = new GraphQLRequest();
+        //public GraphQueryBuilder() => _query = new GraphQLRequest();
         public GraphQueryBuilder(GraphQLRequest request) => _query = request;
         public TypeQueryBuilder<T> ForType<T>()
         {
@@ -34,13 +36,11 @@ namespace EPiServer.ContentGraph.Api.Querying
         }
         private string GetServiceUrl()
         {
-            return optiGraphOptions.ServiceUrl;
-            //return "https://rc-3-0-0.cg.optimizely.com/content/v2";
+            return _optiGraphOptions.ServiceUrl;
         }
         private string GetAuthorization()
         {
-            return optiGraphOptions.Authorization;
-            //return "epi-single TGRpDCCMxB2j0HOiVuR2CnobFBQRHK3sS2fMtcyjOQCRNYay";
+            return _optiGraphOptions.Authorization;
         }
         public ContentGraphResult<TResult> GetResult<TResult>()
         {
@@ -89,14 +89,14 @@ namespace EPiServer.ContentGraph.Api.Querying
             }
         }
         /// <summary>
-        /// Call this method to generate a full query
+        /// Call this method to generate query for all types
         /// </summary>
         /// <returns></returns>
         public GraphQueryBuilder BuildQueries()
         {
             if (typeQueryBuilder != null)
             {
-                typeQueryBuilder.Build();
+                typeQueryBuilder.ToQuery();
             }
 
             _query.Query = $"query {_query.OperationName} {{{_query.Query}}}";

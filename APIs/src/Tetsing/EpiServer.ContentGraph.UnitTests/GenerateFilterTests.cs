@@ -41,7 +41,7 @@ namespace EpiServer.ContentGraph.UnitTests
             string type = "RequestTypeObject";
             typeQueryBuilder.Field(x => x.Property1);
             typeQueryBuilder.Where(x => x.Property1, stringFilterOperators);
-            string? query = typeQueryBuilder.Build().GetQuery().Query;
+            string? query = typeQueryBuilder.ToQuery().GetQuery().Query;
 
             Assert.Equal(stringFilterOperators.Query, expectedStringOperator);
             Assert.NotNull(query);
@@ -61,7 +61,7 @@ namespace EpiServer.ContentGraph.UnitTests
                 .And(x=>x.Property3.NestedProperty, new NumericFilterOperators().Eq(1));
             typeQueryBuilder.Field(x => x.Property1);
             typeQueryBuilder.Where(andFilter);
-            string? query = typeQueryBuilder.Build().GetQuery().Query;
+            string? query = typeQueryBuilder.ToQuery().GetQuery().Query;
             Assert.Equal(stringFilterOperators.Query, expectedStringOperator);
             Assert.NotNull(query);
             Assert.Contains(expectedFilters, query);
@@ -79,7 +79,7 @@ namespace EpiServer.ContentGraph.UnitTests
                 .Or(x => x.Property3.NestedProperty, new NumericFilterOperators().Eq(1));
             typeQueryBuilder.Field(x => x.Property1);
             typeQueryBuilder.Where(andFilter);
-            string? query = typeQueryBuilder.Build().GetQuery().Query;
+            string? query = typeQueryBuilder.ToQuery().GetQuery().Query;
             Assert.Equal(stringFilterOperators.Query, expectedStringOperator);
             Assert.NotNull(query);
             Assert.Contains(expectedFilters, query);
@@ -97,7 +97,7 @@ namespace EpiServer.ContentGraph.UnitTests
                 .Not(x => x.Property3.NestedProperty, new NumericFilterOperators().Eq(1));
             typeQueryBuilder.Field(x => x.Property1);
             typeQueryBuilder.Where(andFilter);
-            string? query = typeQueryBuilder.Build().GetQuery().Query;
+            string? query = typeQueryBuilder.ToQuery().GetQuery().Query;
             Assert.Equal(stringFilterOperators.Query, expectedStringOperator);
             Assert.NotNull(query);
             Assert.Contains(expectedFilters, query);

@@ -1,0 +1,57 @@
+﻿{
+  "label": "CMS",
+  "languages": [
+    "en"
+  ],
+  "contentTypes": {
+    "Content": {
+      "abstract": true,
+      "contentType": [],
+      "properties": {
+        "Id": {
+          "type": "String"
+        },
+        "Author": {
+          "type":  "String"
+        },
+        "Name": {
+          "type": "String",
+          "searchable": true
+        },
+        "Status": {
+          "type": "String"
+        }
+      }
+    },
+    "HomePage": {
+      "contentType": [
+        "Content"
+      ],
+      "properties": {
+        "Id": {
+          "type": "String"
+        },
+        "Name": {
+          "type": "String",
+          "searchable": true
+        },
+        "MainBody": {
+          "type": "String",
+          "searchable": true
+        },
+        "MainContentArea": {
+          "type": "String"
+        },
+        "StartPublish": {
+          "type": "Date"
+        },
+        "Priority": {
+          "type": "Int"
+        },
+        "Status": {
+          "type": "String"
+        }
+      }
+    }
+  }
+}

@@ -55,7 +55,9 @@ namespace EPiServer.ContentGraph.Api.Querying
         }
         public TypeQueryBuilder<T> Field(string propertyName)
         {
-            graphObject.SelectItems = string.Concat(graphObject.SelectItems, $" {ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName)}");
+            graphObject.SelectItems = graphObject.SelectItems.IsNullOrEmpty() ?
+                $"{ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName)}" :
+                $"{graphObject.SelectItems} {ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName)}";
             return this;
         }
         /// <summary>
@@ -67,7 +69,9 @@ namespace EPiServer.ContentGraph.Api.Querying
         public TypeQueryBuilder<T> ForSubType<TSub>(string propertyName) where TSub : T
         {
             string subTypeName = typeof(TSub).Name;
-            graphObject.SelectItems = string.Concat(graphObject.SelectItems, $"... on {subTypeName}{{{ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName)}}}");
+            graphObject.SelectItems = graphObject.SelectItems.IsNullOrEmpty() ?
+                $"... on {subTypeName}{{{ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName)}}}" :
+                $"{graphObject.SelectItems} ... on {subTypeName}{{{ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName)}}}";
             return this;
         }
         /// <summary>
@@ -112,14 +116,9 @@ namespace EPiServer.ContentGraph.Api.Querying
         }
         public TypeQueryBuilder<T> Skip(long skip)
         {
-            if (graphObject.Filter.IsNullOrEmpty())
-            {
-                graphObject.Filter = string.Concat(graphObject.Filter, "skip:" + skip);
-            }
-            else
-            {
-                graphObject.Filter = string.Concat(graphObject.Filter, ",skip:" + skip);
-            }
+            graphObject.Filter = graphObject.Filter.IsNullOrEmpty() ? 
+                $"skip:{skip}" : 
+                $"{graphObject.Filter},skip:{skip}";
             return this;
         }
         /// <summary>
@@ -132,26 +131,22 @@ namespace EPiServer.ContentGraph.Api.Querying
             if (!scrollId.IsNullOrEmpty())
             {
                 
-                graphObject.Filter = graphObject.Filter.IsNullOrEmpty() ? 
-                    string.Concat(graphObject.Filter, $"cursor:\"{scrollId}\"") :
-                    string.Concat(graphObject.Filter, $",cursor:\"{scrollId}\"");
+                graphObject.Filter = graphObject.Filter.IsNullOrEmpty() ?
+                    $"cursor:\"{scrollId}\"" :
+                    $"{graphObject.Filter},cursor:\"{scrollId}\"";
             }
             return this;
         }
-        public TypeQueryBuilder<T> Ids(string[] ids)
+        public TypeQueryBuilder<T> Ids(params string[] ids)
         {
-            if (graphObject.Filter.IsNullOrEmpty())
-            {
-                graphObject.Filter = string.Concat(graphObject.Filter, $"ids:[{string.Concat(',', ids)}]");
-            }
-            else
-            {
-                graphObject.Filter = string.Concat(graphObject.Filter, $",ids:[{string.Concat(',', ids)}]");
-            }
+            ids.ValidateNotNullArgument("ids");
+            graphObject.Filter = graphObject.Filter.IsNullOrEmpty() ? 
+                $"ids:[{string.Join(',', ids.Select(id => $"\"{id}\""))}]" : 
+                $"{graphObject.Filter},ids:[{string.Join(',', ids.Select(id=>$"\"{id}\""))}]";
             return this;
         }
         /// <summary>
-        /// Set locale for query. Currently not support localization culture
+        /// Set locale for query. Currently not support localization culture.
         /// </summary>
         /// <param name="language">Culture for query, if null it will be ALL cultures</param>
         /// <returns>TypeQueryBuilder</returns>
@@ -200,17 +195,11 @@ namespace EPiServer.ContentGraph.Api.Querying
             }
             return this;
         }
-        public TypeQueryBuilder<T> Limit(int limit)
+        public TypeQueryBuilder<T> Limit(long limit)
         {
-            if (graphObject.Filter.IsNullOrEmpty())
-            {
-                graphObject.Filter = string.Concat(graphObject.Filter, "limit:" + limit);
-                
-            }
-            else
-            {
-                graphObject.Filter = string.Concat(graphObject.Filter, ",limit:" + limit);
-            }
+            graphObject.Filter = graphObject.Filter.IsNullOrEmpty() ? 
+                $"limit:{limit}" :
+                $"{graphObject.Filter},limit:{limit}";
             return this;
         }
         public TypeQueryBuilder<T> FullTextSearch(IFilterOperator filterOperator)
@@ -252,7 +241,7 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             return this;
         }
-        public TypeQueryBuilder<T> Where(Expression<Func<T, long>> fieldSelector, NumericFilterOperators filterOperator)
+        public TypeQueryBuilder<T> Where(Expression<Func<T, long?>> fieldSelector, NumericFilterOperators filterOperator)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             filterOperator.ValidateNotNullArgument("filterOperator");
@@ -319,10 +308,10 @@ namespace EPiServer.ContentGraph.Api.Querying
             return this;
         }
         /// <summary>
-        /// order only one field , it's not hard to implement order for many fields
+        /// Order for a field. Add more for order many fields.
         /// </summary>
-        /// <param name="fieldSelector"></param>
-        /// <param name="orderMode"></param>
+        /// <param name="fieldSelector">Field for order</param>
+        /// <param name="orderMode">OrderMode</param>
         /// <returns></returns>
         public TypeQueryBuilder<T> OrderBy(Expression<Func<T, object>> fieldSelector, OrderMode orderMode = OrderMode.ASC)
         {
@@ -345,14 +334,18 @@ namespace EPiServer.ContentGraph.Api.Querying
         /// Build the query for current type
         /// </summary>
         /// <returns></returns>
-        public override GraphQueryBuilder Build()
+        public override GraphQueryBuilder ToQuery()
         {
-            if (graphObject.SelectItems.IsNullOrEmpty())
+            if (graphObject.SelectItems.IsNullOrEmpty() && graphObject.Total.IsNullOrEmpty() && graphObject.Facets.IsNullOrEmpty())
             {
                 throw new ArgumentNullException("Can not build query with none of field");
             }
             graphObject.TypeName = typeof(T).Name;
-            graphObject.SelectItems = $"items{{{graphObject.SelectItems}}}";
+
+            if (!graphObject.SelectItems.IsNullOrEmpty())
+            {
+                graphObject.SelectItems = $"items{{{graphObject.SelectItems}}}";
+            }
 
             if (!graphObject.WhereClause.IsNullOrEmpty())
             {
@@ -366,7 +359,7 @@ namespace EPiServer.ContentGraph.Api.Querying
                 }
             }
 
-            if (!graphObject.Filter.IsNullOrEmpty() || !graphObject.WhereClause.IsNullOrEmpty())
+            if (!graphObject.Filter.IsNullOrEmpty() || !graphObject.WhereClause.IsNullOrEmpty() || !graphObject.OrderBy.IsNullOrEmpty())
             {
                 graphObject.Filter = $"({graphObject.Filter}{graphObject.WhereClause}{graphObject.OrderBy})";
             }

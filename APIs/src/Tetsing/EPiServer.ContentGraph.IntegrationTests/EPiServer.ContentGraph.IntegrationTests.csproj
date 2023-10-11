@@ -9,12 +9,29 @@
   <ItemGroup>
     <PackageReference Include="EPiServer.CMS" Version="12.22.7" />
     <PackageReference Include="EPiServer.ContentDeliveryApi.Cms" Version="3.9.0" />
+    <PackageReference Include="EPiServer.Turnstile.Contracts.Hmac" Version="4.5.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.22" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.1.1" />
     <PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
     <PackageReference Include="Optimizely.ContentGraph.Cms" Version="3.3.0" />
+    <PackageReference Include="xunit" Version="2.5.1" />
+    <PackageReference Include="xunit.runner.console" Version="2.5.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\EpiServer.ContentGraph\EPiServer.ContentGraph.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="CmsTesting\" />
   </ItemGroup>
 
 </Project>

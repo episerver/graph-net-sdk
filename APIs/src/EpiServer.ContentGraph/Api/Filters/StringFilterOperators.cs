@@ -6,7 +6,11 @@ namespace EPiServer.ContentGraph.Api.Filters
     {
         string _query;
         public string Query => _query;
-
+        /// <summary>
+        /// Only for searchable field
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public StringFilterOperators Contains(string value)
         {
             _query += _query.IsNullOrEmpty() ? $"contains: \"{value}\"" : $",contains: \"{value}\"";
@@ -66,6 +70,11 @@ namespace EPiServer.ContentGraph.Api.Filters
             _query += _query.IsNullOrEmpty() ? $"startsWith: \"{value}\"" : $",startsWith: \"{value}\"";
             return this;
         }
+        /// <summary>
+        /// Not use for searchable field
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public StringFilterOperators EndWith(string value)
         {
             _query += _query.IsNullOrEmpty() ? $"endsWith: \"{value}\"" : $",endsWith: \"{value}\"";
@@ -74,6 +83,21 @@ namespace EPiServer.ContentGraph.Api.Filters
         public StringFilterOperators Synonym(Synonyms value)
         {
             _query += _query.IsNullOrEmpty() ? $"synonyms: {value}" : $",synonyms: {value}";
+            return this;
+        }
+        public StringFilterOperators Fuzzy(bool value)
+        {
+            _query += _query.IsNullOrEmpty() ? $"fuzzy: {value.ToString().ToLower()}" : $",fuzzy: {value.ToString().ToLower()}";
+            return this;
+        }
+        /// <summary>
+        /// Only for searchable field
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public StringFilterOperators Match(string value)
+        {
+            _query += _query.IsNullOrEmpty() ? $"match: \"{value}\"" : $",match: \"{value}\"";
             return this;
         }
     }

@@ -1,6 +1,5 @@
 ﻿using EPiServer.ContentGraph.Helpers;
 using EPiServer.ContentGraph.Helpers.Reflection;
-using GraphQL.Transport;
 using System.Linq.Expressions;
 using System.Text;
 
@@ -15,7 +14,7 @@ namespace EPiServer.ContentGraph.Api.Querying
         }
         public string Query { get { return builder.ToString(); } }
 
-        public override GraphQueryBuilder Build()
+        public override GraphQueryBuilder ToQuery()
         {
             _query.Query = builder.ToString();
             return new GraphQueryBuilder(_query);

@@ -18,7 +18,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             _query = query;
         }
 
-        public virtual GraphQueryBuilder Build()
+        public virtual GraphQueryBuilder ToQuery()
         {
             _query.Query = graphObject.ToString();
             return new GraphQueryBuilder(_query);
@@ -29,7 +29,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             return _query;
         }
 
-        public ContentGraphResult<TResult> GetResult<TResult>()
+        public virtual ContentGraphResult<TResult> GetResult<TResult>()
         {
             throw new NotImplementedException();
         }
