@@ -49,10 +49,10 @@ namespace EPiServer.ContentGraph.UnitTests
 
         [Theory]
         [InlineData(0,100)]
-        [InlineData(int.MinValue, int.MaxValue)]
+        [InlineData(0, int.MaxValue)]
         public void QueryWithPaging(int skip, int limit)
         {
-            string expectedPaging = $"(limit:{limit},skip:{skip})";
+            string expectedPaging = $"(skip:{skip},limit:{limit})";
             string expectedFields = @"{items{Property1 Property2 Property3{NestedProperty}}}";
             typeQueryBuilder
                 .Limit(limit)
@@ -89,12 +89,16 @@ namespace EPiServer.ContentGraph.UnitTests
         public void FacetsQueryWithFilter()
         {
             string expectedFields = @"items{Property1 Property2}";
-            string expectedFacets = @"facets{Property1(filters: ""somevalue""){name count} Property3{NestedProperty(orderBy: DESC){name count}}}";
+            string expectedFacets = @"facets{Property1(filters: [""somevalue"",""other value""]){name count} Property3{NestedProperty(ranges:[{from:1,to:2},{from:9,to:10}]){name count}}}";
             typeQueryBuilder
                 .Field(x => x.Property1)
                 .Field(x => x.Property2)
-                .Facet(x => x.Property1, new FacetFilter().Filters("somevalue"))
-                .Facet(x => x.Property3.NestedProperty, new FacetFilter().OrderBy(OrderMode.DESC));
+                .Facet(x => x.Property1, new StringFacetFilterOperator()
+                    .Filters("somevalue","other value")
+                    .Projection(FacetProjection.name, FacetProjection.count))
+                .Facet(x => x.Property3.NestedProperty, new NumericFacetFilterOperator()
+                    .Ranges((1,2),(9,10))
+                    .Projection(FacetProjection.name, FacetProjection.count));
             GraphQueryBuilder query = typeQueryBuilder.ToQuery();
 
             Assert.NotNull(query.GetQuery());

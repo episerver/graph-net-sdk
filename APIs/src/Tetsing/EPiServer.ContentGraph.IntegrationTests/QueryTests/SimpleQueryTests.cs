@@ -1,9 +1,9 @@
 ﻿using EPiServer.ContentGraph.Api.Querying;
-using EPiServer.ContentGraph.Configuration;
 using EPiServer.ContentGraph.IntegrationTests.TestModels;
 using EPiServer.ContentGraph.Api.Filters;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using EPiServer.ContentGraph.IntegrationTests.TestSupport;
+using EPiServer.ContentGraph.Api;
 
 namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
 {
@@ -13,7 +13,13 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)
         {
-            SetupData();
+            string data = "{\"index\":{\"_id\":\"1\",\"language_routing\":\"en\"}}\n" +
+                "{\"ContentType\":[\"Content\"],\"Id\":\"content1\", \"Name___searchable\":\"Steve Job\",\"Author\":\"manv\",\"Status\":\"Published\",\"RolesWithReadAccess\":\"Everyone\"}\n" +
+                "{\"index\":{\"_id\":\"2\",\"language_routing\":\"en\"}}\n" +
+                "{\"ContentType\":[\"Content\"],\"Id\":\"content2\", \"Name___searchable\":\"Tim Cook\",\"Author\":\"manv\",\"Status\":\"Published\",\"RolesWithReadAccess\":\"Everyone\"}\n" +
+                "{\"index\":{\"_id\":\"3\",\"language_routing\":\"en\"}}\n" +
+                "{\"ContentType\":[\"Content\"],\"Id\":\"content3\", \"Name___searchable\":\"Alan Turing\",\"Author\":\"manv\",\"Status\":\"Published\",\"RolesWithReadAccess\":\"Everyone\"}";
+            SetupData(data);
         }
         [TestMethod]
         public void search_with_fields_should_result_3_items()
@@ -45,7 +51,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
             IQuery query = new GraphQueryBuilder(_options)
                 .ForType<Content>()
                 .Fields(x => x.Name)
-                .OrderBy(x => x.Name, Api.OrderMode.DESC)
+                .OrderBy(x => x.Name, OrderMode.DESC)
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResult<Content>();
@@ -62,23 +68,6 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .BuildQueries();
             var rs = query.GetResult<Content>();
             Assert.IsTrue(rs.Content.Values.First().Hits.First().Name.Equals("Alan Turing"));
-        }
-        private static void SetupData()
-        {
-            string path = $@"{WorkingDirectory}\TestingData\SimpleTypeMapping.json";
-            using (StreamReader mappingReader = new StreamReader(path))
-            {
-                string data = "{\"index\":{\"_id\":\"1\",\"language_routing\":\"en\"}}\n" +
-                    "{\"ContentType\":[\"Content\"],\"Id\":\"content1\", \"Name___searchable\":\"Steve Job\",\"Author\":\"manv\",\"Status\":\"Published\",\"RolesWithReadAccess\":\"Everyone\"}\n" +
-                    "{\"index\":{\"_id\":\"2\",\"language_routing\":\"en\"}}\n" +
-                    "{\"ContentType\":[\"Content\"],\"Id\":\"content2\", \"Name___searchable\":\"Tim Cook\",\"Author\":\"manv\",\"Status\":\"Published\",\"RolesWithReadAccess\":\"Everyone\"}\n" +
-                    "{\"index\":{\"_id\":\"3\",\"language_routing\":\"en\"}}\n" +
-                    "{\"ContentType\":[\"Content\"],\"Id\":\"content3\", \"Name___searchable\":\"Alan Turing\",\"Author\":\"manv\",\"Status\":\"Published\",\"RolesWithReadAccess\":\"Everyone\"}";
-                string mapping = mappingReader.ReadToEnd();
-                ClearData();
-                PushMapping(mapping);
-                BulkIndexing<Content>(data);
-            }
         }
     }
 }

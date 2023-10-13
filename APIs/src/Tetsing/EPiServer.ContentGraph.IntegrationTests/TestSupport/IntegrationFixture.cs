@@ -85,6 +85,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
             });
             services.AddContentDeliveryApi(); // required, for further configurations, see https://docs.developers.optimizely.com/content-cloud/v1.5.0-content-delivery-api/docs/configuration
             services.AddContentGraph();
+            services.AddSingleton<OptiGraphOptions>();
         }
         private static HttpClient CreateHttpClient()
         {
@@ -100,11 +101,18 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
                 }
             };
         }
-        protected static void ClearData(string id = "test")
+        protected static void ClearData<T>(string id = "test")
         {
             var res = _httpClient.DeleteAsync(INDEXING_PATH + $"?id={id}").Result;
             if (res.StatusCode == System.Net.HttpStatusCode.OK || res.StatusCode == System.Net.HttpStatusCode.NoContent)
             {
+                //wait until docs had been deleted
+                int retry = 0;
+                while (CountDoc<T>() && retry < MAX_RETRY)
+                {
+                    Task.Delay(500);
+                    retry++;
+                }
                 Console.WriteLine($"Deleted contents for index {id}");
             }
             else
@@ -130,8 +138,8 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
             var res = _httpClient.PostAsync(INDEXING_PATH + $"?id={id}", new StringContent(bulk)).Result;
             if (res.StatusCode == System.Net.HttpStatusCode.OK || res.StatusCode == System.Net.HttpStatusCode.Created)
             {
-                int retry = 0;
                 //wait until docs had been indexed
+                int retry = 0;
                 while (!CountDoc<T>() && retry < MAX_RETRY)
                 {
                     Task.Delay(500);
@@ -153,6 +161,17 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
                 .BuildQueries();
             var rs = query.GetResult<T>();
             return rs.Content.Values.First().Total > 0;
+        }
+        protected static void SetupData(string indexingData)
+        {
+            string path = $@"{WorkingDirectory}\TestingData\SimpleTypeMapping.json";
+            using (StreamReader mappingReader = new StreamReader(path))
+            {
+                string mapping = mappingReader.ReadToEnd();
+                ClearData<HomePage>();
+                PushMapping(mapping);
+                BulkIndexing<HomePage>(indexingData);
+            }
         }
     }
 }

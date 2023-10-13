@@ -12,7 +12,13 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)
         {
-            SetupData();
+            string data = "{\"index\":{\"_id\":\"1\",\"language_routing\":\"en\"}}\n" +
+                "{\"ContentType\":[\"Content\"],\"Id\":\"content1\", \"Name___searchable\":\"Steve Jobs\",\"Author\":\"Steve Jobs\",\"Status\":\"Published\",\"RolesWithReadAccess\":\"Everyone\"}\n" +
+                "{\"index\":{\"_id\":\"2\",\"language_routing\":\"en\"}}\n" +
+                "{\"ContentType\":[\"Content\"],\"Id\":\"content2\", \"Name___searchable\":\"Steve Howey\",\"Author\":\"Steve Howey\",\"Status\":\"Published\",\"RolesWithReadAccess\":\"Everyone\"}\n" +
+                "{\"index\":{\"_id\":\"3\",\"language_routing\":\"en\"}}\n" +
+                "{\"ContentType\":[\"Content\"],\"Id\":\"content3\", \"Name___searchable\":\"Alan Turing\",\"Status\":\"Published\",\"RolesWithReadAccess\":\"Everyone\"}";
+            SetupData(data);
         }
 
         #region UnSearchable field
@@ -118,24 +124,6 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .BuildQueries();
             var rs = query.GetResult<Content>();
             Assert.IsTrue(rs.Content.Values.First().Hits.Count == 2);
-        }
-
-        private static void SetupData()
-        {
-            string path = $@"{WorkingDirectory}\TestingData\SimpleTypeMapping.json";
-            using (StreamReader mappingReader = new StreamReader(path))
-            {
-                string data = "{\"index\":{\"_id\":\"1\",\"language_routing\":\"en\"}}\n" +
-                    "{\"ContentType\":[\"Content\"],\"Id\":\"content1\", \"Name___searchable\":\"Steve Jobs\",\"Author\":\"Steve Jobs\",\"Status\":\"Published\",\"RolesWithReadAccess\":\"Everyone\"}\n" +
-                    "{\"index\":{\"_id\":\"2\",\"language_routing\":\"en\"}}\n" +
-                    "{\"ContentType\":[\"Content\"],\"Id\":\"content2\", \"Name___searchable\":\"Steve Howey\",\"Author\":\"Steve Howey\",\"Status\":\"Published\",\"RolesWithReadAccess\":\"Everyone\"}\n" +
-                    "{\"index\":{\"_id\":\"3\",\"language_routing\":\"en\"}}\n" +
-                    "{\"ContentType\":[\"Content\"],\"Id\":\"content3\", \"Name___searchable\":\"Alan Turing\",\"Status\":\"Published\",\"RolesWithReadAccess\":\"Everyone\"}";
-                string mapping = mappingReader.ReadToEnd();
-                ClearData();
-                PushMapping(mapping);
-                BulkIndexing<Content>(data);
-            }
         }
         #endregion
     }

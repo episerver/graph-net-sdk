@@ -79,9 +79,9 @@ namespace EPiServer.ContentGraph.Helpers
             }
             return combined;
         }
-        public static string ConvertNestedFieldForFacet(string fieldName, FacetFilter facetFilter)
+        public static string ConvertNestedFieldForFacet(string fieldName, IFacetFilterOperator facetFilter)
         {
-            const string facetProperties = "name count";
+            string facetProperties = string.Join(' ', facetFilter.FacetProjections);
             var nestedObject = new List<string>(fieldName.Split("."));
             nestedObject.Reverse();
             string combined = string.Empty;

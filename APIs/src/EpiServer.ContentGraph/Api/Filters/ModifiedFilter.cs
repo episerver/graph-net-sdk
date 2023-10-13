@@ -2,11 +2,13 @@
 
 namespace EPiServer.ContentGraph.Api.Filters
 {
-    public class ModifiedFilter : IGraphFilter
+    public class ModifiedFilter : IFilter
     {
         string _query = string.Empty;
 
         public string FilterClause => $"_modified:{{{_query}}}";
+
+        public List<IFilter> Filters { get; set; }
 
         public ModifiedFilter Modified(IFilterOperator filterOperator)
         {

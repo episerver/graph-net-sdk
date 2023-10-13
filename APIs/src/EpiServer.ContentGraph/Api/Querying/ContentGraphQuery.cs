@@ -6,9 +6,10 @@ namespace EPiServer.ContentGraph.Api.Querying
     public class ContentGraphQuery
     {
         public string Filter { get; set; }
-        //public long Limit { get; set; }
-        //public long Skip { get; set; }
-        //public string Locale { get; set; }
+        public string Limit { get; set; }
+        public string Skip { get; set; }
+        public string Ids { get; set; }
+        public string Locale { get; set; }
         public string OrderBy { get; set; }
         public string WhereClause { get; set; }
         public string Autocomplete { get; set; }

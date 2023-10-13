@@ -1,7 +1,7 @@
 ﻿{
   "label": "CMS",
   "languages": [
-    "en"
+    "en","en-GB","en-US"
   ],
   "contentTypes": {
     "Content": {
@@ -50,6 +50,9 @@
         },
         "Status": {
           "type": "String"
+        },
+        "IsSecret": {
+          "type": "Boolean"
         }
       }
     }

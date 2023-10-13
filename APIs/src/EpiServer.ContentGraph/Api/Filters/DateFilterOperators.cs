@@ -6,7 +6,7 @@ namespace EPiServer.ContentGraph.Api.Filters
     {
         string _query = string.Empty;
         public string Query => _query;
-        public DateFilterOperators Boost(int value)
+        public DateFilterOperators Boost(uint value)
         {
             _query += _query.IsNullOrEmpty() ? $"boost: {value}" : $",boost: {value}";
             return this;

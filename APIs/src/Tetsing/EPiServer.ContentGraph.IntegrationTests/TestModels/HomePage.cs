@@ -6,5 +6,6 @@
         public string MainContentArea { get; set; }
         public int? Priority { get; set; }
         public DateTime StartPublish { get; set; }
+        public bool IsSecret { get; set; }
     }
 }
