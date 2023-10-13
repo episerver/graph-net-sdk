@@ -16,7 +16,7 @@ namespace EPiServer.ContentGraph.Api.Filters
             _query += _query.IsNullOrEmpty() ? $"contains: \"{value}\"" : $",contains: \"{value}\"";
             return this;
         }
-        public StringFilterOperators Boost(int value)
+        public StringFilterOperators Boost(uint value)
         {
             _query += _query.IsNullOrEmpty() ? $"boost: {value}" : $",boost: {value}";
             return this;
@@ -80,9 +80,10 @@ namespace EPiServer.ContentGraph.Api.Filters
             _query += _query.IsNullOrEmpty() ? $"endsWith: \"{value}\"" : $",endsWith: \"{value}\"";
             return this;
         }
-        public StringFilterOperators Synonym(Synonyms value)
+        public StringFilterOperators Synonym(params Synonyms[] values)
         {
-            _query += _query.IsNullOrEmpty() ? $"synonyms: {value}" : $",synonyms: {value}";
+            string synonymValues = string.Join(',', values);
+            _query += _query.IsNullOrEmpty() ? $"synonyms: [{synonymValues}]" : $",synonyms: [{synonymValues}]";
             return this;
         }
         public StringFilterOperators Fuzzy(bool value)

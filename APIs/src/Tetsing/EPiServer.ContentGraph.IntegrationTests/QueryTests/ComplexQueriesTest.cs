@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
 {
-    public class BoolQueryTest
+    public class ComplexQueriesTest
     {
     }
 }

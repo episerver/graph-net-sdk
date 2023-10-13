@@ -14,7 +14,7 @@ namespace EpiServer.ContentGraph.UnitTests
         readonly static string inOpt = "in: [\"1\",\"2\",\"3\"]";
         readonly static string notInOpt = "notIn: [\"4\",\"5\"]";
         readonly static string expectedStringOperator = 
-            $"boost: 10,exist: true,startsWith: \"start\",endsWith: \"end\",synonyms: ONE," +
+            $"boost: 10,exist: true,startsWith: \"start\",endsWith: \"end\",synonyms: [ONE]," +
             $"contains: \"test\",{inOpt},{notInOpt},like: \"alloy\",eq: \"good\",notEq: \"bad\"";
         StringFilterOperators stringFilterOperators = new StringFilterOperators()
                 .Boost(10)
@@ -35,7 +35,7 @@ namespace EpiServer.ContentGraph.UnitTests
         [Fact]
         public void SingleFieldWithSimpleFiltersTest()
         {
-            string expectedFilters = @"(where:{Property1:{boost: 10,exist: true,startsWith: ""start"",endsWith: ""end"",synonyms: ONE," +
+            string expectedFilters = @"(where:{Property1:{boost: 10,exist: true,startsWith: ""start"",endsWith: ""end"",synonyms: [ONE]," +
                 @"contains: ""test"",in: [""1"",""2"",""3""],notIn: [""4"",""5""],like: ""alloy"",eq: ""good"",notEq: ""bad""}})";
             string items = "{items{Property1}}";
             string type = "RequestTypeObject";
@@ -52,12 +52,12 @@ namespace EpiServer.ContentGraph.UnitTests
         [Fact]
         public void SingleFieldWithAndFiltersTest()
         {
-            string expectedFilters = @"(where:{_and:{Property1:{boost: 10,exist: true,startsWith: ""start"",endsWith: ""end"",synonyms: ONE," +
-                @"contains: ""test"",in: [""1"",""2"",""3""],notIn: [""4"",""5""],like: ""alloy"",eq: ""good"",notEq: ""bad""},Property3:{NestedProperty:{eq: 1}}}})";
+            string expectedFilters = @"(where:{_and:[{Property1:{boost: 10,exist: true,startsWith: ""start"",endsWith: ""end"",synonyms: [ONE]," +
+                @"contains: ""test"",in: [""1"",""2"",""3""],notIn: [""4"",""5""],like: ""alloy"",eq: ""good"",notEq: ""bad""}},{Property3:{NestedProperty:{eq: 1}}}]})";
             string items = "{items{Property1}}";
             string type = "RequestTypeObject";
 
-            IGraphFilter andFilter = new AndFilter<RequestTypeObject>(x => x.Property1, stringFilterOperators)
+            IFilter andFilter = new AndFilter<RequestTypeObject>(x => x.Property1, stringFilterOperators)
                 .And(x=>x.Property3.NestedProperty, new NumericFilterOperators().Eq(1));
             typeQueryBuilder.Field(x => x.Property1);
             typeQueryBuilder.Where(andFilter);
@@ -70,12 +70,12 @@ namespace EpiServer.ContentGraph.UnitTests
         [Fact]
         public void SingleFieldWithOrFiltersTest()
         {
-            string expectedFilters = @"(where:{_or:{Property1:{boost: 10,exist: true,startsWith: ""start"",endsWith: ""end"",synonyms: ONE," +
-                @"contains: ""test"",in: [""1"",""2"",""3""],notIn: [""4"",""5""],like: ""alloy"",eq: ""good"",notEq: ""bad""},Property3:{NestedProperty:{eq: 1}}}})";
+            string expectedFilters = @"(where:{_or:[{Property1:{boost: 10,exist: true,startsWith: ""start"",endsWith: ""end"",synonyms: [ONE]," +
+                @"contains: ""test"",in: [""1"",""2"",""3""],notIn: [""4"",""5""],like: ""alloy"",eq: ""good"",notEq: ""bad""}},{Property3:{NestedProperty:{eq: 1}}}]})";
             string items = "{items{Property1}}";
             string type = "RequestTypeObject";
 
-            IGraphFilter andFilter = new OrFilter<RequestTypeObject>(x => x.Property1, stringFilterOperators)
+            IFilter andFilter = new OrFilter<RequestTypeObject>(x => x.Property1, stringFilterOperators)
                 .Or(x => x.Property3.NestedProperty, new NumericFilterOperators().Eq(1));
             typeQueryBuilder.Field(x => x.Property1);
             typeQueryBuilder.Where(andFilter);
@@ -88,12 +88,12 @@ namespace EpiServer.ContentGraph.UnitTests
         [Fact]
         public void SingleFieldWithNotFiltersTest()
         {
-            string expectedFilters = @"(where:{_not:{Property1:{boost: 10,exist: true,startsWith: ""start"",endsWith: ""end"",synonyms: ONE," +
-                @"contains: ""test"",in: [""1"",""2"",""3""],notIn: [""4"",""5""],like: ""alloy"",eq: ""good"",notEq: ""bad""},Property3:{NestedProperty:{eq: 1}}}})";
+            string expectedFilters = @"(where:{_not:[{Property1:{boost: 10,exist: true,startsWith: ""start"",endsWith: ""end"",synonyms: [ONE]," +
+                @"contains: ""test"",in: [""1"",""2"",""3""],notIn: [""4"",""5""],like: ""alloy"",eq: ""good"",notEq: ""bad""}},{Property3:{NestedProperty:{eq: 1}}}]})";
             string items = "{items{Property1}}";
             string type = "RequestTypeObject";
 
-            IGraphFilter andFilter = new NotFilter<RequestTypeObject>(x => x.Property1, stringFilterOperators)
+            IFilter andFilter = new NotFilter<RequestTypeObject>(x => x.Property1, stringFilterOperators)
                 .Not(x => x.Property3.NestedProperty, new NumericFilterOperators().Eq(1));
             typeQueryBuilder.Field(x => x.Property1);
             typeQueryBuilder.Where(andFilter);

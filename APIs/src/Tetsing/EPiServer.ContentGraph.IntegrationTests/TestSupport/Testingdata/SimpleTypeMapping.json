@@ -1,8 +1,22 @@
 ﻿{
   "label": "CMS",
   "languages": [
-    "en"
+    "en",
+    "en-GB",
+    "en-US"
   ],
+  "propertyTypes": {
+    "Language": {
+      "properties": {
+        "DisplayName": {
+          "type": "String"
+        },
+        "Name": {
+          "type": "String"
+        }
+      }
+    }
+  },
   "contentTypes": {
     "Content": {
       "abstract": true,
@@ -12,7 +26,7 @@
           "type": "String"
         },
         "Author": {
-          "type":  "String"
+          "type": "String"
         },
         "Name": {
           "type": "String",
@@ -42,14 +56,23 @@
         "MainContentArea": {
           "type": "String"
         },
+        "Language": {
+          "type": "Language"
+        },
         "StartPublish": {
           "type": "Date"
+        },
+        "Author": {
+          "type": "String"
         },
         "Priority": {
           "type": "Int"
         },
         "Status": {
           "type": "String"
+        },
+        "IsSecret": {
+          "type": "Boolean"
         }
       }
     }

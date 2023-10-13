@@ -22,7 +22,6 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
         protected static readonly string MAPPING_PATH = "/api/content/v3/types";
         protected static string? WorkingDirectory;
         private static HttpClient? _httpClient;
-        public static IConfigurationRoot Configuration = null;
         private static string USER_AGENT => $"Optimizely-Graph-NET-API/{typeof(IntegrationFixture).Assembly.GetName().Version}";
         protected static OptiGraphOptions _options;
 
@@ -100,18 +99,24 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
                 }
             };
         }
-        protected static void ClearData(string id = "test")
+        protected static void ClearData<T>(string id = "test")
         {
             var res = _httpClient.DeleteAsync(INDEXING_PATH + $"?id={id}").Result;
             if (res.StatusCode == System.Net.HttpStatusCode.OK || res.StatusCode == System.Net.HttpStatusCode.NoContent)
             {
+                //wait until docs had been deleted
+                int retry = 0;
+                while (CountDoc<T>() && retry < MAX_RETRY)
+                {
+                    Task.Delay(500);
+                    retry++;
+                }
                 Console.WriteLine($"Deleted contents for index {id}");
             }
             else
             {
                 throw new Exception("Can not delete contents");
             }
-            Task.Delay(1000);
         }
         protected static void PushMapping(string json, string id = "test")
         {
@@ -130,8 +135,8 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
             var res = _httpClient.PostAsync(INDEXING_PATH + $"?id={id}", new StringContent(bulk)).Result;
             if (res.StatusCode == System.Net.HttpStatusCode.OK || res.StatusCode == System.Net.HttpStatusCode.Created)
             {
-                int retry = 0;
                 //wait until docs had been indexed
+                int retry = 0;
                 while (!CountDoc<T>() && retry < MAX_RETRY)
                 {
                     Task.Delay(500);
@@ -146,13 +151,32 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
         }
         private static bool CountDoc<T>()
         {
-            IQuery query = new GraphQueryBuilder(_options)
+            try
+            {
+                IQuery query = new GraphQueryBuilder(_options)
                 .ForType<T>()
                 .Total()
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<T>();
-            return rs.Content.Values.First().Total > 0;
+                var rs = query.GetResult<T>();
+                return rs.Content.Values.First().Total > 0;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            
+        }
+        protected static void SetupData<T>(string indexingData)
+        {
+            string path = $@"{WorkingDirectory}\TestingData\SimpleTypeMapping.json";
+            using (StreamReader mappingReader = new StreamReader(path))
+            {
+                string mapping = mappingReader.ReadToEnd();
+                ClearData<T>();
+                PushMapping(mapping);
+                BulkIndexing<T>(indexingData);
+            }
         }
     }
 }

@@ -12,7 +12,7 @@ namespace EPiServer.ContentGraph.Api.Filters
             query += query.IsNullOrEmpty() ? $"contains: \"{value}\"" : $",contains: \"{value}\"";
             return this;
         }
-        public FilterOperator Boost(int value)
+        public FilterOperator Boost(uint value)
         {
             query += query.IsNullOrEmpty() ? $"boost: {value}" : $",boost: {value}";
             return this;

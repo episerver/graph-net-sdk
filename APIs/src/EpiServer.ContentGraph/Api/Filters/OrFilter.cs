@@ -4,10 +4,31 @@ using System.Linq.Expressions;
 
 namespace EPiServer.ContentGraph.Api.Filters
 {
-    public class OrFilter<T> : IGraphFilter
+    public class OrFilter<T> : IFilter
     {
         string _query = string.Empty;
-        public string FilterClause => $"_or:{{{_query}}}";
+        public string FilterClause
+        {
+            get
+            {
+                if (Filters.IsNotNull() && Filters.Count() > 0)
+                {
+                    string otherFilters = string.Join(',', Filters.Select(x => $"{{{x.FilterClause}}}"));
+                    if (_query.IsNullOrEmpty())
+                    {
+                        return $"_or:[{otherFilters}]";
+                    }
+                    return $"_or:[{_query},{otherFilters}]";
+                }
+                else
+                {
+                    return $"_or:[{_query}]";
+                }
+            }
+        }
+        public List<IFilter> Filters { get; set; }
+
+        #region constructors
         public OrFilter(string query)
         {
             _query = query;
@@ -23,7 +44,7 @@ namespace EPiServer.ContentGraph.Api.Filters
         {
             Or(fieldSelector, filterOperators);
         }
-        public OrFilter(Expression<Func<T, long>> fieldSelector, NumericFilterOperators filterOperators)
+        public OrFilter(Expression<Func<T, long?>> fieldSelector, NumericFilterOperators filterOperators)
         {
             Or(fieldSelector, filterOperators);
         }
@@ -31,6 +52,8 @@ namespace EPiServer.ContentGraph.Api.Filters
         {
             Or(fieldSelector, filterOperators);
         }
+        #endregion
+
         public OrFilter<T> Or(Expression<Func<T, string>> fieldSelector, IFilterOperator filterOperator)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
@@ -40,11 +63,11 @@ namespace EPiServer.ContentGraph.Api.Filters
             {
                 if (_query.IsNullOrEmpty())
                 {
-                    _query = $"{filterClause}";
+                    _query = $"{{{filterClause}}}";
                 }
                 else
                 {
-                    _query += $",{filterClause}";
+                    _query += $",{{{filterClause}}}";
                 }
             }
             return this;
@@ -58,16 +81,16 @@ namespace EPiServer.ContentGraph.Api.Filters
             {
                 if (_query.IsNullOrEmpty())
                 {
-                    _query = $"{filterClause}";
+                    _query = $"{{{filterClause}}}";
                 }
                 else
                 {
-                    _query += $",{filterClause}";
+                    _query += $",{{{filterClause}}}";
                 }
             }
             return this;
         }
-        public OrFilter<T> Or(Expression<Func<T, long>> fieldSelector, IFilterOperator filterOperator)
+        public OrFilter<T> Or(Expression<Func<T, long?>> fieldSelector, IFilterOperator filterOperator)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             fieldSelector.Compile();
@@ -76,11 +99,11 @@ namespace EPiServer.ContentGraph.Api.Filters
             {
                 if (_query.IsNullOrEmpty())
                 {
-                    _query = $"{filterClause}";
+                    _query = $"{{{filterClause}}}";
                 }
                 else
                 {
-                    _query += $",{filterClause}";
+                    _query += $",{{{filterClause}}}";
                 }
             }
             return this;
@@ -94,11 +117,11 @@ namespace EPiServer.ContentGraph.Api.Filters
             {
                 if (_query.IsNullOrEmpty())
                 {
-                    _query = $"{filterClause}";
+                    _query = $"{{{filterClause}}}";
                 }
                 else
                 {
-                    _query += $",{filterClause}";
+                    _query += $",{{{filterClause}}}";
                 }
             }
             return this;

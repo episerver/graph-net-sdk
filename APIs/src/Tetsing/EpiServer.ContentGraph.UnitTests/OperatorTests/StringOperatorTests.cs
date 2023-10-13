@@ -8,7 +8,7 @@ namespace EpiServer.ContentGraph.UnitTests.OperatorTests
     {
         readonly static string inOpt = "in: [\"1\",\"2\",\"3\"]";
         readonly static string notInOpt = "notIn: [\"4\",\"5\"]";
-        readonly static string expectedstring = $"boost: 10,exist: true,startsWith: \"start\",endsWith: \"end\",synonyms: ONE,contains: \"test\",{inOpt},{notInOpt},like: \"alloy\",notEq: \"bad\"";
+        readonly static string expectedstring = $"boost: 10,exist: true,startsWith: \"start\",endsWith: \"end\",synonyms: [ONE],contains: \"test\",{inOpt},{notInOpt},like: \"alloy\",notEq: \"bad\"";
 
         [Fact]
         public void ChainOperatorsBuildTest()

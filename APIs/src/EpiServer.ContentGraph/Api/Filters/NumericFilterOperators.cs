@@ -9,7 +9,7 @@ namespace EPiServer.ContentGraph.Api.Filters
 
         public string Query => _query;
 
-        public NumericFilterOperators Boost(int value)
+        public NumericFilterOperators Boost(uint value)
         {
             _query += _query.IsNullOrEmpty() ? $"boost: {value}" : $",boost: {value}";
             return this;

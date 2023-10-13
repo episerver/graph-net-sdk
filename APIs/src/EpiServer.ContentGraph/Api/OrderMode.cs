@@ -11,4 +11,11 @@
         COUNT,
         VALUE
     }
+    public enum Ranking
+    {
+        RELEVANCE,
+        SEMANTIC,
+        BOOST_ONLY,
+        DOC
+    }
 }
