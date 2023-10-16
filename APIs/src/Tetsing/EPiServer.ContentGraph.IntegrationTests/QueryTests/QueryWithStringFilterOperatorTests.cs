@@ -12,13 +12,12 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)
         {
-            string data = "{\"index\":{\"_id\":\"1\",\"language_routing\":\"en\"}}\n" +
-                "{\"ContentType\":[\"Content\"],\"Id\":\"content1\", \"Name___searchable\":\"Steve Jobs\",\"Author\":\"Steve Jobs\",\"Status\":\"Published\",\"RolesWithReadAccess\":\"Everyone\"}\n" +
-                "{\"index\":{\"_id\":\"2\",\"language_routing\":\"en\"}}\n" +
-                "{\"ContentType\":[\"Content\"],\"Id\":\"content2\", \"Name___searchable\":\"Steve Howey\",\"Author\":\"Steve Howey\",\"Status\":\"Published\",\"RolesWithReadAccess\":\"Everyone\"}\n" +
-                "{\"index\":{\"_id\":\"3\",\"language_routing\":\"en\"}}\n" +
-                "{\"ContentType\":[\"Content\"],\"Id\":\"content3\", \"Name___searchable\":\"Alan Turing\",\"Status\":\"Published\",\"RolesWithReadAccess\":\"Everyone\"}";
-            SetupData(data);
+            var item1 = TestDataCreator.generateIndexActionJson("1", "en", new IndexActionData { ContentType = new[] { "Content" }, Id = "content1", NameSearchable = "Steve Jobs", Author = "Steve Jobs", Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
+            var item2 = TestDataCreator.generateIndexActionJson("2", "en", new IndexActionData { ContentType = new[] { "Content" }, Id = "content2", NameSearchable = "Steve Howey", Author = "Steve Howey", Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
+            var item3 = TestDataCreator.generateIndexActionJson("3", "en", new IndexActionData { ContentType = new[] { "Content" }, Id = "content3", NameSearchable = "Alan Turing", Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
+
+            SetupData(item1 + item2 + item3);
+
         }
 
         #region UnSearchable field

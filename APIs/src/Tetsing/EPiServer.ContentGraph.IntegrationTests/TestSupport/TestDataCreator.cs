@@ -6,10 +6,12 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
 {
     public class TestDataCreator
     {
-        public static string generateIndexActionJson(string indexId, string languageRouting, string[] contentTypes, string contentId, string nameSearchable, string author, string status, string roles)
+        public const string STATUS_PUBLISHED = "Published";
+        public const string ROLES_EVERYONE = "Everyone";
+
+        public static string generateIndexActionJson(string indexId, string languageRouting, IndexActionData indexActionData)
         {
             var indexAction = new IndexAction { Values = new IndexActionValues { Id = indexId, LanguageRouting = languageRouting } };
-            var indexActionData = new IndexActionData { ContentType = contentTypes, Id = contentId, NameSearchable = nameSearchable, Author = author, Status = status, RolesWithReadAccess = roles };
 
             using (var memoryStream = new MemoryStream())
             using (var writer = new StreamWriter(memoryStream))
@@ -27,22 +29,43 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
     public class IndexActionData
     {
         [JsonPropertyName("ContentType")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string[]? ContentType { get; set; }
 
         [JsonPropertyName("Id")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string? Id { get; set; }
 
         [JsonPropertyName("Name___searchable")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string? NameSearchable { get; set; }
 
         [JsonPropertyName("Author")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string? Author { get; set; }
 
         [JsonPropertyName("Status")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string? Status { get; set; }
 
         [JsonPropertyName("RolesWithReadAccess")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string? RolesWithReadAccess { get; set; }
+        
+        [JsonPropertyName("Priority")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public int? Priority { get; set; }
+
+        [JsonPropertyName("StartPublish")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public DateTime? StartPublish{ get; set; }
+        
+        [JsonPropertyName("IsSecret")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public bool? IsSecret { get; set; }
+
+        
+
 
     }
     public class IndexAction

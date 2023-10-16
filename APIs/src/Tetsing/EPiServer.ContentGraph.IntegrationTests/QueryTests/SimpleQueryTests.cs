@@ -4,10 +4,6 @@ using EPiServer.ContentGraph.Api.Filters;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using EPiServer.ContentGraph.IntegrationTests.TestSupport;
 using EPiServer.ContentGraph.Api;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.IO;
-using System.Text;
 
 namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
 {
@@ -17,9 +13,10 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)
         {
-            var item1 = TestDataCreator.generateIndexActionJson("1","en", new[] { "Content" }, "content1", "Steve Job", "manv", "Published", "Everyone" );
-            var item2 = TestDataCreator.generateIndexActionJson("2", "en", new[] { "Content" }, "content2", "Tim Cook", "manv", "Published", "Everyone");
-            var item3 = TestDataCreator.generateIndexActionJson("3", "en", new[] { "Content" }, "content3", "Alan Turing", "manv", "Published", "Everyone");
+            var item1 = TestDataCreator.generateIndexActionJson("1", "en", new IndexActionData { ContentType = new[] { "Content" }, Id = "content1", NameSearchable = "Steve Job", Author = "manv", Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
+            var item2 = TestDataCreator.generateIndexActionJson("2", "en", new IndexActionData { ContentType = new[] { "Content" }, Id = "content2", NameSearchable = "Tim Cook", Author = "manv", Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
+            var item3 = TestDataCreator.generateIndexActionJson("3", "en", new IndexActionData { ContentType = new[] { "Content" }, Id = "content3", NameSearchable = "Alan Turing", Author = "manv", Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
+
             SetupData(item1 + item2 + item3);
         }
         [TestMethod]
