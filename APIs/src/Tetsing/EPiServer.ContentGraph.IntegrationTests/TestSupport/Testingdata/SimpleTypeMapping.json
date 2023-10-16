@@ -48,6 +48,9 @@
         "Priority": {
           "type": "Int"
         },
+        "Author": {
+          "type": "String"
+        },
         "Status": {
           "type": "String"
         },

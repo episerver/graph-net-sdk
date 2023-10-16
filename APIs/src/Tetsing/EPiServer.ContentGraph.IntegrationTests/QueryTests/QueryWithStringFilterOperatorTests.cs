@@ -16,7 +16,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
             var item2 = TestDataCreator.generateIndexActionJson("2", "en", new IndexActionData { ContentType = new[] { "Content" }, Id = "content2", NameSearchable = "Steve Howey", Author = "Steve Howey", Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
             var item3 = TestDataCreator.generateIndexActionJson("3", "en", new IndexActionData { ContentType = new[] { "Content" }, Id = "content3", NameSearchable = "Alan Turing", Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
 
-            SetupData(item1 + item2 + item3);
+            SetupData<Content>(item1 + item2 + item3);
 
         }
 

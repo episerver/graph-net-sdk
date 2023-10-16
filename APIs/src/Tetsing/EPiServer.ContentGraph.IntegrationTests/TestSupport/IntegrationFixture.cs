@@ -154,23 +154,30 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
         }
         private static bool CountDoc<T>()
         {
-            IQuery query = new GraphQueryBuilder(_options)
-                .ForType<T>()
-                .Total()
-                .ToQuery()
-                .BuildQueries();
-            var rs = query.GetResult<T>();
-            return rs.Content.Values.First().Total > 0;
+            try
+            {
+                IQuery query = new GraphQueryBuilder(_options)
+               .ForType<T>()
+               .Total()
+               .ToQuery()
+               .BuildQueries();
+                var rs = query.GetResult<T>();
+                return rs.Content.Values.First().Total > 0;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
-        protected static void SetupData(string indexingData)
+        protected static void SetupData<T>(string indexingData)
         {
             string path = $@"{WorkingDirectory}\TestingData\SimpleTypeMapping.json";
             using (StreamReader mappingReader = new StreamReader(path))
             {
                 string mapping = mappingReader.ReadToEnd();
-                ClearData<HomePage>();
+                ClearData<T>();
                 PushMapping(mapping);
-                BulkIndexing<HomePage>(indexingData);
+                BulkIndexing<T>(indexingData);
             }
         }
     }

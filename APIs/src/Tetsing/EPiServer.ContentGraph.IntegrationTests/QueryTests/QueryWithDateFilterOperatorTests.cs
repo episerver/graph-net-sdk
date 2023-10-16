@@ -12,18 +12,18 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)
         {
-            var item1 = TestDataCreator.generateIndexActionJson("1", "en", new IndexActionData { ContentType = new[] { "HomePage" }, Id = "content1", NameSearchable = "Home 1", StartPublish = DateTime.Parse("2022-10-11T17:17:56Z"), Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
-            var item2 = TestDataCreator.generateIndexActionJson("2", "en", new IndexActionData { ContentType = new[] { "HomePage" }, Id = "content2", NameSearchable = "Home 2", StartPublish = DateTime.Parse("2022-09-11T20:17:56Z"), Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
-            var item3 = TestDataCreator.generateIndexActionJson("3", "en", new IndexActionData { ContentType = new[] { "HomePage" }, Id = "content3", NameSearchable = "Home 3", StartPublish = DateTime.Parse("2022-11-11T05:17:56Z"), Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
+            var item1 = TestDataCreator.generateIndexActionJson("1", "en", new IndexActionData { ContentType = new[] { "HomePage" }, Id = "content1", NameSearchable = "Home 1", StartPublish = DateTime.Parse("2022-10-11T17:17:56Z", null, System.Globalization.DateTimeStyles.AdjustToUniversal), Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
+            var item2 = TestDataCreator.generateIndexActionJson("2", "en", new IndexActionData { ContentType = new[] { "HomePage" }, Id = "content2", NameSearchable = "Home 2", StartPublish = DateTime.Parse("2022-09-11T20:17:56Z", null, System.Globalization.DateTimeStyles.AdjustToUniversal), Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
+            var item3 = TestDataCreator.generateIndexActionJson("3", "en", new IndexActionData { ContentType = new[] { "HomePage" }, Id = "content3", NameSearchable = "Home 3", StartPublish = DateTime.Parse("2022-11-11T05:17:56Z", null, System.Globalization.DateTimeStyles.AdjustToUniversal), Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
 
-            SetupData(item1 + item2 + item3);
+            SetupData<HomePage>(item1 + item2 + item3);
         }
         [TestMethod]
         public void search_startpublish_Equals_datetime_should_return_1_item()
         {
             IQuery query = new GraphQueryBuilder(_options)
                 .ForType<HomePage>()
-                .Fields(x => x.StartPublish, x=>x.Name)
+                .Fields(x => x.StartPublish, x => x.Name)
                 .Where(x => x.StartPublish, new DateFilterOperators().Eq("2022-10-11T17:17:56Z"))
                 .ToQuery()
                 .BuildQueries();
