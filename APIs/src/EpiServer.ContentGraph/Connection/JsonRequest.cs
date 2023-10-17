@@ -1,37 +1,29 @@
-﻿using System.Net;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text;
-using EPiServer.ContentGraph.Helpers;
 using EPiServer.ContentGraph.Tracing;
 
 namespace EPiServer.ContentGraph.Connection
 {
     public class JsonRequest : IJsonRequest, IDisposable
     {
-        private static readonly Encoding utf8NoBom = new System.Text.UTF8Encoding(false/* no BOM */);
-        private static readonly string userAgent = string.Format("EPiServer-Find-NET-API/{0}",
+        private static readonly Encoding utf8NoBom = new UTF8Encoding(false/* no BOM */);
+        private static readonly string userAgent = string.Format("OptiGraph-NET-API/{0}",
                                                                  typeof(JsonRequest).Assembly.GetName().Version);
-        HttpWebRequest webRequest;
-        HttpWebResponse webResponse;
+        private readonly HttpClient _httpClient;
+        HttpRequestMessage request;
 
         Guid traceGuid;
 
-        public JsonRequest(string url, HttpVerbs method, Action<HttpWebRequest> webRequestAction)
+        public JsonRequest(string url, HttpMethod method, HttpClient httpClient)
         {
             traceGuid = Guid.NewGuid();
 
             Uri uri = new Uri(url);
             ForceCanonicalPathAndQuery(uri);
-            webRequest = (HttpWebRequest)HttpWebRequest.Create(uri);
-            webRequest.Method = method.ToString().ToUpper();
-            webRequest.ContentType = "application/json";
-            webRequest.UserAgent = userAgent;
-            //webRequest.Headers.Add("Expect", "100-continue");
-            webRequest.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-            if (webRequestAction.IsNotNull())
-            {
-                webRequestAction(webRequest);
-            }
+            _httpClient = httpClient;
+            request = new HttpRequestMessage(method, uri);
+            request.Method = method;
+            request.Headers.UserAgent.ParseAdd(userAgent);
         }
 
         private void ForceCanonicalPathAndQuery(Uri uri)
@@ -45,67 +37,24 @@ namespace EPiServer.ContentGraph.Connection
 
         public void AddRequestHeader(string name, string value)
         {
-            webRequest.Headers.Add(name, value);
+            request.Headers.Add(name, value);
         }
 
         public Uri RequestUri
         {
-            get { return webRequest.RequestUri; }
+            get { return request.RequestUri; }
         }
 
-        public virtual Stream GetRequestStream(long contentLength)
+        public async Task<Stream> GetResponseStream(string body)
         {
-            webRequest.ContentLength = contentLength;
-            return webRequest.GetRequestStream();
-        }
+            
+            Trace.Instance.Add(new TraceEvent(this, string.Format("Executing {0} request to {1}.", request.Method, RequestUri)));
 
-        public virtual void WriteBody(string body)
-        {
-            Trace.Instance.Add(new TraceEvent(this, string.Format("Writing body to request: {0}.", body)));
-            webRequest.ContentLength = utf8NoBom.GetByteCount(body);
-            int bufferSize = Math.Min(body.Length, 4096 * 6);
-            using (var requestBuffer = new StreamWriter(webRequest.GetRequestStream(), utf8NoBom, bufferSize, true))
-            {
-                requestBuffer.Write(body);
-            }
-        }
+            request.Content = new StringContent(body, Encoding.UTF8, "application/json");
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
 
-        public virtual string GetResponse()
-        {
-            Trace.Instance.Add(new TraceEvent(this, string.Format("Executing {0} request to {1}.", webRequest.Method, RequestUri)));
-            string response;
-            using (var responseStream = GetResponseStream())
-            {
-                StreamReader streamReader = new StreamReader(responseStream, Encoding.UTF8);
-                response = streamReader.ReadToEnd();
-            }
-            //webResponse.Close();
-            //webResponse = null;
-            return response;
-        }
-
-        public virtual Dictionary<string, string> GetResponseHeaders()
-        {
-
-            var headers = webResponse.Headers;
-            var headerDictionary = new Dictionary<string, string>();
-            foreach(var header in headers.AllKeys)
-            {
-                foreach (var headerValue in headers.GetValues(header))
-                {
-                    headerDictionary.Add(header, headerValue);
-                }
-                
-            }
-            return headerDictionary;
-        }
-
-        public Stream GetResponseStream()
-        {
-            Trace.Instance.Add(new TraceEvent(this, string.Format("Executing {0} request to {1}.", webRequest.Method, RequestUri)));
-            webResponse = (HttpWebResponse)webRequest.GetResponse();
-
-            return webResponse.GetResponseStream();
+            return response.Content.ReadAsStream();
         }
 
         public Guid TraceId
@@ -120,11 +69,6 @@ namespace EPiServer.ContentGraph.Connection
 
         public void Dispose()
         {
-            if (webResponse != null)
-            {
-                webResponse.Close();
-                webResponse = null;
-            }
         }
     }
 }
