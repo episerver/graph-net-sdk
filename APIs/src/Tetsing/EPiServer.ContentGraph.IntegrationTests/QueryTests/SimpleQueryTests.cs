@@ -13,13 +13,11 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)
         {
-            string data = "{\"index\":{\"_id\":\"1\",\"language_routing\":\"en\"}}\n" +
-                "{\"ContentType\":[\"Content\"],\"Id\":\"content1\", \"Name___searchable\":\"Steve Job\",\"Author\":\"manv\",\"Status\":\"Published\",\"RolesWithReadAccess\":\"Everyone\"}\n" +
-                "{\"index\":{\"_id\":\"2\",\"language_routing\":\"en\"}}\n" +
-                "{\"ContentType\":[\"Content\"],\"Id\":\"content2\", \"Name___searchable\":\"Tim Cook\",\"Author\":\"manv\",\"Status\":\"Published\",\"RolesWithReadAccess\":\"Everyone\"}\n" +
-                "{\"index\":{\"_id\":\"3\",\"language_routing\":\"en\"}}\n" +
-                "{\"ContentType\":[\"Content\"],\"Id\":\"content3\", \"Name___searchable\":\"Alan Turing\",\"Author\":\"manv\",\"Status\":\"Published\",\"RolesWithReadAccess\":\"Everyone\"}";
-            SetupData<Content>(data);
+            var item1 = TestDataCreator.generateIndexActionJson("1", "en", new IndexActionData { ContentType = new[] { "Content" }, Id = "content1", NameSearchable = "Steve Job", Author = "manv", Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
+            var item2 = TestDataCreator.generateIndexActionJson("2", "en", new IndexActionData { ContentType = new[] { "Content" }, Id = "content2", NameSearchable = "Tim Cook", Author = "manv", Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
+            var item3 = TestDataCreator.generateIndexActionJson("3", "en", new IndexActionData { ContentType = new[] { "Content" }, Id = "content3", NameSearchable = "Alan Turing", Author = "manv", Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
+
+            SetupData<Content>(item1 + item2 + item3);
         }
         [TestMethod]
         public void search_with_fields_should_result_3_items()

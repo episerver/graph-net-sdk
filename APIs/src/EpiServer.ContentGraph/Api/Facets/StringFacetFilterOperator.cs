@@ -4,11 +4,13 @@ namespace EPiServer.ContentGraph.Api.Facets
 {
     public class StringFacetFilterOperator : IFacetFilterOperator
     {
-        public StringFacetFilterOperator INSTANCE { get { return new StringFacetFilterOperator(); } }
         string _query = string.Empty;
         IEnumerable<FacetProjection> _projections;
         public string Query { get { return _query; } }
-
+        public StringFacetFilterOperator()
+        {
+            _projections = new List<FacetProjection> { FacetProjection.name, FacetProjection.count };
+        }
         public IEnumerable<FacetProjection> FacetProjections { get { return _projections; } }
 
         public StringFacetFilterOperator OrderBy(OrderMode orderMode)

@@ -12,15 +12,12 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)
         {
-            string data = "{\"index\":{\"_id\":\"1\",\"language_routing\":\"en\"}}\n" +
-                    "{\"ContentType\":[\"HomePage\"],\"Id\":\"content1\", \"Name___searchable\":\"Home 1\",\"Priority\":100,\"StartPublish\":\"2022-10-11T17:17:56Z\",\"Status\":\"Published\",\"RolesWithReadAccess\":\"Everyone\"}\n" +
-                    "{\"index\":{\"_id\":\"2\",\"language_routing\":\"en\"}}\n" +
-                    "{\"ContentType\":[\"HomePage\"],\"Id\":\"content2\", \"Name___searchable\":\"Home 2\",\"Priority\":100,\"StartPublish\":\"2022-10-12T17:17:56Z\",\"Status\":\"Published\",\"RolesWithReadAccess\":\"Everyone\"}\n" +
-                    "{\"index\":{\"_id\":\"3\",\"language_routing\":\"en\"}}\n" +
-                    "{\"ContentType\":[\"HomePage\"],\"Id\":\"content3\", \"Name___searchable\":\"Not exists priority\",\"StartPublish\":\"2022-10-13T17:17:56Z\",\"Status\":\"Published\",\"RolesWithReadAccess\":\"Everyone\"}\n" +
-                    "{\"index\":{\"_id\":\"4\",\"language_routing\":\"en\"}}\n" +
-                    "{\"ContentType\":[\"HomePage\"],\"Id\":\"content4\", \"Name___searchable\":\"Home 4\",\"Priority\":300,\"StartPublish\":\"2022-10-14T17:17:56Z\",\"Status\":\"Published\",\"RolesWithReadAccess\":\"Everyone\"}";
-            SetupData<HomePage>(data);
+            var item1 = TestDataCreator.generateIndexActionJson("1", "en", new IndexActionData { ContentType = new[] { "HomePage" }, Id = "content1", NameSearchable = "Home 1", Status = TestDataCreator.STATUS_PUBLISHED, Priority = 100, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE, StartPublish = DateTime.Parse("2022-10-11T17:17:56Z",null,System.Globalization.DateTimeStyles.AdjustToUniversal) });
+            var item2 = TestDataCreator.generateIndexActionJson("2", "en", new IndexActionData { ContentType = new[] { "HomePage" }, Id = "content2", NameSearchable = "Home 2", Status = TestDataCreator.STATUS_PUBLISHED, Priority = 100, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE, StartPublish = DateTime.Parse("2022-10-12T17:17:56Z", null, System.Globalization.DateTimeStyles.AdjustToUniversal) });
+            var item3 = TestDataCreator.generateIndexActionJson("3", "en", new IndexActionData { ContentType = new[] { "HomePage" }, Id = "content3", NameSearchable = "Not exists priority", Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE, StartPublish = DateTime.Parse("2022-10-13T17:17:56Z", null, System.Globalization.DateTimeStyles.AdjustToUniversal) });
+            var item4 = TestDataCreator.generateIndexActionJson("4", "en", new IndexActionData { ContentType = new[] { "HomePage" }, Id = "content4", NameSearchable = "Home 4", Status = TestDataCreator.STATUS_PUBLISHED, Priority = 300, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE, StartPublish = DateTime.Parse("2022-10-14T17:17:56Z", null, System.Globalization.DateTimeStyles.AdjustToUniversal) });
+
+            SetupData<HomePage>(item1 + item2 + item3 + item4);
         }
         #region And filter
         [TestMethod]

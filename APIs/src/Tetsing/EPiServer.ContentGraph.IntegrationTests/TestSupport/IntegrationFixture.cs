@@ -14,11 +14,12 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
     [TestClass]
     public class IntegrationFixture
     {
-        private static readonly int MAX_RETRY = 10;
+        private static readonly int MAX_RETRY = 100;
         protected static IOptions<QueryOptions>? queryOptions;
         protected static IHost? testingHost;
         protected static readonly string QUERY_PATH = "/content/v2?cache=false";
         protected static readonly string INDEXING_PATH = "/api/content/v2/data";
+        protected static readonly string CLEAR_MAPPING_AND_DATA_PATH = "/api/content/v3/sources";
         protected static readonly string MAPPING_PATH = "/api/content/v3/types";
         protected static string? WorkingDirectory;
         private static HttpClient? _httpClient;
@@ -108,14 +109,28 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
                 int retry = 0;
                 while (CountDoc<T>() && retry < MAX_RETRY)
                 {
+                    Console.WriteLine("Deleting data...");
                     Task.Delay(500);
                     retry++;
                 }
-                Console.WriteLine($"Deleted contents for index {id}");
+                Console.WriteLine($"Deleted contents for source {id}");
+                ClearMapping(id);
             }
             else
             {
                 throw new Exception("Can not delete contents");
+            }
+        }        
+        protected static void ClearMapping(string id = "test")
+        {
+            var res = _httpClient.DeleteAsync(CLEAR_MAPPING_AND_DATA_PATH + $"?id={id}").Result;
+            if (res.StatusCode == System.Net.HttpStatusCode.OK || res.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                Console.WriteLine($"Deleted mappings for source {id}");
+            }
+            else
+            {
+                throw new Exception("Can not delete mappings");
             }
         }
         protected static void PushMapping(string json, string id = "test")
@@ -139,6 +154,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
                 int retry = 0;
                 while (!CountDoc<T>() && retry < MAX_RETRY)
                 {
+                    Console.WriteLine("Indexing data...");
                     Task.Delay(500);
                     retry++;
                 }
@@ -154,10 +170,10 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
             try
             {
                 IQuery query = new GraphQueryBuilder(_options)
-                .ForType<T>()
-                .Total()
-                .ToQuery()
-                .BuildQueries();
+               .ForType<T>()
+               .Total()
+               .ToQuery()
+               .BuildQueries();
                 var rs = query.GetResult<T>();
                 return rs.Content.Values.First().Total > 0;
             }
@@ -165,7 +181,6 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
             {
                 return false;
             }
-            
         }
         protected static void SetupData<T>(string indexingData)
         {

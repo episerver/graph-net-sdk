@@ -82,7 +82,7 @@ namespace EPiServer.ContentGraph.Helpers
         public static string ConvertNestedFieldForFacet(string fieldName, IFacetFilterOperator facetFilter)
         {
             string facetProperties;
-            if (facetFilter.FacetProjections?.Count() != 0)
+            if (facetFilter.FacetProjections?.Count() > 0)
             {
                 facetProperties = string.Join(' ', facetFilter.FacetProjections);
             }

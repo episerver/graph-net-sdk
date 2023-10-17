@@ -62,11 +62,11 @@
         "StartPublish": {
           "type": "Date"
         },
-        "Author": {
-          "type": "String"
-        },
         "Priority": {
           "type": "Int"
+        },
+        "Author": {
+          "type": "String"
         },
         "Status": {
           "type": "String"
