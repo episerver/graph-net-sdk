@@ -7,6 +7,7 @@
         public string Author { get; set; }
         public string Status { get; set; }
         public Language Language { get; set; }
+        public HomePage HomePage { get; set; }
     }
     internal class Language
     {

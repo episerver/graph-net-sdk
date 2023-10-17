@@ -45,7 +45,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
             Assert.IsTrue(rs.Content.Values.First().AutoComplete["Id"].Count.Equals(1));
         }
         [TestMethod]
-        public void autocomplete_has_value_more_than_10_charaters_will_be_ignore()
+        public void autocomplete_has_value_more_than_10_characters_will_be_ignore()
         {
             string value = "notmyidandthe";
             Assert.IsTrue(value.Length > 10);
