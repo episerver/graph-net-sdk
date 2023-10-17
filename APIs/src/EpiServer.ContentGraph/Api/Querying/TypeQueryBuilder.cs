@@ -416,7 +416,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             {
                 graphObject.Autocomplete = $"autocomplete{{{graphObject.Autocomplete}}}";
             }
-            _query.Query = graphObject.ToString();
+            _query.Query += graphObject.ToString();
             return new GraphQueryBuilder(_query);
         }
         public override GraphQLRequest GetQuery()

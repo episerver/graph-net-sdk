@@ -4,10 +4,13 @@ namespace EPiServer.ContentGraph.Api.Facets
 {
     public class NumericFacetFilterOperator : IFacetFilterOperator
     {
-        public NumericFacetFilterOperator INSTANCE { get { return new NumericFacetFilterOperator(); } }
         string _query = string.Empty;
         IEnumerable<FacetProjection> _projections;
         public string Query { get { return _query; } }
+        public NumericFacetFilterOperator()
+        {
+            _projections = new List<FacetProjection> { FacetProjection.name, FacetProjection.count };
+        }
         public IEnumerable<FacetProjection> FacetProjections { get { return _projections; } }
         /// <summary>
         /// Ranges for facets. For ex: Ranges((1, 2), (9, 10))

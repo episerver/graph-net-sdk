@@ -25,12 +25,12 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         {
             IQuery query = new GraphQueryBuilder(_options)
                 .ForType<HomePage>()
-                .Facet(x => x.IsSecret, 
-                    new StringFacetFilterOperator()
-                    .Filters("true","false")
-                    .OrderBy(OrderMode.DESC)
-                    .OrderType(OrderType.VALUE)
-                    .Projection(FacetProjection.name, FacetProjection.count))
+                    .Field(x => x.IsSecret)
+                    .Facet(x => x.IsSecret, 
+                        new StringFacetFilterOperator()
+                        .Filters("true","false")
+                        .OrderBy(OrderMode.DESC)
+                        .OrderType(OrderType.VALUE))
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResult<HomePage>();
@@ -57,17 +57,48 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
             Assert.IsTrue(rs.Content["HomePage"].Facets["Priority"].Last().Name.Equals("[200,300)"));
             Assert.IsTrue(rs.Content["HomePage"].Facets["Priority"].Last().Count.Equals(0));
         }
-        //TODO: Should mock data for date facet because it uses current time
-        //[TestMethod]
-        //public void search_with_date_facet_should_return_2_facets()
-        //{
-        //    IQuery query = new GraphQueryBuilder(_options)
-        //        .ForType<HomePage>()
-        //        .Facet(x => x.StartPublish, new DateFacetFilterOperator().Unit(DateUnit.HOUR).Value(11))
-        //        .ToQuery()
-        //        .BuildQueries();
-        //    var rs = query.GetResult<HomePage>();
-        //    Assert.IsTrue(rs.Content["HomePage"].Facets["StartPublish"].Count.Equals(1));
-        //}
+        [TestMethod]
+        public void search_with_facet_filters_should_return_correct_items()
+        {
+            IQuery query = new GraphQueryBuilder(_options)
+                .ForType<HomePage>()
+                    .Field(x=>x.IsSecret)
+                    .Facet(x => x.IsSecret, new StringFacetFilterOperator().Filters("true"))
+                    .ToQuery()
+                .BuildQueries();
+            var rs = query.GetResult<HomePage>();
+            Assert.IsTrue(rs.Content["HomePage"].Facets["IsSecret"].Count.Equals(2));
+            Assert.IsTrue(rs.Content["HomePage"].Hits.Count.Equals(2));
+            Assert.IsTrue(rs.Content["HomePage"].Hits.TrueForAll(x => x.IsSecret));
+        }
+        [TestMethod]
+        public void search_with_2_facet_should_return_2_facets()
+        {
+            IQuery query = new GraphQueryBuilder(_options)
+                .ForType<HomePage>()
+                    .Field(x => x.IsSecret)
+                    .Facet(x => x.IsSecret, new StringFacetFilterOperator().Filters("true"))
+                    .Facet(x => x.Status, new StringFacetFilterOperator().Filters(TestDataCreator.STATUS_PUBLISHED))
+                    .ToQuery()
+                .BuildQueries();
+            var rs = query.GetResult<HomePage>();
+            Assert.IsTrue(rs.Content["HomePage"].Facets.Count.Equals(2));
+            Assert.IsNotNull(rs.Content["HomePage"].Facets["IsSecret"]);
+            Assert.IsNotNull(rs.Content["HomePage"].Facets["Status"]);
+        }
+        [TestMethod]
+        public void search_with_facet_limit_1_should_return_facet_count_equals_1()
+        {
+            IQuery query = new GraphQueryBuilder(_options)
+                .ForType<HomePage>()
+                    .Facet(x => x.IsSecret, new StringFacetFilterOperator().Filters("true").Limit(1))
+                    .Facet(x => x.Status, new StringFacetFilterOperator().Filters(TestDataCreator.STATUS_PUBLISHED))
+                    .ToQuery()
+                .BuildQueries();
+            var rs = query.GetResult<HomePage>();
+            Assert.IsTrue(rs.Content["HomePage"].Facets.Count.Equals(2));
+            Assert.IsNotNull(rs.Content["HomePage"].Facets["IsSecret"]);
+            Assert.IsNotNull(rs.Content["HomePage"].Facets["Status"]);
+        }
     }
 }

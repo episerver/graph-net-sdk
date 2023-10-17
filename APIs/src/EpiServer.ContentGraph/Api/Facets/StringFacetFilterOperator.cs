@@ -40,14 +40,5 @@ namespace EPiServer.ContentGraph.Api.Facets
             _projections = projections.Distinct();
             return this;
         }
-        /// <summary>
-        /// Default projection contains name and count
-        /// </summary>
-        /// <returns></returns>
-        public StringFacetFilterOperator Projection()
-        {
-            _projections = new List<FacetProjection> { FacetProjection.name, FacetProjection.count};
-            return this;
-        }
     }
 }
