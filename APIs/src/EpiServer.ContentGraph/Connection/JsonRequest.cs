@@ -52,7 +52,19 @@ namespace EPiServer.ContentGraph.Connection
 
             request.Content = new StringContent(body, Encoding.UTF8, "application/json");
             var response = await _httpClient.SendAsync(request);
-            response.EnsureSuccessStatusCode();
+            string errorResponse;
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch(HttpRequestException ex)
+            {
+                var responseStream = response.Content.ReadAsStream();
+                StreamReader streamReader = new StreamReader(responseStream, Encoding.UTF8);
+                errorResponse = streamReader.ReadToEnd();
+
+                throw new HttpRequestException(errorResponse, ex, ex.StatusCode);
+            }
 
             return response.Content.ReadAsStream();
         }

@@ -66,30 +66,16 @@ namespace EPiServer.ContentGraph.Api.Querying
                         return JsonSerializer.CreateDefault().Deserialize<ContentGraphResult<TResult>>(jsonReader);
                     }
                 }
-                catch (WebException originalException)
+                catch (AggregateException asyncException)
                 {
-                    var message = originalException.Message;
-
-                    if (originalException.Response.IsNotNull())
+                    var httpRequestException = asyncException.InnerExceptions.FirstOrDefault(e => e.GetType() == typeof(HttpRequestException)) as HttpRequestException;
+                    if (httpRequestException != null)
                     {
-                        var responseStream = originalException.Response.GetResponseStream();
-                        StreamReader streamReader = new StreamReader(responseStream, Encoding.UTF8);
-                        var response = streamReader.ReadToEnd();
-                        if (!string.IsNullOrEmpty(response))
-                        {
-                            try
-                            {
-                                response = JsonConvert.DeserializeObject<ServiceError>(response).Errors;
-                            }
-                            catch (Exception)
-                            {
-
-                            }
-                        }
-                        message = message + Environment.NewLine + response;
+                        throw new ServiceException(httpRequestException.Message, httpRequestException.InnerException);
                     }
-                    throw new ServiceException(message, originalException);
+                    throw new ServiceException(asyncException.Message, asyncException);
                 }
+                
             }
         }
         /// <summary>
