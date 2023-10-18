@@ -130,6 +130,8 @@ publish/
 # NuGet Packages Directory
 packages/*
 !packages/repositories.config
+APIs/src/packages/*
+!APIs/src/packages/repositories.config
 
 # Windows Azure Build Output
 csx/
