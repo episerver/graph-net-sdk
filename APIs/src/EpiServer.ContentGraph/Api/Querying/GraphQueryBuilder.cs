@@ -12,6 +12,11 @@ namespace EPiServer.ContentGraph.Api.Querying
 {
     public class GraphQueryBuilder : IQuery
     {
+        internal static HttpClient httpClient = new HttpClient(new HttpClientHandler()
+        {
+            AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip
+        });
+
         private GraphQLRequest _query;
         private static OptiGraphOptions _optiGraphOptions;
         ITypeQueryBuilder typeQueryBuilder;
@@ -46,7 +51,7 @@ namespace EPiServer.ContentGraph.Api.Querying
         {
             string url = GetServiceUrl();
 
-            using (JsonRequest jsonRequest = new JsonRequest(url, HttpVerbs.Post, null))
+            using (JsonRequest jsonRequest = new JsonRequest(url, HttpMethod.Post, httpClient))
             {
                 try
                 {
@@ -54,9 +59,8 @@ namespace EPiServer.ContentGraph.Api.Querying
                     var settings = new JsonSerializerSettings();
                     settings.ContractResolver = new LowercaseContractResolver();
                     string body = JsonConvert.SerializeObject(_query, settings);
-                    jsonRequest.WriteBody(body);
 
-                    using (var reader = new StreamReader(jsonRequest.GetResponseStream(), jsonRequest.Encoding))
+                    using (var reader = new StreamReader(jsonRequest.GetResponseStream(body).Result, jsonRequest.Encoding))
                     {
                         var jsonReader = new JsonTextReader(reader);
                         return JsonSerializer.CreateDefault().Deserialize<ContentGraphResult<TResult>>(jsonReader);
