@@ -2,6 +2,7 @@
 {
     internal class HomePage : Content
     {
+        public string ContentType { get; set; }
         public string MainBody { get; set; }
         public string MainContentArea { get; set; }
         public int? Priority { get; set; }

@@ -58,7 +58,7 @@ namespace EPiServer.ContentGraph.Api.Result
         [JsonProperty("autocomplete")]
         private Dictionary<string, JArray> RawAutoComplete { get; set; }
         [JsonProperty("cursor")]
-        public int Cursor { get; set; }
+        public string Cursor { get; set; }
         [JsonProperty("total")]
         public int Total { get; set; }
     }

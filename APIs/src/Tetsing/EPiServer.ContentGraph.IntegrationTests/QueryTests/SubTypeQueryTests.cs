@@ -11,13 +11,14 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)
         {
-            var item1 = TestDataCreator.generateIndexActionJson("1", "en", new IndexActionData 
-            { ContentType = new[] { "Content" }, Id = "content1", NameSearchable = "Steve Jobs", Author = "Steve Jobs", Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
-            var item2 = TestDataCreator.generateIndexActionJson("2", "en", new IndexActionData 
-            { ContentType = new[] { "Content" }, Id = "content2", NameSearchable = "Steve Howey", Author = "Steve Howey", Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
+            var item1 = TestDataCreator.generateIndexActionJson("1", "en", new IndexActionData
+            { ContentType = new[] { "Content" }, TypeName =  "Content", Id = "content1", NameSearchable = "Steve Jobs", Author = "Steve Jobs", Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
+            var item2 = TestDataCreator.generateIndexActionJson("2", "en", new IndexActionData
+            { ContentType = new[] { "Content" }, TypeName = "Content", Id = "content2", NameSearchable = "Steve Howey", Author = "Steve Howey", Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
             var item3 = TestDataCreator.generateIndexActionJson("3", "en", new IndexActionData
             {
-                ContentType = new[] { "HomePage" },
+                ContentType = new[] { "Content", "HomePage" },
+                TypeName = "HomePage",
                 Id = "content3",
                 NameSearchable = "My Home",
                 IsSecret = false,
@@ -33,12 +34,12 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         {
             IQuery query = new GraphQueryBuilder(_options)
                 .ForType<Content>()
-                    .Field(x=>x.Name)
-                    .ForSubType<HomePage>(x=>x.IsSecret)
+                    .ForSubType<HomePage>(x => x.Name, x=>x.IsSecret)
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<Content>();
-            Assert.IsTrue(rs.Content.Values.First().Hits.First().Name.Equals("Steve Jobs"));
+            var rs = query.GetResult<HomePage>();
+            Assert.IsTrue(rs.Content.Values.First().Hits.Last().Name.Equals("My Home"));
+            Assert.IsFalse(rs.Content.Values.First().Hits.Last().IsSecret);
         }
     }
 }

@@ -8,7 +8,7 @@ using EPiServer.ContentGraph.Api;
 namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
 {
     [TestClass]
-    public class Index_3_Items_Then_Search : IntegrationFixture
+    public class SimpleQueryTests : IntegrationFixture
     {
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)
