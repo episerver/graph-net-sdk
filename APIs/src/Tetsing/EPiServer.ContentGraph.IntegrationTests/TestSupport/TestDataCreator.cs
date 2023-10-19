@@ -39,6 +39,14 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
         [JsonPropertyName("Name___searchable")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string? NameSearchable { get; set; }
+        
+        [JsonPropertyName("MainBody___searchable")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string? MainBodySearchable { get; set; }
+
+        [JsonPropertyName("__typename")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string? TypeName { get; set; }
 
         [JsonPropertyName("Author")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

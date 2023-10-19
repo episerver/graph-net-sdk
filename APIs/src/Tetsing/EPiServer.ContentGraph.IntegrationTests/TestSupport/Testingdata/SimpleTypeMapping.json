@@ -34,6 +34,9 @@
         },
         "Status": {
           "type": "String"
+        },
+        "ContentType": {
+          "type": "[String]"
         }
       }
     },
@@ -73,6 +76,9 @@
         },
         "IsSecret": {
           "type": "Boolean"
+        },
+        "ContentType": {
+          "type": "[String]"
         }
       }
     }

@@ -11,13 +11,11 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)
         {
-            string data = "{\"index\":{\"_id\":\"1\",\"language_routing\":\"en\"}}\n" +
-                "{\"ContentType\":[\"HomePage\"],\"Id\":\"content1\", \"Name___searchable\":\"Home 1\",\"Language\":{\"Name\":\"en\",\"DisplayName\":\"English\"},\"Status\":\"Published\",\"RolesWithReadAccess\":\"Everyone\"}\n" +
-                "{\"index\":{\"_id\":\"2\",\"language_routing\":\"en-US\"}}\n" +
-                "{\"ContentType\":[\"HomePage\"],\"Id\":\"content2\", \"Name___searchable\":\"Home 2\",\"Language\":{\"Name\":\"en-US\",\"DisplayName\":\"English\"},\"Status\":\"Published\",\"RolesWithReadAccess\":\"Everyone\"}\n" +
-                "{\"index\":{\"_id\":\"3\",\"language_routing\":\"en-GB\"}}\n" +
-                "{\"ContentType\":[\"HomePage\"],\"Id\":\"content3\", \"Name___searchable\":\"Home 3\",\"Language\":{\"Name\":\"en-GB\",\"DisplayName\":\"English\"},\"Status\":\"Published\",\"RolesWithReadAccess\":\"Everyone\"}";
-            SetupData<HomePage>(data);
+            var item1 = TestDataCreator.generateIndexActionJson("1", "en", new IndexActionData { ContentType = new[] { "Content" }, Id = "content1", NameSearchable = "Steve Job", Author = "manv", Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
+            var item2 = TestDataCreator.generateIndexActionJson("2", "en", new IndexActionData { ContentType = new[] { "Content" }, Id = "content2", NameSearchable = "Tim Cook", Author = "manv", Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
+            var item3 = TestDataCreator.generateIndexActionJson("3", "en", new IndexActionData { ContentType = new[] { "Content" }, Id = "content3", NameSearchable = "Alan Turing", Author = "manv", Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
+            var item4 = TestDataCreator.generateIndexActionJson("4", "en", new IndexActionData { ContentType = new[] { "HomePage" }, Id = "content4", NameSearchable = "Home 4", Priority = 300, IsSecret = false, Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
+            SetupData<HomePage>(item1 + item2 + item3 + item4);
         }
         [TestMethod]
         public void search_with_fields_should_result_2_items()

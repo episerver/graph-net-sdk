@@ -18,6 +18,12 @@ namespace EPiServer.ContentGraph.Api.Querying
         public TypeQueryBuilder():base()
         {
         }
+        public override GraphQLRequest GetQuery()
+        {
+            return _query;
+        }
+
+        #region Queries
         public TypeQueryBuilder<T> Field(Expression<Func<T, object>> fieldSelector)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
@@ -31,7 +37,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             {
                 graphObject.SelectItems += $" {ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName)}";
             }
-            
+
             return this;
         }
         public TypeQueryBuilder<T> Fields(params Expression<Func<T, object>>[] fieldSelectors)
@@ -73,15 +79,20 @@ namespace EPiServer.ContentGraph.Api.Querying
         /// <typeparam name="TSub">Subtype must be inherited from type <typeparamref name="T"/></typeparam>
         /// <param name="fieldSelector"></param>
         /// <returns></returns>
-        public TypeQueryBuilder<T> ForSubType<TSub>(Expression<Func<TSub, object>> fieldSelector) where TSub:T
+        public TypeQueryBuilder<T> ForSubType<TSub>(params Expression<Func<TSub, object>>[] fieldSelectors) where TSub : T
         {
-            fieldSelector.ValidateNotNullArgument("fieldSelector");
-            //if (!typeof(TSub).IsAssignableTo(typeof(T)))
-            //{
-            //    throw new ArgumentException($"Type [{typeof(TSub).Name}] is not inherit from type [{typeof(T).Name}]");
-            //}
-            fieldSelector.Compile();
-            var propertyName = ConvertNestedFieldToString.ConvertNestedFieldForQuery(fieldSelector.GetFieldPath());
+            fieldSelectors.ValidateNotNullArgument("fieldSelectors");
+            string propertyName = string.Empty;
+            foreach (var fieldSelector in fieldSelectors)
+            {
+                fieldSelector.Compile();
+                if (!propertyName.IsNullOrEmpty())
+                {
+                    propertyName += " ";
+                }
+                propertyName += ConvertNestedFieldToString.ConvertNestedFieldForQuery(fieldSelector.GetFieldPath());
+
+            }
             string subTypeName = typeof(TSub).Name;
             graphObject.SelectItems = graphObject.SelectItems.IsNullOrEmpty() ?
                 $"... on {subTypeName}{{{propertyName}}}" :
@@ -107,6 +118,71 @@ namespace EPiServer.ContentGraph.Api.Querying
                 $"{graphObject.SelectItems} ... on {subTypeName}{{{subTypeQuery.Query}}}";
             return this;
         }
+
+        public TypeQueryBuilder<T> Autocomplete(Expression<Func<T, string>> fieldSelector, AutoCompleteOperators autocomplete)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            autocomplete.ValidateNotNullArgument("autocompleteOperator");
+            fieldSelector.Compile();
+            var propertyName = ConvertNestedFieldToString.ConvertNestedFieldForAutoComplete(fieldSelector.GetFieldPath(), autocomplete);
+            if (graphObject.Autocomplete.IsNullOrEmpty())
+            {
+                graphObject.Autocomplete = $"{propertyName}";
+            }
+            else
+            {
+                graphObject.Autocomplete += $" {propertyName}";
+            }
+            return this;
+        }
+        /// <summary>
+        /// Get facet by field
+        /// </summary>
+        /// <param name="fieldSelector"></param>
+        /// <returns></returns>
+        public TypeQueryBuilder<T> Facet(Expression<Func<T, object>> fieldSelector)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            fieldSelector.Compile();
+            var facet = ConvertNestedFieldToString.ConvertNestedFieldForFacet(fieldSelector.GetFieldPath());
+            graphObject.Facets = graphObject.Facets.IsNullOrEmpty() ? 
+                $"{facet}" : 
+                $"{graphObject.Facets} {facet}";
+            return this;
+        }
+        public TypeQueryBuilder<T> Facet(string propertyName)
+        {
+            string facet = ConvertNestedFieldToString.ConvertNestedFieldForFacet(propertyName);
+            graphObject.Facets = graphObject.Facets.IsNullOrEmpty() ?
+                $"{facet}" :
+                $"{graphObject.Facets} {facet}";
+            return this;
+        }
+        public TypeQueryBuilder<T> Total(bool? isAll = null)
+        {
+            if (!isAll.HasValue)
+            {
+                graphObject.Total = "total";
+            }
+            else
+            {
+                graphObject.Total = $"total(all:{isAll.Value.ToString().ToLower()})";
+            }
+
+            return this;
+        }
+        /// <summary>
+        /// Get scroll id from search
+        /// </summary>
+        /// <returns></returns>
+        public TypeQueryBuilder<T> GetCursor()
+        {
+            graphObject.Cursor = "cursor";
+            return this;
+        }
+        #endregion
+
+        #region Filters
         public TypeQueryBuilder<T> Skip(long skip)
         {
             graphObject.Skip = $"skip:{skip}";
@@ -150,7 +226,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             else
             {
                 graphObject.Locale += graphObject.Locale.IsNullOrEmpty() ?
-                    $"{language.Name.Replace("-","_")}" :
+                    $"{language.Name.Replace("-", "_")}" :
                     $",{language.Name.Replace("-", "_")}";
             }
             return this;
@@ -169,8 +245,60 @@ namespace EPiServer.ContentGraph.Api.Querying
         public TypeQueryBuilder<T> Locales(params CultureInfo[] cultures)
         {
             cultures.ValidateNotNullArgument("cultures");
-            string allLocales = string.Join(',', cultures.Select(c=>c.Name.Replace("-", "_")));
+            string allLocales = string.Join(',', cultures.Select(c => c.Name.Replace("-", "_")));
             graphObject.Locale = allLocales;
+            return this;
+        }
+        /// <summary>
+        /// Order for a field. Add more for order many fields.
+        /// </summary>
+        /// <param name="fieldSelector">Field for order</param>
+        /// <param name="orderMode">OrderMode</param>
+        /// <returns></returns>
+        public TypeQueryBuilder<T> OrderBy(Expression<Func<T, object>> fieldSelector, OrderMode orderMode = OrderMode.ASC)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            fieldSelector.Compile();
+            var propertyName = fieldSelector.GetFieldPath();
+
+            if (graphObject.OrderBy.IsNullOrEmpty())
+            {
+                graphObject.OrderBy = $"{propertyName}:{orderMode}";
+            }
+            else
+            {
+                graphObject.OrderBy += $",{propertyName}:{orderMode}";
+            }
+            return this;
+        }
+        public TypeQueryBuilder<T> OrderBy(Expression<Func<T, object>> fieldSelector, OrderMode orderMode, Ranking? ranking)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            fieldSelector.Compile();
+            var propertyName = fieldSelector.GetFieldPath();
+
+            if (graphObject.OrderBy.IsNullOrEmpty())
+            {
+                graphObject.OrderBy = $"{propertyName}:{orderMode},_ranking:{ranking}";
+            }
+            else
+            {
+                graphObject.OrderBy += $",{propertyName}:{orderMode},_ranking:{ranking}";
+            }
+
+            return this;
+        }
+        public TypeQueryBuilder<T> OrderBy(Ranking ranking = Ranking.SEMANTIC)
+        {
+            if (graphObject.OrderBy.IsNullOrEmpty())
+            {
+                graphObject.OrderBy = $"_ranking:{ranking}";
+            }
+            else
+            {
+                graphObject.OrderBy += $",_ranking:{ranking}";
+            }
+
             return this;
         }
         public TypeQueryBuilder<T> Limit(long limit)
@@ -253,6 +381,24 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             return this;
         }
+        public TypeQueryBuilder<T> Where(Expression<Func<T, bool>> fieldSelector, StringFilterOperators filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            filterOperator.ValidateNotNullArgument("filterOperator");
+            fieldSelector.Compile();
+            var combinedQuery = ConvertNestedFieldToString.ConvertNestedFieldFilter(fieldSelector.GetFieldPath(), filterOperator);
+
+            if (graphObject.WhereClause.IsNullOrEmpty())
+            {
+                graphObject.WhereClause = $"{combinedQuery}";
+            }
+            else
+            {
+                graphObject.WhereClause += $",{combinedQuery}";
+            }
+
+            return this;
+        }
         public TypeQueryBuilder<T> Where(Expression<Func<T, DateTime?>> fieldSelector, DateFilterOperators filterOperator)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
@@ -285,194 +431,6 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             return this;
         }
-        public TypeQueryBuilder<T> Autocomplete(Expression<Func<T, string>> fieldSelector, AutoCompleteOperators autocomplete)
-        {
-            fieldSelector.ValidateNotNullArgument("fieldSelector");
-            autocomplete.ValidateNotNullArgument("autocompleteOperator");
-            fieldSelector.Compile();
-            var propertyName = ConvertNestedFieldToString.ConvertNestedFieldForAutoComplete(fieldSelector.GetFieldPath(), autocomplete);
-            if (graphObject.Autocomplete.IsNullOrEmpty())
-            {
-                graphObject.Autocomplete = $"{propertyName}";
-            }
-            else
-            {
-                graphObject.Autocomplete += $" {propertyName}";
-            }
-            return this;
-        }
-        /// <summary>
-        /// Order for a field. Add more for order many fields.
-        /// </summary>
-        /// <param name="fieldSelector">Field for order</param>
-        /// <param name="orderMode">OrderMode</param>
-        /// <returns></returns>
-        public TypeQueryBuilder<T> OrderBy(Expression<Func<T, object>> fieldSelector, OrderMode orderMode = OrderMode.ASC)
-        {
-            fieldSelector.ValidateNotNullArgument("fieldSelector");
-            fieldSelector.Compile();
-            var propertyName = fieldSelector.GetFieldPath();
-
-            if (graphObject.OrderBy.IsNullOrEmpty())
-            {
-                graphObject.OrderBy = $"{propertyName}:{orderMode}";
-            }
-            else
-            {
-                graphObject.OrderBy += $",{propertyName}:{orderMode}";
-            }
-            return this;
-        }
-        public TypeQueryBuilder<T> OrderBy(Expression<Func<T, object>> fieldSelector, OrderMode orderMode, Ranking? ranking)
-        {
-            fieldSelector.ValidateNotNullArgument("fieldSelector");
-            fieldSelector.Compile();
-            var propertyName = fieldSelector.GetFieldPath();
-
-            if (graphObject.OrderBy.IsNullOrEmpty())
-            {
-                graphObject.OrderBy = $"{propertyName}:{orderMode},_ranking:{ranking}";
-            }
-            else
-            {
-                graphObject.OrderBy += $",{propertyName}:{orderMode},_ranking:{ranking}";
-            }
-
-            return this;
-        }
-        public TypeQueryBuilder<T> OrderBy(Expression<Func<T, object>> fieldSelector, Ranking ranking)
-        {
-            fieldSelector.ValidateNotNullArgument("fieldSelector");
-            fieldSelector.Compile();
-            var propertyName = fieldSelector.GetFieldPath();
-
-            if (graphObject.OrderBy.IsNullOrEmpty())
-            {
-                graphObject.OrderBy = $"_ranking:{ranking}";
-            }
-            else
-            {
-                graphObject.OrderBy += $",_ranking:{ranking}";
-            }
-
-            return this;
-        }
-        /// <summary>
-        /// Build the query for current type
-        /// </summary>
-        /// <returns></returns>
-        public override GraphQueryBuilder ToQuery()
-        {
-            if (graphObject.SelectItems.IsNullOrEmpty() && graphObject.Total.IsNullOrEmpty() && graphObject.Facets.IsNullOrEmpty() && graphObject.Autocomplete.IsNullOrEmpty())
-            {
-                throw new ArgumentNullException("You must select at least one of the values [Field(s), Facet(s), Total, Autocomplete(s)]");
-            }
-            graphObject.TypeName = typeof(T).Name;
-            if (!graphObject.Skip.IsNullOrEmpty())
-            {
-                graphObject.Filter = graphObject.Filter.IsNullOrEmpty()? graphObject.Skip : $"{graphObject.Filter},{graphObject.Skip}";
-            }
-            if (!graphObject.Limit.IsNullOrEmpty())
-            {
-                graphObject.Filter = graphObject.Filter.IsNullOrEmpty() ? graphObject.Limit : $"{graphObject.Filter},{graphObject.Limit}";
-            }
-            if (!graphObject.Ids.IsNullOrEmpty())
-            {
-                graphObject.Filter = graphObject.Filter.IsNullOrEmpty() ? graphObject.Ids : $"{graphObject.Filter},{graphObject.Ids}";
-            }
-            if (!graphObject.SelectItems.IsNullOrEmpty())
-            {
-                graphObject.SelectItems = $"items{{{graphObject.SelectItems}}}";
-            }
-
-            if (!graphObject.WhereClause.IsNullOrEmpty())
-            {
-                if (graphObject.Filter.IsNullOrEmpty())
-                {
-                    graphObject.WhereClause = $"where:{{{graphObject.WhereClause}}}";
-                }
-                else
-                {
-                    graphObject.WhereClause = $",where:{{{graphObject.WhereClause}}}";
-                }
-            }
-            if (!graphObject.Locale.IsNullOrEmpty())
-            {
-                graphObject.Locale = $"locale:[{graphObject.Locale}]";
-            }
-            if (!graphObject.OrderBy.IsNullOrEmpty())
-            {
-                graphObject.OrderBy = $"orderBy:{{{graphObject.OrderBy}}}";
-            }
-            if (!graphObject.Locale.IsNullOrEmpty() || !graphObject.Filter.IsNullOrEmpty() || !graphObject.WhereClause.IsNullOrEmpty() || !graphObject.OrderBy.IsNullOrEmpty())
-            {
-                graphObject.Filter = $"({graphObject.Locale}{graphObject.Filter}{graphObject.WhereClause}{graphObject.OrderBy})";
-            }
-            if (!graphObject.Facets.IsNullOrEmpty())
-            {
-                graphObject.Facets = $"facets{{{graphObject.Facets}}}";
-            }
-            if (!graphObject.Autocomplete.IsNullOrEmpty())
-            {
-                graphObject.Autocomplete = $"autocomplete{{{graphObject.Autocomplete}}}";
-            }
-            _query.Query += graphObject.ToString();
-            return new GraphQueryBuilder(_query);
-        }
-        public override GraphQLRequest GetQuery()
-        {
-            return _query;
-        }
-
-        #region Queries
-        /// <summary>
-        /// Get facet by field
-        /// </summary>
-        /// <param name="fieldSelector"></param>
-        /// <returns></returns>
-        public TypeQueryBuilder<T> Facet(Expression<Func<T, object>> fieldSelector)
-        {
-            fieldSelector.ValidateNotNullArgument("fieldSelector");
-            fieldSelector.Compile();
-            var facet = ConvertNestedFieldToString.ConvertNestedFieldForFacet(fieldSelector.GetFieldPath());
-            graphObject.Facets = graphObject.Facets.IsNullOrEmpty() ? 
-                $"{facet}" : 
-                $"{graphObject.Facets} {facet}";
-            return this;
-        }
-        public TypeQueryBuilder<T> Facet(string propertyName)
-        {
-            string facet = ConvertNestedFieldToString.ConvertNestedFieldForFacet(propertyName);
-            graphObject.Facets = graphObject.Facets.IsNullOrEmpty() ?
-                $"{facet}" :
-                $"{graphObject.Facets} {facet}";
-            return this;
-        }
-        public TypeQueryBuilder<T> Total(bool? isAll = null)
-        {
-            if (!isAll.HasValue)
-            {
-                graphObject.Total = "total";
-            }
-            else
-            {
-                graphObject.Total = $"total(all:{isAll.Value.ToString().ToLower()})";
-            }
-
-            return this;
-        }
-        /// <summary>
-        /// Get scroll id from search
-        /// </summary>
-        /// <returns></returns>
-        public TypeQueryBuilder<T> GetCursor()
-        {
-            graphObject.Cursor = "cursor";
-            return this;
-        }
-        #endregion
-
-        #region Filters
         /// <summary>
         /// Get facet with filter
         /// </summary>
@@ -540,5 +498,68 @@ namespace EPiServer.ContentGraph.Api.Querying
             return this;
         }
         #endregion
+
+        /// <summary>
+        /// Build the query for current type
+        /// </summary>
+        /// <returns></returns>
+        public override GraphQueryBuilder ToQuery()
+        {
+            if (graphObject.SelectItems.IsNullOrEmpty() && graphObject.Total.IsNullOrEmpty() && graphObject.Facets.IsNullOrEmpty() && graphObject.Autocomplete.IsNullOrEmpty())
+            {
+                throw new ArgumentNullException("You must select at least one of the values [Field(s), Facet(s), Total, Autocomplete(s)]");
+            }
+            graphObject.TypeName = typeof(T).Name;
+            if (!graphObject.Skip.IsNullOrEmpty())
+            {
+                graphObject.Filter = graphObject.Filter.IsNullOrEmpty() ? graphObject.Skip : $"{graphObject.Filter},{graphObject.Skip}";
+            }
+            if (!graphObject.Limit.IsNullOrEmpty())
+            {
+                graphObject.Filter = graphObject.Filter.IsNullOrEmpty() ? graphObject.Limit : $"{graphObject.Filter},{graphObject.Limit}";
+            }
+            if (!graphObject.Ids.IsNullOrEmpty())
+            {
+                graphObject.Filter = graphObject.Filter.IsNullOrEmpty() ? graphObject.Ids : $"{graphObject.Filter},{graphObject.Ids}";
+            }
+            if (!graphObject.SelectItems.IsNullOrEmpty())
+            {
+                graphObject.SelectItems = $"items{{{graphObject.SelectItems}}}";
+            }
+
+            if (!graphObject.WhereClause.IsNullOrEmpty())
+            {
+                if (graphObject.Filter.IsNullOrEmpty())
+                {
+                    graphObject.WhereClause = $"where:{{{graphObject.WhereClause}}}";
+                }
+                else
+                {
+                    graphObject.WhereClause = $",where:{{{graphObject.WhereClause}}}";
+                }
+            }
+            if (!graphObject.Locale.IsNullOrEmpty())
+            {
+                graphObject.Locale = $"locale:[{graphObject.Locale}]";
+            }
+            if (!graphObject.OrderBy.IsNullOrEmpty())
+            {
+                graphObject.OrderBy = $"orderBy:{{{graphObject.OrderBy}}}";
+            }
+            if (!graphObject.Locale.IsNullOrEmpty() || !graphObject.Filter.IsNullOrEmpty() || !graphObject.WhereClause.IsNullOrEmpty() || !graphObject.OrderBy.IsNullOrEmpty())
+            {
+                graphObject.Filter = $"({graphObject.Locale}{graphObject.Filter}{graphObject.WhereClause}{graphObject.OrderBy})";
+            }
+            if (!graphObject.Facets.IsNullOrEmpty())
+            {
+                graphObject.Facets = $"facets{{{graphObject.Facets}}}";
+            }
+            if (!graphObject.Autocomplete.IsNullOrEmpty())
+            {
+                graphObject.Autocomplete = $"autocomplete{{{graphObject.Autocomplete}}}";
+            }
+            _query.Query += graphObject.ToString();
+            return new GraphQueryBuilder(_query);
+        }
     }
 }
