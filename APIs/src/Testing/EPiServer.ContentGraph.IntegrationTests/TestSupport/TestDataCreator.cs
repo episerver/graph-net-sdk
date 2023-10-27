@@ -7,7 +7,9 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
     public class TestDataCreator
     {
         public const string STATUS_PUBLISHED = "Published";
+        public const string STATUS_DELETED = "Deleted";
         public const string ROLES_EVERYONE = "Everyone";
+        public const string ROLES_AUTHOR_ONLY = "Authorized";
 
         public static string generateIndexActionJson(string indexId, string languageRouting, IndexActionData indexActionData)
         {

@@ -8,7 +8,7 @@ namespace EPiServer.ContentGraph.Api.Filters
 
         public string FilterClause => $"_modified:{{{_query}}}";
 
-        public List<IFilter> Filters { get; set; }
+        public IList<IFilter> Filters { get; set; }
 
         public ModifiedFilter Modified(DateFilterOperators filterOperator)
         {

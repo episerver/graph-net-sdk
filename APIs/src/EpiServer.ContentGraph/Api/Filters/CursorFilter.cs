@@ -3,6 +3,6 @@
     public class CursorFilter : IFilter
     {
         public string FilterClause => $"cursor";
-        public List<IFilter> Filters { get; set; }
+        public IList<IFilter> Filters { get; set; }
     }
 }

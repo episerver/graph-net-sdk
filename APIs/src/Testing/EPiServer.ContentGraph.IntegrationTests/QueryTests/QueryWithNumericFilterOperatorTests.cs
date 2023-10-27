@@ -22,7 +22,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]   
         public void search_priority_Equals_100_should_return_2_items()
         {
-            IQuery query = new GraphQueryBuilder(_options)
+            IQuery query = new GraphQueryBuilder(_configOptions)
                 .ForType<HomePage>()
                 .Fields(x => x.Priority)
                 .Where(x => x.Priority, new NumericFilterOperators().Eq(100))
@@ -34,7 +34,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_priority_notEQ_100_should_return_2_items()
         {
-            IQuery query = new GraphQueryBuilder(_options)
+            IQuery query = new GraphQueryBuilder(_configOptions)
                 .ForType<HomePage>()
                 .Fields(x => x.Priority)
                 .Where(x => x.Priority, new NumericFilterOperators().NotEq(100))
@@ -46,7 +46,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_priority_NotEq_filter()
         {
-            IQuery query = new GraphQueryBuilder(_options)
+            IQuery query = new GraphQueryBuilder(_configOptions)
                 .ForType<HomePage>()
                 .Fields(x => x.Id, x => x.Name)
                 .Where(x => x.Priority, new NumericFilterOperators().NotEq(300))
@@ -58,7 +58,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_priority_Exists_false_should_return_1_item()
         {
-            IQuery query = new GraphQueryBuilder(_options)
+            IQuery query = new GraphQueryBuilder(_configOptions)
                 .ForType<HomePage>()
                 .Fields(x => x.Id, x => x.Name)
                 .Where(x => x.Priority, new NumericFilterOperators().Exists(false))
@@ -70,7 +70,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_priority_GreaterThan_100_should_return_1_item_value_300()
         {
-            IQuery query = new GraphQueryBuilder(_options)
+            IQuery query = new GraphQueryBuilder(_configOptions)
                 .ForType<HomePage>()
                 .Fields(x => x.Priority)
                 .Where(x => x.Priority, new NumericFilterOperators().Gt(100))
@@ -82,7 +82,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_priority_Gte_100_should_return_3_items()
         {
-            IQuery query = new GraphQueryBuilder(_options)
+            IQuery query = new GraphQueryBuilder(_configOptions)
                 .ForType<HomePage>()
                 .Fields(x => x.Priority)
                 .Where(x => x.Priority, new NumericFilterOperators().Gte(100))
@@ -94,7 +94,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_priority_in_100_and_300_should_return_3_items()
         {
-            IQuery query = new GraphQueryBuilder(_options)
+            IQuery query = new GraphQueryBuilder(_configOptions)
                 .ForType<HomePage>()
                 .Fields(x => x.Priority)
                 .Where(x => x.Priority, new NumericFilterOperators().In(100,300))
@@ -106,7 +106,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_priority_notIn_100_and_300_should_return_1_item()
         {
-            IQuery query = new GraphQueryBuilder(_options)
+            IQuery query = new GraphQueryBuilder(_configOptions)
                 .ForType<HomePage>()
                 .Fields(x => x.Priority)
                 .Where(x => x.Priority, new NumericFilterOperators().NotIn(100,300))
@@ -118,7 +118,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_priority_LessThan_100_should_return_0_item()
         {
-            IQuery query = new GraphQueryBuilder(_options)
+            IQuery query = new GraphQueryBuilder(_configOptions)
                 .ForType<HomePage>()
                 .Fields(x => x.Priority)
                 .Where(x => x.Priority, new NumericFilterOperators().Lt(100))
@@ -130,7 +130,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_priority_Lte_200_should_return_2_items()
         {
-            IQuery query = new GraphQueryBuilder(_options)
+            IQuery query = new GraphQueryBuilder(_configOptions)
                 .ForType<HomePage>()
                 .Fields(x => x.Priority)
                 .Where(x => x.Priority, new NumericFilterOperators().Lte(200))
@@ -142,7 +142,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_priority_in_range_100_to_300_should_return_3_items()
         {
-            IQuery query = new GraphQueryBuilder(_options)
+            IQuery query = new GraphQueryBuilder(_configOptions)
                 .ForType<HomePage>()
                 .Fields(x => x.Priority)
                 .Where(x => x.Priority, new NumericFilterOperators().Gte(100).Lte(300))

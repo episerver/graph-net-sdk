@@ -7,6 +7,7 @@ using System.Net;
 using EPiServer.ContentGraph.Helpers;
 using System.Text;
 using EPiServer.ContentGraph.Configuration;
+using EPiServer.Turnstile.Contracts.Hmac;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {
@@ -18,13 +19,16 @@ namespace EPiServer.ContentGraph.Api.Querying
         });
 
         private GraphQLRequest _query;
-        private static OptiGraphOptions _optiGraphOptions;
-        ITypeQueryBuilder typeQueryBuilder;
+        private static OptiGraphOptions _optiGraphOptions = new();
+        private const string RequestMethod = "POST";
+        ITypeQueryBuilder? typeQueryBuilder;
         public GraphQueryBuilder(OptiGraphOptions optiGraphOptions)
         {
             _optiGraphOptions = optiGraphOptions;
-            _query = new GraphQLRequest();
-            _query.OperationName = "SampleQuery";
+            _query = new GraphQLRequest
+            {
+                OperationName = "SampleQuery"
+            };
         }
         //public GraphQueryBuilder() => _query = new GraphQLRequest();
         public GraphQueryBuilder(GraphQLRequest request) => _query = request;
@@ -43,9 +47,32 @@ namespace EPiServer.ContentGraph.Api.Querying
         {
             return _optiGraphOptions.ServiceUrl;
         }
-        private string GetAuthorization()
+        private string GetAuthorization(string body)
         {
+            if (_optiGraphOptions.UseHmacKey)
+            {
+                UTF8Encoding encoding = new UTF8Encoding();
+                byte[] byteArray = encoding.GetBytes(body.Trim());
+                _optiGraphOptions.Key = GetHmacHeader(byteArray);
+            }
             return _optiGraphOptions.Authorization;
+        }
+        private string GetHmacHeader(byte[] requestBody)
+        {
+            DefaultHmacDeclarationFactory hmacDeclarationFactory =
+                new DefaultHmacDeclarationFactory(new Sha256HmacAlgorithm(Convert.FromBase64String(_optiGraphOptions.SecretKey)));
+            HmacMessage hmacMessage = GetHmacMessage(requestBody);
+            HmacDeclaration? hmacDeclaration = hmacDeclarationFactory.Create(hmacMessage);
+            return $"{hmacDeclaration}";
+        }
+        private HmacMessage GetHmacMessage(byte[] requestBody)
+        {
+            DefaultHmacMessageBuilder? messageBuilder = new DefaultHmacMessageBuilder()
+                .AddApplicationKey(_optiGraphOptions.AppKey)
+                .AddTarget(new Uri(_optiGraphOptions.ServiceUrl).PathAndQuery)
+                .AddMethod(RequestMethod)
+                .AddBody(requestBody);
+            return messageBuilder.ToMessage();
         }
         public ContentGraphResult<TResult> GetResult<TResult>()
         {
@@ -55,11 +82,11 @@ namespace EPiServer.ContentGraph.Api.Querying
             {
                 try
                 {
-                    jsonRequest.AddRequestHeader("Authorization", GetAuthorization());
                     var settings = new JsonSerializerSettings();
                     settings.ContractResolver = new LowercaseContractResolver();
                     string body = JsonConvert.SerializeObject(_query, settings);
 
+                    jsonRequest.AddRequestHeader("Authorization", GetAuthorization(body));
                     using (var reader = new StreamReader(jsonRequest.GetResponseStream(body).Result, jsonRequest.Encoding))
                     {
                         var jsonReader = new JsonTextReader(reader);

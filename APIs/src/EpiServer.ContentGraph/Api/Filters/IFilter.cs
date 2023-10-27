@@ -3,7 +3,7 @@
     public interface IFilter
     {
         public string FilterClause { get; }
-        public List<IFilter> Filters { get; set; }
+        public IList<IFilter> Filters { get; set; }
         //public IFilter Add(IFilter other);
     }
 }
