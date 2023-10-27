@@ -33,7 +33,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void semantic_search_order_should_result_correct_data()
         {
-            IQuery query = new GraphQueryBuilder(_options)
+            IQuery query = new GraphQueryBuilder(_configOptions)
                 .ForType<HomePage>()
                 .Fields(x => x.Name, x=> x.MainBody)
                 .FullTextSearch(new StringFilterOperators().Contains("Wild West"))

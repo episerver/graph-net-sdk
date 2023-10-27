@@ -28,7 +28,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_startpublish_Equals_datetime_should_return_1_item()
         {
-            IQuery query = new GraphQueryBuilder(_options)
+            IQuery query = new GraphQueryBuilder(_configOptions)
                 .ForType<HomePage>()
                 .Fields(x => x.StartPublish, x => x.Name)
                 .Where(x => x.StartPublish, new DateFilterOperators().Eq("2022-10-11T17:17:56Z"))
@@ -41,7 +41,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_startpublish_notEq_datetime_should_return_2_item()
         {
-            IQuery query = new GraphQueryBuilder(_options)
+            IQuery query = new GraphQueryBuilder(_configOptions)
                 .ForType<HomePage>()
                 .Fields(x => x.StartPublish)
                 .Where(x => x.StartPublish, new DateFilterOperators().NotEq("2022-10-11T17:17:56Z"))
@@ -53,7 +53,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_startpublish_Gt_datetime_should_return_1_item()
         {
-            IQuery query = new GraphQueryBuilder(_options)
+            IQuery query = new GraphQueryBuilder(_configOptions)
                 .ForType<HomePage>()
                 .Fields(x => x.StartPublish)
                 .Where(x => x.StartPublish, new DateFilterOperators().Gt("2022-10-11T17:17:56Z"))
@@ -65,7 +65,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_startpublish_Gte_datetime_should_return_2_items()
         {
-            IQuery query = new GraphQueryBuilder(_options)
+            IQuery query = new GraphQueryBuilder(_configOptions)
                 .ForType<HomePage>()
                 .Fields(x => x.StartPublish)
                 .Where(x => x.StartPublish, new DateFilterOperators().Gte("2022-10-11T17:17:56Z"))
@@ -77,7 +77,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_startpublish_Lt_datetime_should_return_1_item()
         {
-            IQuery query = new GraphQueryBuilder(_options)
+            IQuery query = new GraphQueryBuilder(_configOptions)
                 .ForType<HomePage>()
                 .Fields(x => x.StartPublish)
                 .Where(x => x.StartPublish, new DateFilterOperators().Lt("2022-10-11T17:17:56Z"))
@@ -89,7 +89,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_startpublish_Lte_datetime_should_return_2_items()
         {
-            IQuery query = new GraphQueryBuilder(_options)
+            IQuery query = new GraphQueryBuilder(_configOptions)
                 .ForType<HomePage>()
                 .Fields(x => x.StartPublish)
                 .Where(x => x.StartPublish, new DateFilterOperators().Lte("2022-10-11T17:17:56Z"))
@@ -101,7 +101,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_startpublish_in_range_should_return_2_items()
         {
-            IQuery query = new GraphQueryBuilder(_options)
+            IQuery query = new GraphQueryBuilder(_configOptions)
                 .ForType<HomePage>()
                 .Fields(x => x.StartPublish)
                 .Where(x => x.StartPublish, new DateFilterOperators().Gte("2022-09-11T20:17:56Z").Lte("2022-10-11T17:17:56Z"))

@@ -22,7 +22,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_with_limit_1_should_return_1_hit()
         {
-            var result = new GraphQueryBuilder(_options)
+            var result = new GraphQueryBuilder(_configOptions)
                 .ForType<HomePage>()
                 .Fields(x => x.Name, x => x.MainBody )
                 .Limit(1)
@@ -35,7 +35,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_with_limit_100_should_return_all_hits()
         {
-            var result = new GraphQueryBuilder(_options)
+            var result = new GraphQueryBuilder(_configOptions)
                 .ForType<HomePage>()
                 .Fields(x => x.Name, x => x.MainBody)
                 .Limit(100)
@@ -50,7 +50,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         {
             ContentGraphResult<HomePage>? result = null;
 
-            var query = new GraphQueryBuilder(_options)
+            var query = new GraphQueryBuilder(_configOptions)
                 .ForType<HomePage>()
                 .Fields(x => x.Name, x => x.MainBody)
                 .Limit(101)

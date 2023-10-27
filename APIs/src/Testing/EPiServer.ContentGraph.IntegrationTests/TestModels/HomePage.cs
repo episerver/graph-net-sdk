@@ -1,8 +1,11 @@
-﻿namespace EPiServer.ContentGraph.IntegrationTests.TestModels
+﻿using EPiServer.DataAnnotations;
+
+namespace EPiServer.ContentGraph.IntegrationTests.TestModels
 {
     internal class HomePage : Content
     {
         public string ContentType { get; set; }
+        [Searchable]
         public string MainBody { get; set; }
         public string MainContentArea { get; set; }
         public int? Priority { get; set; }

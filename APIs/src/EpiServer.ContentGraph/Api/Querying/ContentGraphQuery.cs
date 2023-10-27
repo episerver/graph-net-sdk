@@ -5,19 +5,19 @@ namespace EPiServer.ContentGraph.Api.Querying
 {
     public class ContentGraphQuery
     {
-        public string Filter { get; set; }
-        public string Limit { get; set; }
-        public string Skip { get; set; }
-        public string Ids { get; set; }
-        public string Locale { get; set; }
-        public string OrderBy { get; set; }
-        public string WhereClause { get; set; }
-        public string Autocomplete { get; set; }
-        public string Cursor { get; set; }
-        public string TypeName { get; set; }
-        public string SelectItems { get; set; }
-        public string Facets { get; set; }
-        public string Total { get; set; }
+        public string Filter { get; set; } = string.Empty;
+        public string Limit { get; set; } = string.Empty;
+        public string Skip { get; set; } = string.Empty;
+        public string Ids { get; set; } = string.Empty;
+        public string Locale { get; set; } = string.Empty;
+        public string OrderBy { get; set; } = string.Empty;
+        public string WhereClause { get; set; } = string.Empty;
+        public string Autocomplete { get; set; } = string.Empty;
+        public string Cursor { get; set; } = string.Empty;
+        public string TypeName { get; set; } = string.Empty;
+        public string SelectItems { get; set; } = string.Empty;
+        public string Facets { get; set; } = string.Empty;
+        public string Total { get; set; } = string.Empty;
         public override string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder();

@@ -1,7 +1,10 @@
-﻿namespace EPiServer.ContentGraph.IntegrationTests.TestModels
+﻿using EPiServer.DataAnnotations;
+
+namespace EPiServer.ContentGraph.IntegrationTests.TestModels
 {
     internal class Content
     {
+        [Searchable]
         public string Name { get; set; }
         public string Id { get; set; }
         public string Author { get; set; }

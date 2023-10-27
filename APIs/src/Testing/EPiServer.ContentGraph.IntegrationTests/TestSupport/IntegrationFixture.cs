@@ -1,13 +1,23 @@
-﻿using EPiServer.ContentGraph.Api.Querying;
+﻿using EPiServer.Cms.Shell;
+using EPiServer.Cms.Shell.UI;
+using EPiServer.Cms.TinyMce;
+using EPiServer.Cms.UI.Admin;
+using EPiServer.Cms.UI.AspNetIdentity;
+using EPiServer.Cms.UI.VisitorGroups;
+using EPiServer.ContentGraph.Api.Filters;
+using EPiServer.ContentGraph.Api.Querying;
 using EPiServer.ContentGraph.Configuration;
-using EPiServer.ContentGraph.IntegrationTests.TestModels;
+using EPiServer.Data;
 using EPiServer.DependencyInjection;
+using EPiServer.ServiceLocation;
+using EPiServer.Web.Mvc.Html;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Optimizely.ContentGraph.Cms.Configuration;
+using Optimizely.ContentGraph.Cms.Services.Internal;
 
 namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
 {
@@ -15,16 +25,16 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
     public class IntegrationFixture
     {
         private static readonly int MAX_RETRY = 100;
-        protected static IOptions<QueryOptions>? queryOptions;
+        protected static IOptions<QueryOptions> queryOptions;
         protected static IHost? testingHost;
-        protected static readonly string QUERY_PATH = "/content/v2?cache=false";
-        protected static readonly string INDEXING_PATH = "/api/content/v2/data";
-        protected static readonly string CLEAR_MAPPING_AND_DATA_PATH = "/api/content/v3/sources";
-        protected static readonly string MAPPING_PATH = "/api/content/v3/types";
+        protected static readonly string QUERY_PATH = "content/v2?cache=false";
+        protected static readonly string INDEXING_PATH = "api/content/v2/data";
+        protected static readonly string CLEAR_MAPPING_AND_DATA_PATH = "api/content/v3/sources";
+        protected static readonly string MAPPING_PATH = "api/content/v3/types";
         protected static string? WorkingDirectory;
         private static HttpClient? _httpClient;
         private static string USER_AGENT => $"Optimizely-Graph-NET-API/{typeof(IntegrationFixture).Assembly.GetName().Version}";
-        protected static OptiGraphOptions _options;
+        protected static OptiGraphOptions _configOptions;
 
         [AssemblyInitialize]
         public static void AssemblyInitialize(TestContext testContext)
@@ -47,7 +57,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
                 .Build();
             queryOptions = testingHost.Services.GetService<IOptions<QueryOptions>>();
             _httpClient = CreateHttpClient();
-            _options = new OptiGraphOptions { ServiceUrl = queryOptions.Value.GatewayAddress + QUERY_PATH, Authorization = $"epi-single {queryOptions.Value.SingleKey}" };
+            _configOptions = TransformConfigOptions(queryOptions, true);
         }
 
         [AssemblyCleanup]
@@ -75,6 +85,16 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
         }
         private static void ConfigureServices(IServiceCollection services)
         {
+            var dbPath = Path.Combine(WorkingDirectory, "TempSqlDb\\Alloy.mdf");
+            dbPath = new Uri(dbPath).LocalPath;
+
+            var connectionstring = $"Data Source=(LocalDb)\\MSSQLLocalDB;AttachDbFilename={dbPath};Initial Catalog=alloy_mvc_netcore;Integrated Security=True;Connect Timeout=30;MultipleActiveResultSets=True";
+
+            services.Configure<DataAccessOptions>(o =>
+            {
+                o.SetConnectionString(connectionstring);
+            });
+
             services.AddMvc();
             services.AddOptions();
             services.ConfigureContentApiOptions(o =>
@@ -85,6 +105,8 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
             });
             services.AddContentDeliveryApi(); // required, for further configurations, see https://docs.developers.optimizely.com/content-cloud/v1.5.0-content-delivery-api/docs/configuration
             services.AddContentGraph();
+            services.AddScoped<IFilterForVisitor, CustomForVisitor>();
+            services.AddScoped<IFilterForVisitor, FilterDeletedForVisitor>();
         }
         private static HttpClient CreateHttpClient()
         {
@@ -169,7 +191,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
         {
             try
             {
-                IQuery query = new GraphQueryBuilder(_options)
+                IQuery query = new GraphQueryBuilder(_configOptions)
                .ForType<T>()
                .Total()
                .ToQuery()
@@ -192,6 +214,20 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
                 PushMapping(mapping);
                 BulkIndexing<T>(indexingData);
             }
+        }
+        private static OptiGraphOptions TransformConfigOptions(IOptions<QueryOptions> source, bool useHmacKey)
+        {
+            if (source.Value != null)
+            {
+                return new OptiGraphOptions(useHmacKey)
+                {
+                    ServiceUrl = source.Value.GatewayAddress + QUERY_PATH,
+                    Key = source.Value.SingleKey,
+                    SecretKey = source.Value.Secret,
+                    AppKey = source.Value.AppKey
+                };
+            }
+            return new OptiGraphOptions(useHmacKey);
         }
     }
 }

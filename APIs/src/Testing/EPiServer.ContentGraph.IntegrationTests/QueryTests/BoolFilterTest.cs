@@ -23,10 +23,10 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_single_and_filter_with_priority_100_should_return_2_items()
         {
-            IFilter andFilter = BooleanFilter<HomePage>.AndFilter
+            IFilter andFilter = new AndFilter<HomePage>()
                 .And(x => x.Priority, new NumericFilterOperators().Eq(100));
 
-            IQuery query = new GraphQueryBuilder(_options)
+            IQuery query = new GraphQueryBuilder(_configOptions)
                 .ForType<HomePage>()
                 .Fields(x => x.Priority)
                 .Where(andFilter)
@@ -38,11 +38,11 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_2_conditions_in_and_filter_should_return_1_item()
         {
-            IFilter andFilter = BooleanFilter<HomePage>.AndFilter
+            IFilter andFilter = new AndFilter<HomePage>()
                 .And(x => x.Priority, new NumericFilterOperators().Eq(100))
                 .And(x => x.StartPublish, new DateFilterOperators().Eq("2022-10-12T17:17:56Z"));
 
-            IQuery query = new GraphQueryBuilder(_options)
+            IQuery query = new GraphQueryBuilder(_configOptions)
                 .ForType<HomePage>()
                 .Fields(x => x.Priority, x => x.Name)
                 .Where(andFilter)
@@ -58,10 +58,10 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_single_or_filter_with_priority_100_should_return_2_items()
         {
-            IFilter orFilter = BooleanFilter<HomePage>.OrFilter
+            IFilter orFilter = new OrFilter<HomePage>()
                 .Or(x => x.Priority, new NumericFilterOperators().Eq(100));
 
-            IQuery query = new GraphQueryBuilder(_options)
+            IQuery query = new GraphQueryBuilder(_configOptions)
                 .ForType<HomePage>()
                 .Fields(x => x.Priority)
                 .Where(orFilter)
@@ -73,11 +73,11 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_2_conditions_in_or_filter_should_return_3_items()
         {
-            IFilter orFilter = BooleanFilter<HomePage>.OrFilter
+            IFilter orFilter = new OrFilter<HomePage>()
                 .Or(x => x.Priority, new NumericFilterOperators().Eq(100))
                 .Or(x => x.Priority, new NumericFilterOperators().Exists(false));
 
-            IQuery query = new GraphQueryBuilder(_options)
+            IQuery query = new GraphQueryBuilder(_configOptions)
                 .ForType<HomePage>()
                 .Fields(x => x.Priority, x => x.Name)
                 .Where(orFilter)
@@ -91,10 +91,10 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_single_not_filter_with_priority_100_should_return_2_items()
         {
-            IFilter notFilter = BooleanFilter<HomePage>.NotFilter
+            IFilter notFilter = new NotFilter<HomePage>()
                 .Not(x => x.Priority, new NumericFilterOperators().Eq(100));
 
-            IQuery query = new GraphQueryBuilder(_options)
+            IQuery query = new GraphQueryBuilder(_configOptions)
                 .ForType<HomePage>()
                 .Fields(x => x.Priority)
                 .Where(notFilter)
@@ -106,11 +106,11 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_2_conditions_in_not_filter_should_return_2_items()
         {
-            IFilter notFilter = BooleanFilter<HomePage>.NotFilter
+            IFilter notFilter = new NotFilter<HomePage>()
                 .Not(x => x.Priority, new NumericFilterOperators().Eq(100))
                 .Not(x => x.Priority, new NumericFilterOperators().Exists(false));
 
-            IQuery query = new GraphQueryBuilder(_options)
+            IQuery query = new GraphQueryBuilder(_configOptions)
                 .ForType<HomePage>()
                 .Fields(x => x.Priority, x => x.Name)
                 .Where(notFilter)
@@ -126,26 +126,23 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         public void search_combine_3_boolean_filters_should_return_3_items()
         {
             // expect 1 item missing Priority field
-            IFilter orFilter = BooleanFilter<HomePage>.OrFilter
+            OrFilter<HomePage> orFilter = new OrFilter<HomePage>()
                 .Or(x=>x.Priority, new NumericFilterOperators().Exists(false));
 
             //expect 1 item content2 on result here
-            IFilter andFilter1 = BooleanFilter<HomePage>.AndFilter
+            AndFilter<HomePage> andFilter1 = new AndFilter<HomePage>()
                 .And(x => x.Priority, new NumericFilterOperators().Eq(100))
                 .And(x=>x.StartPublish, new DateFilterOperators().Lt("2022-10-12T17:17:56Z"));
 
             //expect 1 item content4 on result here
-            IFilter andFilter2 = BooleanFilter<HomePage>.AndFilter
+            AndFilter<HomePage> andFilter2 = new AndFilter<HomePage>()
                 .And(x => x.Priority, new NumericFilterOperators().Eq(300));
 
             //combine all filters we expect 3 items will be returned
-            orFilter.Filters = new List<IFilter>();
-            orFilter.Filters.Add(andFilter1);
-            orFilter.Filters.Add(andFilter2);
-            IQuery query = new GraphQueryBuilder(_options)
+            IQuery query = new GraphQueryBuilder(_configOptions)
                 .ForType<HomePage>()
                 .Fields(x => x.Priority, x => x.Name, x => x.StartPublish)
-                .Where(orFilter)
+                .Where(orFilter | andFilter1 | andFilter2)
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResult<HomePage>();

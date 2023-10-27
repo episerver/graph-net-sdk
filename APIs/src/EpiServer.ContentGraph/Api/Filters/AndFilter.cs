@@ -4,13 +4,13 @@ using System.Linq.Expressions;
 
 namespace EPiServer.ContentGraph.Api.Filters
 {
-    public class AndFilter<T> : IFilter
+    public class AndFilter<T> : Filter<T>
     {
         string _query = string.Empty;
-        public string FilterClause
+        public override string FilterClause
         {
             get {
-                if (Filters.IsNotNull() && Filters.Count() > 0)
+                if (Filters.IsNotNull() && Filters.Count > 0)
                 {
                     string otherFilters = string.Join(',', Filters.Select(x => $"{{{x.FilterClause}}}"));
                     if (_query.IsNullOrEmpty())
@@ -25,8 +25,6 @@ namespace EPiServer.ContentGraph.Api.Filters
                 }
             }
         }
-
-        public List<IFilter> Filters { get; set; }
 
         #region constructors
         public AndFilter(string query)
