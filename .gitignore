@@ -183,3 +183,5 @@ msbuild/Tools/
 .idea
 License.config
 /bin/*
+APIs/src/Templates/packages
+APIs/src/Templates/Alloy/packages

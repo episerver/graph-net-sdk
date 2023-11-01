@@ -1,0 +1,37 @@
+@using EPiServer.Framework.Web.Resources
+@using EPiServer.Shell.Navigation
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Optimizely Admin Mode</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="~/Util/images/favicon.ico" type="image/x-icon" />
+    @ClientResources.RenderResources("epi-cms-react.configuration.common", new[] { ClientResourceType.Style })
+    @ClientResources.RenderResources("admin", new[] { ClientResourceType.Style })
+
+</head>
+
+
+<body>
+
+@Html.Raw(Html.CreatePlatformNavigationMenu())
+<div @Html.ApplyPlatformNavigation()>
+    <div class="container">
+        <h1>RESEND MESSAGE</h1>
+    </div>
+</div>
+
+@ClientResources.RenderResources("epi-cms-react.configuration.common", new[] { ClientResourceType.Script })
+
+
+</body>
+
+</html>

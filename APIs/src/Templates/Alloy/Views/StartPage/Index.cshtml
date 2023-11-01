@@ -1,0 +1,6 @@
+@using AlloyTemplates
+@model PageViewModel<AlloyTemplates.Models.Pages.StartPage>
+
+@Html.PropertyFor(x => x.CurrentPage.MainContentArea, new { CssClass = "row equal-height", tag = Global.ContentAreaTags.FullWidth })
+@Html.PropertyFor(x => x.CurrentPage.AllowCertainBlockTypes, new { CssClass = "row equal-height", tag = Global.ContentAreaTags.HalfWidth })
+@Html.PropertyFor(x => x.CurrentPage.RestrictCertainBlockTypes, new { CssClass = "row equal-height", tag = Global.ContentAreaTags.HalfWidth })
