@@ -1,0 +1,19 @@
+.epiStringList .dijitTextArea {
+    width: 250px;
+}
+
+.epiStringList .epiStringListError .dijitTextArea {
+    border: solid 1px #d46464;
+}
+
+.editorial-block-icon:before {
+    content: "";
+    background: url("../Images/icons/editing.png");
+    background-repeat: no-repeat;
+    display: inline-block;
+    width: 16px;
+    text-align: center;
+    height: 16px;
+    padding-right: 4px;
+    margin-left: 4px;
+}

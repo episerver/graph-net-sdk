@@ -1,0 +1,34 @@
+﻿@model AllPropertiesTestPage
+
+@{ Layout = null; }
+
+<!DOCTYPE html>
+<html lang="@(Model.Language)">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@Model.Name</title>
+    <link rel="shortcut icon" href="@Url.Content("~/img/favicon.ico")" type="image/x-icon"/>
+    <link rel="stylesheet" href="~/css/css.min.css"/>
+</head>
+<body>
+<h2>List&lt;XHtmlString&gt;</h2>
+@Html.PropertyFor(x => x.XhtmlStrings)
+<h2>List&lt;EditorialBlock&gt;</h2>
+@Html.PropertyFor(x => x.EditorialBlocks)
+<h2>List&lt;ContactBlock&gt;</h2>
+@Html.PropertyFor(x => x.ContactBlocks)
+<h2>List&lt;DateTime&gt;</h2>
+@Html.PropertyFor(x => x.Dates)
+<h2>List&lt;int&gt;</h2>
+@Html.PropertyFor(x => x.EnumerableInts)
+<h2>List&lt;string&gt;</h2>
+@Html.PropertyFor(x => x.ListStrings)
+<h2>List&lt;Guid&gt;</h2>
+@Html.PropertyFor(x => x.Guids)
+<h2>List&lt;LinkItem&gt;</h2>
+@Html.PropertyFor(x => x.LinksList)
+<h4>Content Area Item property</h4>
+@Html.PropertyFor(x => x.ContentAreaItem)
+</body>
+</html>

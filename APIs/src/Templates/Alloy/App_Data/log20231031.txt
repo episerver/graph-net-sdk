@@ -1,0 +1,12 @@
+2023-10-31 15:38:58.263 +01:00 [WRN] Database connection is configured to allow MultipleActiveResultSets. Consider disable MultipleActiveResultSets for better performance.
+2023-10-31 15:40:07.625 +01:00 [WRN] List property 'ListGeoCoordinate' does not have a corresponding IPropertyModel implementation for item property AlloyMvcTemplates.Business.EditorDescriptors.PropertyGeoCoordinate
+2023-10-31 15:40:08.841 +01:00 [ERR] Job Optimizely.ContentGraph.Cms.Job.Internal.ContentIndexingJob failed for the job 'Optimizely Graph content synchronization job' with jobId ='9db18551-a811-4e86-926a-2ba24362ac20' 
+System.Exception: There's an issue during content types are being indexed: . (see log for more information)
+   at Optimizely.ContentGraph.Cms.Job.Internal.ContentIndexingJob.Execute()
+   at EPiServer.Scheduler.Internal.DefaultScheduledJobExecutor.Execute(ScheduledJob job, ScheduledJobTrigger trigger, Nullable`1 contentCacheSlidingExpiration, Nullable`1 nextCalculatedExecutionUTC)
+2023-10-31 15:43:53.210 +01:00 [WRN] Database connection is configured to allow MultipleActiveResultSets. Consider disable MultipleActiveResultSets for better performance.
+2023-10-31 15:46:52.092 +01:00 [WRN] List property 'ListGeoCoordinate' does not have a corresponding IPropertyModel implementation for item property AlloyMvcTemplates.Business.EditorDescriptors.PropertyGeoCoordinate
+2023-10-31 15:46:53.206 +01:00 [ERR] Job Optimizely.ContentGraph.Cms.Job.Internal.ContentIndexingJob failed for the job 'Optimizely Graph content synchronization job' with jobId ='9db18551-a811-4e86-926a-2ba24362ac20' 
+System.Exception: There's an issue during content types are being indexed: . (see log for more information)
+   at Optimizely.ContentGraph.Cms.Job.Internal.ContentIndexingJob.Execute()
+   at EPiServer.Scheduler.Internal.DefaultScheduledJobExecutor.Execute(ScheduledJob job, ScheduledJobTrigger trigger, Nullable`1 contentCacheSlidingExpiration, Nullable`1 nextCalculatedExecutionUTC)

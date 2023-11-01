@@ -1,0 +1,95 @@
+@using EPiServer.Framework.Web.Resources
+@using EPiServer.Shell.Navigation
+
+@{
+    Layout = "/CmsUIViews/Views/Shared/CommonLayout.cshtml";
+}
+
+@section header {
+<!-- Shell -->
+    @ClientResources.RenderResources("ShellCore")
+
+    <!-- LightTheme -->
+    @ClientResources.RenderResources("ShellCoreLightTheme")
+
+    <style type="text/css">
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            background-color: #fff;
+        }
+
+        .container {
+            padding: 16px;
+            border-top: 1px solid #D6D6D6;
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .container label {
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        .container input {
+            margin-left: 8px;
+        }
+
+        .container span {
+            display: inline-block;
+            width: 100px;
+        }
+
+        .container h1 {
+            margin-bottom: 32px;
+        }
+    </style>
+}
+
+@section mainContent
+{
+    <div @Html.ApplyPlatformNavigation()>
+        <div class="container">
+            <h1>Generate content</h1>
+            <div>
+                <div id="result"></div>
+                <label><span>Root id</span><input class="formValue" name="root" type="text" value="5" /></label>
+                <label><span>Count</span><input class="formValue" name="count" type="number" value="10" /></label>
+                <label><span>Truncate parent</span><input class="formValue" name="truncateParent" type="checkbox"
+                                                          value="false" /></label>
+                <label><span>Generate images</span><input class="formValue" name="generateImages" type="checkbox"
+                                                          value="false" /></label>
+                <label><span>Also create notification</span><input class="formValue" name="createNotification"
+                                                                   type="checkbox" value="false" /></label>
+                <button onclick="onGenerateContent()">Generate</button>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        function onGenerateContent() {
+            var result = document.getElementById("result");
+            result.innerHTML = "";
+
+            var elements = document.getElementsByClassName("formValue");
+            var formData = new FormData();
+            for (var i = 0; i < elements.length; i++) {
+                formData.append(elements[i].name, elements[i].type === "checkbox" ? elements[i].checked : elements[i].value);
+            }
+
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    result.innerHTML = xhr.responseText;
+                }
+            }
+            xhr.open("post", "/NewsGeneratorPlugin/Generate");
+            xhr.setRequestHeader("Accept", "application/json");
+            xhr.send(formData);
+
+
+        }
+    </script>
+}
