@@ -7,8 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EPiServer.CMS" Version="12.22.7" />
-    <PackageReference Include="EPiServer.ContentDeliveryApi.Cms" Version="3.9.0" />
     <PackageReference Include="EPiServer.Turnstile.Contracts.Hmac" Version="4.5.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.22" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
@@ -19,10 +17,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\EpiServer.ContentGraph\EPiServer.ContentGraph.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="CmsTesting\" />
   </ItemGroup>
 
 </Project>

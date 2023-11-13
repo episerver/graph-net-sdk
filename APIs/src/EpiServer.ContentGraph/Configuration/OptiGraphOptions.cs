@@ -1,46 +1,58 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
+using EPiServer.ServiceLocation;
 
 namespace EPiServer.ContentGraph.Configuration
 {
+    [Options]
     public class OptiGraphOptions
     {
+        public const string ConfigSection = "Optimizely:ContentGraph";
+
         public OptiGraphOptions(string serviceUrl, string secretKey, string key, string appKey, bool useHmacKey = true)
         {
             UseHmacKey = useHmacKey;
-            ServiceUrl = serviceUrl;
-            SecretKey = secretKey;
-            Key = key;
+            GatewayAddress = serviceUrl;
+            Secret = secretKey;
+            SingleKey = key;
             AppKey = appKey;
+            QueryPath = string.Empty;
         }
-        public OptiGraphOptions(bool useHmacKey = true)
+        public OptiGraphOptions()
         {
-            UseHmacKey = useHmacKey;
-            ServiceUrl = string.Empty;
-            SecretKey = string.Empty;
-            Key = string.Empty;
+            UseHmacKey = true;
+            GatewayAddress = string.Empty;
+            Secret = string.Empty;
+            SingleKey = string.Empty;
             AppKey = string.Empty;
+            QueryPath = string.Empty;
         }
         /// <summary>
-        /// Flag to mark that request should uese HMAC key
+        /// Flag to mark that request should uese HMAC key. Default to true.
         /// </summary>
         public bool UseHmacKey { get; set; }
         [Required(AllowEmptyStrings = false)]
-        public string ServiceUrl { get; set; }
+        public string GatewayAddress { get; set; }
+
         [Required(AllowEmptyStrings = false)]
-        public string SecretKey { get; set; }
+        public string Secret { get; set; }
+
         [Required(AllowEmptyStrings = false)]
-        public string Key { get; set; }
+        public string SingleKey { get; set; }
+
         [Required(AllowEmptyStrings = false)]
         public string AppKey { get; set; }
+
+        public string QueryPath { get; set; }
         public string Authorization
         {
             get
             {
                 if (UseHmacKey)
                 {
-                    return $"epi-hmac {Key}";
+                    return $"epi-hmac {SingleKey}";
                 }
-                return $"epi-single {Key}";
+                return $"epi-single {SingleKey}";
             }
         }
     }

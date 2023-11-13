@@ -6,11 +6,12 @@ using System.Linq.Expressions;
 using System.Globalization;
 using EPiServer.ContentGraph.Api.Autocomplete;
 using EPiServer.ContentGraph.Api.Facets;
+using EPiServer.ServiceLocation;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {
     //TODO: Very important=> remove all quotes, prefix wilcard and script-injection for security
-    public partial class TypeQueryBuilder<T> : AbstractTypeQueryBuilder
+    public partial class TypeQueryBuilder<T> : BaseTypeQueryBuilder
     {
         private static IEnumerable<IFilterForVisitor>? _filters;
         public TypeQueryBuilder(GraphQLRequest request): base(request)
@@ -25,20 +26,29 @@ namespace EPiServer.ContentGraph.Api.Querying
         }
 
         #region Queries
+        public TypeQueryBuilder<T> Field(string propertyName)
+        {
+            if (!propertyName.IsNullOrEmpty())
+            {
+                string clonedPropName = ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName);
+                if (graphObject.SelectItems.IsNullOrEmpty())
+                {
+                    graphObject.SelectItems = $"{clonedPropName}";
+                }
+                else
+                {
+                    graphObject.SelectItems += $" {clonedPropName}";
+                }
+            }
+
+            return this;
+        }
         public TypeQueryBuilder<T> Field(Expression<Func<T, object>> fieldSelector)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             fieldSelector.Compile();
             var propertyName = fieldSelector.GetFieldPath();
-            if (graphObject.SelectItems.IsNullOrEmpty())
-            {
-                graphObject.SelectItems = $"{ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName)}";
-            }
-            else
-            {
-                graphObject.SelectItems += $" {ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName)}";
-            }
-
+            Field(propertyName);
             return this;
         }
         public TypeQueryBuilder<T> Fields(params Expression<Func<T, object>>[] fieldSelectors)
@@ -46,17 +56,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             fieldSelectors.ValidateNotNullArgument("fieldSelectors");
             foreach (var fieldSelector in fieldSelectors)
             {
-                fieldSelector.ValidateNotNullArgument("fieldSelector");
-                fieldSelector.Compile();
-                var propertyName = fieldSelector.GetFieldPath();
-                if (graphObject.SelectItems.IsNullOrEmpty())
-                {
-                    graphObject.SelectItems = $"{ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName)}";
-                }
-                else
-                {
-                    graphObject.SelectItems += $" {ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName)}";
-                }
+                Field(fieldSelector);
             }
             return this;
         }
@@ -312,6 +312,11 @@ namespace EPiServer.ContentGraph.Api.Querying
             Where("_fulltext", filterOperator);
             return this;
         }
+        public TypeQueryBuilder<T> Search(string q)
+        {
+            Where("_fulltext", new StringFilterOperators().Contains(q));
+            return this;
+        }
         public TypeQueryBuilder<T> Where(string fieldName, IFilterOperator filterOperator)
         {
             filterOperator.ValidateNotNullArgument("filterOperator");
@@ -326,6 +331,17 @@ namespace EPiServer.ContentGraph.Api.Querying
                 graphObject.WhereClause += $",{combinedQuery}";
             }
 
+            return this;
+        }
+        public TypeQueryBuilder<T> Where(Expression<Func<T, IFilterWraper>> fieldSelector)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            if (fieldSelector != null)
+            {
+                var paser = new FilterExpressionParser();
+                var wrappedFilter = paser.GetFilter(fieldSelector);
+                Where(wrappedFilter.GetFieldName(), wrappedFilter.GetFilter());
+            }
             return this;
         }
         public TypeQueryBuilder<T> Where(Expression<Func<T, string>> fieldSelector, StringFilterOperators filterOperator)
@@ -443,15 +459,17 @@ namespace EPiServer.ContentGraph.Api.Querying
             Facet(fieldSelector.GetFieldPath(), facetFilter);
             return this;
         }
-        public TypeQueryBuilder<T> FilterForVisitor()
-        {
-            //_filters ??= ServiceLocator.Current.GetAllInstances<IFilterForVisitor>(); should we use ServiceLocator from CMS?
-            FilterForVisitor(new FilterDeletedForVisitor());
-            return this;
-        }
         public TypeQueryBuilder<T> FilterForVisitor(params IFilterForVisitor[] filterForVisitors)
         {
-            _filters ??= filterForVisitors;
+            if (filterForVisitors != null && filterForVisitors.Length > 0)
+            {
+                _filters ??= filterForVisitors;
+            }
+            else
+            {
+                _filters ??= ServiceLocator.Current?.GetAllInstances<IFilterForVisitor>();
+            }
+
             if (_filters.IsNotNull())
             {
                 foreach (var filter in _filters)

@@ -1,10 +1,4 @@
-﻿using EPiServer.Cms.Shell;
-using EPiServer.Cms.Shell.UI;
-using EPiServer.Cms.TinyMce;
-using EPiServer.Cms.UI.Admin;
-using EPiServer.Cms.UI.AspNetIdentity;
-using EPiServer.Cms.UI.VisitorGroups;
-using EPiServer.ContentGraph.Api.Filters;
+﻿using EPiServer.ContentGraph.Api.Filters;
 using EPiServer.ContentGraph.Api.Querying;
 using EPiServer.ContentGraph.Configuration;
 using EPiServer.Data;
@@ -25,7 +19,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
     public class IntegrationFixture
     {
         private static readonly int MAX_RETRY = 100;
-        protected static IOptions<QueryOptions> queryOptions;
+        //protected static IOptions<QueryOptions> queryOptions;
         protected static IHost? testingHost;
         protected static readonly string QUERY_PATH = "content/v2?cache=false";
         protected static readonly string INDEXING_PATH = "api/content/v2/data";
@@ -34,7 +28,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
         protected static string? WorkingDirectory;
         private static HttpClient? _httpClient;
         private static string USER_AGENT => $"Optimizely-Graph-NET-API/{typeof(IntegrationFixture).Assembly.GetName().Version}";
-        protected static OptiGraphOptions _configOptions;
+        protected static IOptions<OptiGraphOptions> _configOptions;
 
         [AssemblyInitialize]
         public static void AssemblyInitialize(TestContext testContext)
@@ -55,9 +49,9 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
                 })
                 .ConfigureServices(services => ConfigureServices(services))
                 .Build();
-            queryOptions = testingHost.Services.GetService<IOptions<QueryOptions>>();
+            //queryOptions = testingHost.Services.GetService<IOptions<QueryOptions>>();
+            _configOptions = testingHost.Services.GetService<IOptions<OptiGraphOptions>>();
             _httpClient = CreateHttpClient();
-            _configOptions = TransformConfigOptions(queryOptions, true);
         }
 
         [AssemblyCleanup]
@@ -65,9 +59,9 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
         {
             try
             {
-                if (queryOptions != null && queryOptions.Value != null)
+                if (_configOptions != null && _configOptions.Value != null)
                 {
-                    queryOptions = null;
+                    _configOptions = null;
                 }
                 if (_httpClient != null)
                 {
@@ -103,18 +97,18 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
                 o.IncludeSiteHosts = true;
                 //o.EnablePreviewFeatures = true;// optional
             });
-            services.AddContentDeliveryApi(); // required, for further configurations, see https://docs.developers.optimizely.com/content-cloud/v1.5.0-content-delivery-api/docs/configuration
+            
             services.AddContentGraph();
             services.AddScoped<IFilterForVisitor, CustomForVisitor>();
             services.AddScoped<IFilterForVisitor, FilterDeletedForVisitor>();
         }
         private static HttpClient CreateHttpClient()
         {
-            var authenticationString = $"{queryOptions.Value.AppKey}:{queryOptions.Value.Secret}";
+            var authenticationString = $"{_configOptions.Value.AppKey}:{_configOptions.Value.Secret}";
             var base64AuthString = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(authenticationString));
             return new HttpClient()
             {
-                BaseAddress = new Uri(queryOptions.Value.GatewayAddress),
+                BaseAddress = new Uri(_configOptions.Value.GatewayAddress),
                 DefaultRequestHeaders = {
                     { "User-Agent", USER_AGENT },
                     { "Authorization", $"Basic {base64AuthString}"},
@@ -215,19 +209,19 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
                 BulkIndexing<T>(indexingData);
             }
         }
-        private static OptiGraphOptions TransformConfigOptions(IOptions<QueryOptions> source, bool useHmacKey)
-        {
-            if (source.Value != null)
-            {
-                return new OptiGraphOptions(useHmacKey)
-                {
-                    ServiceUrl = source.Value.GatewayAddress + QUERY_PATH,
-                    Key = source.Value.SingleKey,
-                    SecretKey = source.Value.Secret,
-                    AppKey = source.Value.AppKey
-                };
-            }
-            return new OptiGraphOptions(useHmacKey);
-        }
+        //private static OptiGraphOptions TransformConfigOptions(IOptions<QueryOptions> source, bool useHmacKey)
+        //{
+        //    if (source.Value != null)
+        //    {
+        //        return new OptiGraphOptions(useHmacKey)
+        //        {
+        //            GatewayAddress = source.Value.GatewayAddress + QUERY_PATH,
+        //            Key = source.Value.SingleKey,
+        //            SecretKey = source.Value.Secret,
+        //            AppKey = source.Value.AppKey
+        //        };
+        //    }
+        //    return new OptiGraphOptions(useHmacKey);
+        //}
     }
 }

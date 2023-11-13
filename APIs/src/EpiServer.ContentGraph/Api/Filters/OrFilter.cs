@@ -4,35 +4,13 @@ using System.Linq.Expressions;
 
 namespace EPiServer.ContentGraph.Api.Filters
 {
-    public class OrFilter<T> : Filter<T>
+    public class OrFilter<T> : OrFilter
     {
-        string _query = string.Empty;
-        public override string FilterClause
-        {
-            get
-            {
-                if (Filters.IsNotNull() && Filters.Count > 0)
-                {
-                    string otherFilters = string.Join(',', Filters.Select(x => $"{{{x.FilterClause}}}"));
-                    if (_query.IsNullOrEmpty())
-                    {
-                        return $"_or:[{otherFilters}]";
-                    }
-                    return $"_or:[{_query},{otherFilters}]";
-                }
-                else
-                {
-                    return $"_or:[{_query}]";
-                }
-            }
-        }
-
         #region constructors
-        public OrFilter(string query)
+        public OrFilter(): base()
         {
-            _query = query;
         }
-        public OrFilter()
+        public OrFilter(string query) : base(query)
         {
         }
         public OrFilter(Expression<Func<T, string>> fieldSelector, StringFilterOperators filterOperators)
@@ -52,66 +30,82 @@ namespace EPiServer.ContentGraph.Api.Filters
             Or(fieldSelector, filterOperators);
         }
         #endregion
-
         public OrFilter<T> Or(Expression<Func<T, string>> fieldSelector, IFilterOperator filterOperator)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             fieldSelector.Compile();
-            string filterClause = ConvertNestedFieldToString.ConvertNestedFieldFilter(fieldSelector.GetFieldPath(), filterOperator);
-            if (!filterOperator.Query.IsNullOrEmpty())
-            {
-                if (_query.IsNullOrEmpty())
-                {
-                    _query = $"{{{filterClause}}}";
-                }
-                else
-                {
-                    _query += $",{{{filterClause}}}";
-                }
-            }
+            Or(fieldSelector.GetFieldPath(), filterOperator);
             return this;
         }
         public OrFilter<T> Or(Expression<Func<T, DateTime>> fieldSelector, IFilterOperator filterOperator)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             fieldSelector.Compile();
-            string filterClause = ConvertNestedFieldToString.ConvertNestedFieldFilter(fieldSelector.GetFieldPath(), filterOperator);
-            if (!filterOperator.Query.IsNullOrEmpty())
-            {
-                if (_query.IsNullOrEmpty())
-                {
-                    _query = $"{{{filterClause}}}";
-                }
-                else
-                {
-                    _query += $",{{{filterClause}}}";
-                }
-            }
+            Or(fieldSelector.GetFieldPath(), filterOperator);
             return this;
         }
         public OrFilter<T> Or(Expression<Func<T, long?>> fieldSelector, IFilterOperator filterOperator)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             fieldSelector.Compile();
-            string filterClause = ConvertNestedFieldToString.ConvertNestedFieldFilter(fieldSelector.GetFieldPath(), filterOperator);
-            if (!filterOperator.Query.IsNullOrEmpty())
-            {
-                if (_query.IsNullOrEmpty())
-                {
-                    _query = $"{{{filterClause}}}";
-                }
-                else
-                {
-                    _query += $",{{{filterClause}}}";
-                }
-            }
+            Or(fieldSelector.GetFieldPath(), filterOperator);
+            return this;
+        }
+        public OrFilter<T> Or(Expression<Func<T, double?>> fieldSelector, IFilterOperator filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            fieldSelector.Compile();
+            Or(fieldSelector.GetFieldPath(), filterOperator);
             return this;
         }
         public OrFilter<T> Or(Expression<Func<T, int>> fieldSelector, IFilterOperator filterOperator)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             fieldSelector.Compile();
-            string filterClause = ConvertNestedFieldToString.ConvertNestedFieldFilter(fieldSelector.GetFieldPath(), filterOperator);
+            Or(fieldSelector.GetFieldPath(), filterOperator);
+            return this;
+        }
+        public OrFilter<T> Or(Expression<Func<T, bool>> fieldSelector, IFilterOperator filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            fieldSelector.Compile();
+            Or(fieldSelector.GetFieldPath(), filterOperator);
+            return this;
+        }
+    }
+
+    public class OrFilter : Filter
+    {
+        string _query = string.Empty;
+        public OrFilter(string query)
+        {
+            _query = query;
+        }
+        public OrFilter()
+        {
+        }
+        public override string FilterClause
+        {
+            get
+            {
+                if (Filters.IsNotNull() && Filters.Count > 0)
+                {
+                    string otherFilters = string.Join(',', Filters.Select(x => $"{{{x.FilterClause}}}"));
+                    if (_query.IsNullOrEmpty())
+                    {
+                        return $"_or:[{otherFilters}]";
+                    }
+                    return $"_or:[{_query},{otherFilters}]";
+                }
+                else
+                {
+                    return $"_or:[{_query}]";
+                }
+            }
+        }
+        protected OrFilter Or(string field, IFilterOperator filterOperator)
+        {
+            string filterClause = ConvertNestedFieldToString.ConvertNestedFieldFilter(field, filterOperator);
             if (!filterOperator.Query.IsNullOrEmpty())
             {
                 if (_query.IsNullOrEmpty())

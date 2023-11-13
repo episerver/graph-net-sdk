@@ -5,7 +5,7 @@ using System.Text;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {
-    public class SubTypeQueryBuilder<T> : AbstractTypeQueryBuilder
+    public class SubTypeQueryBuilder<T> : BaseTypeQueryBuilder
     {
         private StringBuilder builder;
         public SubTypeQueryBuilder()

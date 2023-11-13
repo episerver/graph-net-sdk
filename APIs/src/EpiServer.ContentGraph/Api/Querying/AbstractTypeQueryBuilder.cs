@@ -3,16 +3,16 @@ using GraphQL.Transport;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {
-    public abstract class AbstractTypeQueryBuilder : ITypeQueryBuilder
+    public class BaseTypeQueryBuilder : ITypeQueryBuilder
     {
         protected readonly ContentGraphQuery graphObject;
         protected readonly GraphQLRequest _query;
-        public AbstractTypeQueryBuilder()
+        public BaseTypeQueryBuilder()
         {
             graphObject = new ContentGraphQuery();
             _query = new GraphQLRequest();
         }
-        public AbstractTypeQueryBuilder(GraphQLRequest query)
+        public BaseTypeQueryBuilder(GraphQLRequest query)
         {
             graphObject = new ContentGraphQuery();
             _query = query;
@@ -27,11 +27,6 @@ namespace EPiServer.ContentGraph.Api.Querying
         public virtual GraphQLRequest GetQuery()
         {
             return _query;
-        }
-
-        public virtual ContentGraphResult<TResult> GetResult<TResult>()
-        {
-            throw new NotImplementedException();
         }
     }
 }

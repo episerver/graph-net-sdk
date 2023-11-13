@@ -17,10 +17,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlloyMvcTemplates", "Templa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPiServer.ContentGraph.IntegrationTests.Cms", "Testing\EPiServer.ContentGraph.IntegrationTests.Cms\EPiServer.ContentGraph.IntegrationTests.Cms.csproj", "{2F3A6F83-DB3F-4D51-950E-34299D9C5031}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTest", "UnitTest", "{C1F6C85C-4E7A-468C-8FED-FB3924F8C432}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IntegrationTest", "IntegrationTest", "{79C4EBAB-BA80-49E5-8AFE-929DB7BED190}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPiServer.ContentGraph.IntegrationTests", "Testing\EPiServer.ContentGraph.IntegrationTests\EPiServer.ContentGraph.IntegrationTests.csproj", "{06F77901-6C37-4331-A969-E2BF7CDE2A8B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EpiServer.ContentGraph.UnitTests", "Testing\EpiServer.ContentGraph.UnitTests\EpiServer.ContentGraph.UnitTests.csproj", "{971DF974-7734-43BD-BAD0-DF830D9B46B1}"

@@ -4,6 +4,5 @@
     {
         public string FilterClause { get; }
         public IList<IFilter> Filters { get; set; }
-        //public IFilter Add(IFilter other);
     }
 }

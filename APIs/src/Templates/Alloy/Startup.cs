@@ -21,7 +21,10 @@ using EPiServer.Cms.Shell.UI;
 using EPiServer.Web.Mvc;
 using EPiServer.Cms.Shell.UI.Rest.Projects;
 using EPiServer.Cms.TinyMce.PropertySettings.Internal;
-
+using EPiServer.ContentGraph.Extensions;
+using Optimizely.ContentGraph.Cms.Configuration;
+using AlloyMvcTemplates;
+using EPiServer.ContentGraph.Api.Filters;
 
 namespace EPiServer.Templates.Alloy.Mvc
 {
@@ -87,6 +90,7 @@ namespace EPiServer.Templates.Alloy.Mvc
                 .AddTinyMce()
                 .AddAdminUserRegistration(options => options.Behavior = RegisterAdminUserBehaviors.Enabled |
                                                                         RegisterAdminUserBehaviors.LocalRequestsOnly);
+            services.AddScoped<IFilterForVisitor,FilterForModified>();
 
             services.ConfigureContentApiOptions(o =>
             {
@@ -95,11 +99,14 @@ namespace EPiServer.Templates.Alloy.Mvc
                 //o.EnablePreviewFeatures = true;// optional
             });
             services.AddContentDeliveryApi(); // required, for further configurations, see https://docs.developers.optimizely.com/content-cloud/v1.5.0-content-delivery-api/docs/configuration
+            
             services.AddContentGraph();
-
+            services.AddContentGraphCore(options=>
+            {
+                //options.UseHmacKey = false;
+            });
             //the following is obsolete and is kept for compatibility for now
             //services.AddContentGraph(_configuration);
-
             services.AddCmsTagHelpers();
             services.AddEmbeddedLocalization<Startup>();
         }
