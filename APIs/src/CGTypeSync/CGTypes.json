@@ -1,0 +1,917 @@
+{
+  "propertyTypes": {
+    "ContentLanguageModel": {
+      "properties": {
+        "Link": {
+          "name": "Link",
+          "type": "String"
+        },
+        "DisplayName": {
+          "name": "DisplayName",
+          "type": "String"
+        },
+        "Name": {
+          "name": "Name",
+          "type": "String"
+        }
+      }
+    },
+    "ContentLanguageModelSearch": {
+      "properties": {
+        "Link": {
+          "name": "Link",
+          "type": "String",
+          "searchable": false
+        },
+        "DisplayName": {
+          "name": "DisplayName",
+          "type": "String",
+          "searchable": false
+        },
+        "Name": {
+          "name": "Name",
+          "type": "String",
+          "searchable": false
+        }
+      }
+    },
+    "ContentApiModel": {
+      "properties": {
+        "Name": {
+          "name": "Name",
+          "type": "String"
+        }
+      }
+    },
+    "CategoryModel": {
+      "properties": {
+        "Id": {
+          "name": "Id",
+          "type": "Int"
+        },
+        "Name": {
+          "name": "Name",
+          "type": "String"
+        },
+        "Description": {
+          "name": "Description",
+          "type": "String"
+        }
+      }
+    },
+    "ContentModelReference": {
+      "properties": {
+        "Id": {
+          "name": "Id",
+          "type": "Int"
+        },
+        "WorkId": {
+          "name": "WorkId",
+          "type": "Int"
+        },
+        "GuidValue": {
+          "name": "GuidValue",
+          "type": "String"
+        },
+        "ProviderName": {
+          "name": "ProviderName",
+          "type": "String"
+        },
+        "Url": {
+          "name": "Url",
+          "type": "String"
+        },
+        "Language": {
+          "name": "Language",
+          "type": "ContentLanguageModel"
+        },
+        "Expanded": {
+          "name": "Expanded",
+          "type": "IContent"
+        }
+      }
+    },
+    "ContentModelReferenceSearch": {
+      "properties": {
+        "Id": {
+          "name": "Id",
+          "type": "Int",
+          "searchable": false
+        },
+        "WorkId": {
+          "name": "WorkId",
+          "type": "Int",
+          "searchable": false
+        },
+        "GuidValue": {
+          "name": "GuidValue",
+          "type": "String",
+          "searchable": false
+        },
+        "ProviderName": {
+          "name": "ProviderName",
+          "type": "String",
+          "searchable": true
+        },
+        "Url": {
+          "name": "Url",
+          "type": "String",
+          "searchable": true
+        },
+        "Language": {
+          "name": "Language",
+          "type": "ContentLanguageModelSearch",
+          "searchable": true
+        },
+        "Expanded": {
+          "name": "Expanded",
+          "type": "IContent",
+          "searchable": true
+        }
+      }
+    },
+    "ContentAreaItemModel": {
+      "properties": {
+        "DisplayOption": {
+          "name": "DisplayOption",
+          "type": "String"
+        },
+        "Tag": {
+          "name": "Tag",
+          "type": "String"
+        },
+        "ContentLink": {
+          "name": "ContentLink",
+          "type": "ContentModelReference"
+        }
+      }
+    },
+    "ContentAreaItemModelSearch": {
+      "properties": {
+        "DisplayOption": {
+          "name": "DisplayOption",
+          "type": "String",
+          "searchable": true
+        },
+        "Tag": {
+          "name": "Tag",
+          "type": "String",
+          "searchable": true
+        },
+        "ContentLink": {
+          "name": "ContentLink",
+          "type": "ContentModelReferenceSearch",
+          "searchable": true
+        }
+      }
+    }
+  },
+  "links": {
+    "DEFAULT": {
+      "from": "Tags",
+      "to": "ContentLink.GuidValue"
+    },
+    "AUTHOR": {
+      "from": "MetaKeywords___searchable",
+      "to": "Tags"
+    },
+    "knows-of": {
+      "from": "Tags",
+      "to": "Tags"
+    },
+    "friend": {
+      "from": "FriendOf",
+      "to": "Name___searchable"
+    },
+    "test": {
+      "from": "ContentLink.GuidValue",
+      "to": "Tags"
+    }
+  },
+  "label": "default",
+  "languages": [
+    "en",
+    "en-US",
+    "en-EN",
+    "sv",
+    "zh-Hans-SG",
+    "de"
+  ],
+  "contentTypes": {
+    "Content": {
+      "properties": {
+        "ContentType": {
+          "name": "ContentType",
+          "type": "[String]",
+          "helpText": "",
+          "searchable": false
+        },
+        "ContentLink": {
+          "name": "ContentLink",
+          "type": "ContentModelReference",
+          "helpText": "",
+          "searchable": false
+        },
+        "Name": {
+          "name": "Name",
+          "type": "String",
+          "helpText": "",
+          "searchable": true
+        },
+        "Language": {
+          "name": "Language",
+          "type": "ContentLanguageModel",
+          "helpText": "",
+          "searchable": false
+        },
+        "MainBody": {
+          "name": "MainBody",
+          "type": "XhtmlString",
+          "helpText": "",
+          "searchable": true
+        },
+        "Status": {
+          "name": "Status",
+          "type": "String",
+          "helpText": "",
+          "searchable": false
+        },
+        "Created": {
+          "name": "Created",
+          "type": "Date",
+          "helpText": "",
+          "searchable": false
+        }
+      },
+      "displayName": "Content",
+      "sortOrder": 0,
+      "description": "Content type",
+      "abstract": true,
+      "contentType": []
+    },
+    "StandardPage": {
+      "properties": {
+        "ContentLink": {
+          "name": "ContentLink",
+          "type": "ContentModelReference",
+          "helpText": "",
+          "searchable": false
+        },
+        "Name": {
+          "name": "Name",
+          "type": "String",
+          "helpText": "",
+          "searchable": true
+        },
+        "Language": {
+          "name": "Language",
+          "type": "ContentLanguageModel",
+          "helpText": "",
+          "searchable": false
+        },
+        "ExistingLanguages": {
+          "name": "ExistingLanguages",
+          "type": "[ContentLanguageModel]",
+          "helpText": "",
+          "searchable": false
+        },
+        "MasterLanguage": {
+          "name": "MasterLanguage",
+          "type": "ContentLanguageModel",
+          "helpText": "",
+          "searchable": false
+        },
+        "ContentType": {
+          "name": "ContentType",
+          "type": "[String]",
+          "helpText": "",
+          "searchable": false
+        },
+        "ParentLink": {
+          "name": "ParentLink",
+          "type": "ContentModelReference",
+          "helpText": "",
+          "searchable": false
+        },
+        "RouteSegment": {
+          "name": "RouteSegment",
+          "type": "String",
+          "helpText": "",
+          "searchable": false
+        },
+        "Url": {
+          "name": "Url",
+          "type": "String",
+          "helpText": "",
+          "searchable": false
+        },
+        "Changed": {
+          "name": "Changed",
+          "type": "Date",
+          "helpText": "",
+          "searchable": false
+        },
+        "Created": {
+          "name": "Created",
+          "type": "Date",
+          "helpText": "",
+          "searchable": false
+        },
+        "StartPublish": {
+          "name": "StartPublish",
+          "type": "Date",
+          "helpText": "",
+          "searchable": false
+        },
+        "StopPublish": {
+          "name": "StopPublish",
+          "type": "Date",
+          "helpText": "",
+          "searchable": false
+        },
+        "Saved": {
+          "name": "Saved",
+          "type": "Date",
+          "helpText": "",
+          "searchable": false
+        },
+        "Status": {
+          "name": "Status",
+          "type": "String",
+          "helpText": "",
+          "searchable": false
+        },
+        "Category": {
+          "name": "Category",
+          "type": "[CategoryModel]",
+          "helpText": "",
+          "searchable": false
+        },
+        "PageImage": {
+          "name": "PageImage",
+          "type": "ContentModelReference",
+          "helpText": "",
+          "searchable": false
+        },
+        "MetaTitle": {
+          "name": "MetaTitle",
+          "type": "LongString",
+          "helpText": "",
+          "searchable": true
+        },
+        "MainBody": {
+          "name": "MainBody",
+          "type": "XhtmlString",
+          "helpText": "The main body will be shown in the main content area of the page, using the XHTML-editor you can insert for example text, images and tables.",
+          "searchable": true
+        },
+        "MainContentArea": {
+          "name": "MainContentArea",
+          "type": "[ContentAreaItemModelSearch]",
+          "helpText": "The main content area contains an ordered collection to content references, for example blocks, media assets, and pages.",
+          "searchable": true
+        },
+        "MetaKeywords": {
+          "name": "MetaKeywords",
+          "type": "LongString",
+          "helpText": "",
+          "searchable": true
+        },
+        "MetaDescription": {
+          "name": "MetaDescription",
+          "type": "LongString",
+          "helpText": "",
+          "searchable": true
+        },
+        "Heading": {
+          "name": "Heading",
+          "type": "LongString",
+          "helpText": "",
+          "searchable": false
+        },
+        "Updated": {
+          "name": "Updated",
+          "type": "Date",
+          "helpText": "",
+          "searchable": false
+        }
+      },
+      "displayName": "Standard",
+      "sortOrder": 0,
+      "description": "Use this page type unless you need a more specialized one.",
+      "base": "Page",
+      "contentType": [
+        "Content"
+      ]
+    },
+    "BiographyPage": {
+      "properties": {
+        "ContentLink": {
+          "name": "ContentLink",
+          "type": "ContentModelReference",
+          "helpText": "",
+          "searchable": false
+        },
+        "Name": {
+          "name": "Name",
+          "type": "String",
+          "helpText": "",
+          "searchable": true
+        },
+        "Language": {
+          "name": "Language",
+          "type": "ContentLanguageModel",
+          "helpText": "",
+          "searchable": false
+        },
+        "ExistingLanguages": {
+          "name": "ExistingLanguages",
+          "type": "[ContentLanguageModel]",
+          "helpText": "",
+          "searchable": false
+        },
+        "MasterLanguage": {
+          "name": "MasterLanguage",
+          "type": "ContentLanguageModel",
+          "helpText": "",
+          "searchable": false
+        },
+        "ContentType": {
+          "name": "ContentType",
+          "type": "[String]",
+          "helpText": "",
+          "searchable": false
+        },
+        "ParentLink": {
+          "name": "ParentLink",
+          "type": "ContentModelReference",
+          "helpText": "",
+          "searchable": false
+        },
+        "RouteSegment": {
+          "name": "RouteSegment",
+          "type": "String",
+          "helpText": "",
+          "searchable": false
+        },
+        "Url": {
+          "name": "Url",
+          "type": "String",
+          "helpText": "",
+          "searchable": false
+        },
+        "Changed": {
+          "name": "Changed",
+          "type": "Date",
+          "helpText": "",
+          "searchable": false
+        },
+        "Created": {
+          "name": "Created",
+          "type": "Date",
+          "helpText": "",
+          "searchable": false
+        },
+        "StartPublish": {
+          "name": "StartPublish",
+          "type": "Date",
+          "helpText": "",
+          "searchable": false
+        },
+        "StopPublish": {
+          "name": "StopPublish",
+          "type": "Date",
+          "helpText": "",
+          "searchable": false
+        },
+        "Saved": {
+          "name": "Saved",
+          "type": "Date",
+          "helpText": "",
+          "searchable": false
+        },
+        "Status": {
+          "name": "Status",
+          "type": "String",
+          "helpText": "",
+          "searchable": false
+        },
+        "Category": {
+          "name": "Category",
+          "type": "[CategoryModel]",
+          "helpText": "",
+          "searchable": false
+        },
+        "PageImage": {
+          "name": "PageImage",
+          "type": "ContentModelReference",
+          "helpText": "",
+          "searchable": false
+        },
+        "CharacterName": {
+          "name": "CharacterName",
+          "type": "LongString",
+          "helpText": "",
+          "searchable": true
+        },
+        "FamousQuote": {
+          "name": "FamousQuote",
+          "type": "LongString",
+          "helpText": "Famous Quote",
+          "searchable": true
+        },
+        "MainBody": {
+          "name": "MainBody",
+          "type": "XhtmlString",
+          "helpText": "The main body will be shown in the main content area of the page, using the XHTML-editor you can insert for example text, images and tables.",
+          "searchable": true
+        },
+        "Born": {
+          "name": "Born",
+          "type": "Date",
+          "helpText": "",
+          "searchable": false
+        },
+        "Die": {
+          "name": "Die",
+          "type": "Date",
+          "helpText": "",
+          "searchable": false
+        },
+        "Quotes": {
+          "name": "Quotes",
+          "type": "[ContentAreaItemModelSearch]",
+          "helpText": "",
+          "searchable": true
+        },
+        "MetaTitle": {
+          "name": "MetaTitle",
+          "type": "LongString",
+          "helpText": "",
+          "searchable": true
+        },
+        "MetaKeywords": {
+          "name": "MetaKeywords",
+          "type": "LongString",
+          "helpText": "",
+          "searchable": true
+        },
+        "MetaDescription": {
+          "name": "MetaDescription",
+          "type": "LongString",
+          "helpText": "",
+          "searchable": true
+        },
+        "Valid": {
+          "name": "Valid",
+          "type": "Bool",
+          "helpText": "",
+          "searchable": false
+        },
+        "ValidS": {
+          "name": "ValidS",
+          "type": "Bool",
+          "helpText": "",
+          "searchable": true
+        },
+        "BornS": {
+          "name": "BornS",
+          "type": "Date",
+          "helpText": "",
+          "searchable": true
+        },
+        "NumberList": {
+          "name": "NumberList",
+          "type": "[Int]",
+          "helpText": "",
+          "searchable": true
+        },
+        "Tags": {
+          "name": "Tags",
+          "type": "[String]",
+          "helpText": "",
+          "searchable": false
+        },
+        "FriendOf": {
+          "name": "FriendOf",
+          "type": "[String]",
+          "helpText": "",
+          "searchable": false
+        },
+        "p_Double": {
+          "name": "p_Double",
+          "type": "Float",
+          "helpText": "",
+          "searchable": false
+        }
+      },
+      "displayName": "Biography",
+      "sortOrder": 0,
+      "description": "Biography of who change the world",
+      "base": "Page",
+      "contentType": [
+        "Content"
+      ]
+    },
+    "StartPage": {
+      "properties": {
+        "ContentLink": {
+          "name": "ContentLink",
+          "type": "ContentModelReference",
+          "helpText": "",
+          "searchable": false
+        },
+        "Name": {
+          "name": "Name",
+          "type": "String",
+          "helpText": "",
+          "searchable": true
+        },
+        "Language": {
+          "name": "Language",
+          "type": "ContentLanguageModel",
+          "helpText": "",
+          "searchable": false
+        },
+        "ExistingLanguages": {
+          "name": "ExistingLanguages",
+          "type": "[ContentLanguageModel]",
+          "helpText": "",
+          "searchable": false
+        },
+        "MasterLanguage": {
+          "name": "MasterLanguage",
+          "type": "ContentLanguageModel",
+          "helpText": "",
+          "searchable": false
+        },
+        "ContentType": {
+          "name": "ContentType",
+          "type": "[String]",
+          "helpText": "",
+          "searchable": false
+        },
+        "ParentLink": {
+          "name": "ParentLink",
+          "type": "ContentModelReference",
+          "helpText": "",
+          "searchable": false
+        },
+        "RouteSegment": {
+          "name": "RouteSegment",
+          "type": "String",
+          "helpText": "",
+          "searchable": false
+        },
+        "Url": {
+          "name": "Url",
+          "type": "String",
+          "helpText": "",
+          "searchable": false
+        },
+        "Changed": {
+          "name": "Changed",
+          "type": "Date",
+          "helpText": "",
+          "searchable": false
+        },
+        "Created": {
+          "name": "Created",
+          "type": "Date",
+          "helpText": "",
+          "searchable": false
+        },
+        "StartPublish": {
+          "name": "StartPublish",
+          "type": "Date",
+          "helpText": "",
+          "searchable": false
+        },
+        "StopPublish": {
+          "name": "StopPublish",
+          "type": "Date",
+          "helpText": "",
+          "searchable": false
+        },
+        "Saved": {
+          "name": "Saved",
+          "type": "Date",
+          "helpText": "",
+          "searchable": false
+        },
+        "Status": {
+          "name": "Status",
+          "type": "String",
+          "helpText": "",
+          "searchable": false
+        },
+        "Category": {
+          "name": "Category",
+          "type": "[CategoryModel]",
+          "helpText": "",
+          "searchable": false
+        },
+        "PageImage": {
+          "name": "PageImage",
+          "type": "ContentModelReference",
+          "helpText": "",
+          "searchable": false
+        },
+        "Heading": {
+          "name": "Heading",
+          "type": "LongString",
+          "helpText": "Heading",
+          "searchable": true
+        },
+        "MainBody": {
+          "name": "MainBody",
+          "type": "XhtmlString",
+          "helpText": "The main body will be shown in the main content area of the page, using the XHTML-editor you can insert for example text, images and tables.",
+          "searchable": true
+        },
+        "Biographies": {
+          "name": "Biographies",
+          "type": "[ContentAreaItemModel]",
+          "helpText": "The main content area contains an ordered collection to content references, for example blocks, media assets, and pages.",
+          "searchable": true
+        },
+        "MainContentArea": {
+          "name": "MainContentArea",
+          "type": "[ContentAreaItemModelSearch]",
+          "helpText": "The main content area contains an ordered collection to content references, for example blocks, media assets, and pages.",
+          "searchable": true
+        },
+        "FooterText": {
+          "name": "FooterText",
+          "type": "LongString",
+          "helpText": "The footer text will be shown at the bottom of every page",
+          "searchable": true
+        },
+        "MetaTitle": {
+          "name": "MetaTitle",
+          "type": "LongString",
+          "helpText": "",
+          "searchable": true
+        },
+        "MetaKeywords": {
+          "name": "MetaKeywords",
+          "type": "LongString",
+          "helpText": "",
+          "searchable": true
+        },
+        "MetaDescription": {
+          "name": "MetaDescription",
+          "type": "LongString",
+          "helpText": "",
+          "searchable": true
+        },
+        "BannerImage": {
+          "name": "BannerImage",
+          "type": "ContentModelReference",
+          "helpText": "",
+          "searchable": false
+        }
+      },
+      "displayName": "Start",
+      "sortOrder": 10,
+      "description": "The home page for a website with an area for blocks and partial pages.",
+      "base": "Page",
+      "contentType": [
+        "Content"
+      ]
+    },
+    "GenericProduct": {
+      "properties": {
+        "Brand": {
+          "name": "Brand",
+          "type": "String"
+        },
+        "DisplayName": {
+          "name": "DisplayName",
+          "type": "LongString"
+        },
+        "Name": {
+          "name": "Name",
+          "type": "String"
+        },
+        "Language": {
+          "name": "Language",
+          "type": "ContentLanguageModel",
+          "helpText": "",
+          "searchable": false
+        },
+        "ContentLink": {
+          "name": "ContentLink",
+          "type": "ContentModelReference"
+        },
+        "MainBody": {
+          "name": "MainBody",
+          "type": "XhtmlString",
+          "helpText": "",
+          "searchable": true
+        },
+        "Status": {
+          "name": "Status",
+          "type": "String",
+          "helpText": "",
+          "searchable": false
+        }
+      },
+      "contentType": []
+    },
+    "TemporaryPage": {
+      "properties": {
+        "ContentLink": {
+          "name": "ContentLink",
+          "type": "ContentModelReference",
+          "helpText": "",
+          "searchable": false
+        },
+        "Name": {
+          "name": "Name",
+          "type": "String",
+          "helpText": "",
+          "searchable": true
+        },
+        "Language": {
+          "name": "Language",
+          "type": "ContentLanguageModel",
+          "helpText": "",
+          "searchable": false
+        },
+        "ContentType": {
+          "name": "ContentType",
+          "type": "[String]",
+          "helpText": "",
+          "searchable": false
+        },
+        "ParentLink": {
+          "name": "ParentLink",
+          "type": "ContentModelReference",
+          "helpText": "",
+          "searchable": false,
+          "index": false
+        },
+        "Url": {
+          "name": "Url",
+          "type": "String",
+          "helpText": "",
+          "searchable": false
+        },
+        "Updated": {
+          "name": "Updated",
+          "type": "Date",
+          "helpText": "",
+          "searchable": false,
+          "index": false
+        },
+        "Created": {
+          "name": "Created",
+          "type": "Date",
+          "helpText": "",
+          "searchable": false,
+          "index": false
+        },
+        "Status": {
+          "name": "Status",
+          "type": "String",
+          "helpText": "",
+          "searchable": false
+        },
+        "MainBody": {
+          "name": "MainBody",
+          "type": "XhtmlString",
+          "helpText": "The main body will be shown in the main content area of the page, using the XHTML-editor you can insert for example text, images and tables.",
+          "searchable": true
+        },
+        "MetaKeywords": {
+          "name": "MetaKeywords",
+          "type": "LongString",
+          "helpText": "",
+          "searchable": true,
+          "index": false
+        },
+        "MetaDescription": {
+          "name": "MetaDescription",
+          "type": "LongString",
+          "helpText": "",
+          "searchable": true,
+          "index": false
+        },
+        "Product": {
+          "name": "Product",
+          "type": "[String]",
+          "helpText": "",
+          "searchable": true
+        }
+      },
+      "displayName": "Temporary",
+      "sortOrder": 0,
+      "description": "Use this page type to test index flag.",
+      "base": "Page",
+      "contentType": [
+        "Content"
+      ]
+    }
+  }
+}

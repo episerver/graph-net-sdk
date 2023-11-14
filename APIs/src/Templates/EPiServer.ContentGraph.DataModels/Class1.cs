@@ -1,0 +1,3 @@
+﻿namespace EPiServer.ContentGraph.DataModels
+{
+}

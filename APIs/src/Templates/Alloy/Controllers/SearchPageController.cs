@@ -3,16 +3,8 @@ using AlloyTemplates.Controllers;
 using AlloyTemplates.Models.Pages;
 using AlloyTemplates.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using EPiServer.Shell.Search;
-using EPiServer.ServiceLocation;
 using EPiServer.ContentGraph.Api.Querying;
-using EPiServer.Core;
-using EPiServer.ContentGraph.Configuration;
-using Microsoft.Extensions.Options;
-using AlloyMvcTemplates.Models;
-using EPiServer.ContentGraph.Extensions;
-using EPiServer.ContentGraph.Api.Filters;
-using System;
+using ProxyModels = EPiServer.ContentGraph.DataModels;
 
 namespace AlloyMvcTemplates.Controllers
 {
@@ -51,22 +43,22 @@ namespace AlloyMvcTemplates.Controllers
             //var hits = rs.GetCastingContent<Models.Content, Models.ArticlePage>().Hits;
 
             var query = _client.OperationName("Multiple_Types")
-                .ForType<Models.ArticlePage>()
+                .ForType<ProxyModels.StandardPage>()
                     .Field("__typename")
                     .Fields(x => x.Name, x => x.MetaTitle, x => x.MetaDescription)
                     //.Where(x=> x.Name.Match(q))
                     .Search(q)
                     .FilterForVisitor()
                     .ToQuery()
-                .ForType<Models.NewsPage>()
+                .ForType<ProxyModels.StartPage>()
                     .Fields(x => x.Name, x => x.MetaDescription)
                     .Search(q)
                     .ToQuery()
                 .BuildQueries();
 
             var rs = query.GetResult();
-            var hits = rs.GetContent<Models.ArticlePage>().Hits;
-            var hits2 = rs.GetContent<Models.NewsPage>().Hits;
+            var hits = rs.GetContent<ProxyModels.StartPage>().Hits;
+            var hits2 = rs.GetContent<ProxyModels.StandardPage>().Hits;
 
             var model = new SearchContentModel(currentPage)
             {

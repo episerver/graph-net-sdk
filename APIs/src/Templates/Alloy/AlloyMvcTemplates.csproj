@@ -27,6 +27,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\EpiServer.ContentGraph\EPiServer.ContentGraph.csproj" />
+    <ProjectReference Include="..\EPiServer.ContentGraph.DataModels\EPiServer.ContentGraph.DataModels.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="wwwroot\ClientResources\**\*.*">
