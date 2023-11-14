@@ -20,7 +20,9 @@ namespace CGTypeSync
         {
             //parse the CGTypes.json file
             var schemaTypes = new Dictionary<string, List<Tuple<string, string>>>();
-            var schemaFile = @"C:\source\opti-graph-netclient\APIs\src\CGTypeSync\CGTypes.json";
+            string path = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            var directory = System.IO.Path.GetDirectoryName(path);
+            var schemaFile = Path.Combine(directory, "CGTypes.json");
             JObject json = null;
             using (StreamReader r = new StreamReader(schemaFile))
             {
@@ -90,7 +92,8 @@ namespace CGTypeSync
             sb.AppendLine("}");
             var classes = sb.ToString();
 
-            using (var writer = new StreamWriter(@"C:\source\opti-graph-netclient\APIs\src\Templates\EPiServer.ContentGraph.DataModels\Class1.cs", false))
+            var outFile = Path.Combine(directory, @"..\..\..\..\Templates\EPiServer.ContentGraph.DataModels\ProxyClasses.cs");
+            using (var writer = new StreamWriter(outFile, false))
             {
                 writer.Write(sb.ToString());
             }
