@@ -96,7 +96,7 @@ namespace EPiServer.ContentGraph.Api.Filters
                 }
             }
         }
-        protected NotFilter Not(string field, IFilterOperator filterOperator)
+        public NotFilter Not(string field, IFilterOperator filterOperator)
         {
             string filterClause = ConvertNestedFieldToString.ConvertNestedFieldFilter(field, filterOperator);
             if (!filterOperator.Query.IsNullOrEmpty())

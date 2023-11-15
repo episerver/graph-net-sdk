@@ -103,7 +103,7 @@ namespace EPiServer.ContentGraph.Api.Filters
                 }
             }
         }
-        protected OrFilter Or(string field, IFilterOperator filterOperator)
+        public OrFilter Or(string field, IFilterOperator filterOperator)
         {
             string filterClause = ConvertNestedFieldToString.ConvertNestedFieldFilter(field, filterOperator);
             if (!filterOperator.Query.IsNullOrEmpty())

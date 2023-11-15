@@ -7,6 +7,8 @@ using System.Globalization;
 using EPiServer.ContentGraph.Api.Autocomplete;
 using EPiServer.ContentGraph.Api.Facets;
 using EPiServer.ServiceLocation;
+using EPiServer.ContentGraph.ExpressionHelper;
+using EPiServer.ContentGraph.Extensions;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {
@@ -14,10 +16,10 @@ namespace EPiServer.ContentGraph.Api.Querying
     public partial class TypeQueryBuilder<T> : BaseTypeQueryBuilder
     {
         private static IEnumerable<IFilterForVisitor>? _filters;
-        public TypeQueryBuilder(GraphQLRequest request): base(request)
-        {  
+        public TypeQueryBuilder(GraphQLRequest request) : base(request)
+        {
         }
-        public TypeQueryBuilder():base()
+        public TypeQueryBuilder() : base()
         {
         }
         public override GraphQLRequest GetQuery()
@@ -146,8 +148,8 @@ namespace EPiServer.ContentGraph.Api.Querying
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             fieldSelector.Compile();
             var facet = ConvertNestedFieldToString.ConvertNestedFieldForFacet(fieldSelector.GetFieldPath());
-            graphObject.Facets = graphObject.Facets.IsNullOrEmpty() ? 
-                $"{facet}" : 
+            graphObject.Facets = graphObject.Facets.IsNullOrEmpty() ?
+                $"{facet}" :
                 $"{graphObject.Facets} {facet}";
             return this;
         }
@@ -312,6 +314,11 @@ namespace EPiServer.ContentGraph.Api.Querying
             Where("_fulltext", filterOperator);
             return this;
         }
+        /// <summary>
+        /// Full text search
+        /// </summary>
+        /// <param name="q"></param>
+        /// <returns></returns>
         public TypeQueryBuilder<T> Search(string q)
         {
             Where("_fulltext", new StringFilterOperators().Contains(q));
@@ -333,14 +340,14 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             return this;
         }
-        public TypeQueryBuilder<T> Where(Expression<Func<T, IFilterWraper>> fieldSelector)
+        public TypeQueryBuilder<T> Where(Expression<Func<T, Filter>> fieldSelector)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             if (fieldSelector != null)
             {
                 var paser = new FilterExpressionParser();
-                var wrappedFilter = paser.GetFilter(fieldSelector);
-                Where(wrappedFilter.GetFieldName(), wrappedFilter.GetFilter());
+                var filter = paser.GetFilter(fieldSelector);
+                Where(filter);
             }
             return this;
         }
@@ -389,16 +396,16 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             return this;
         }
-        public TypeQueryBuilder<T> Where(IFilter booleanFilter)
+        public TypeQueryBuilder<T> Where(IFilter filter)
         {
-            booleanFilter.ValidateNotNullArgument("booleanFilter");
+            filter.ValidateNotNullArgument("booleanFilter");
             if (graphObject.WhereClause.IsNullOrEmpty())
             {
-                graphObject.WhereClause = $"{booleanFilter.FilterClause}";
+                graphObject.WhereClause = $"{filter.FilterClause}";
             }
             else
             {
-                graphObject.WhereClause += $",{booleanFilter.FilterClause}";
+                graphObject.WhereClause += $",{filter.FilterClause}";
             }
 
             return this;
@@ -463,7 +470,7 @@ namespace EPiServer.ContentGraph.Api.Querying
         {
             if (filterForVisitors != null && filterForVisitors.Length > 0)
             {
-                _filters ??= filterForVisitors;
+                _filters = filterForVisitors;
             }
             else
             {

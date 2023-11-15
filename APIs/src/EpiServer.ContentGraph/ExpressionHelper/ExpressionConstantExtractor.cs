@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace EPiServer.ContentGraph
+namespace EPiServer.ContentGraph.ExpressionHelper
 {
     public class ExpressionConstantExtractor : ExpressionVisitor
     {

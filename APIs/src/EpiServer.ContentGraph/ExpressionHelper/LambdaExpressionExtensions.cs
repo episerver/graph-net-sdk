@@ -1,9 +1,7 @@
 ﻿using EPiServer.ContentGraph.Connection;
-using System;
 using System.Linq.Expressions;
-using System.Threading;
 
-namespace EPiServer.ContentGraph
+namespace EPiServer.ContentGraph.ExpressionHelper
 {
     public static class LambdaExpressionExtensions
     {
@@ -63,7 +61,7 @@ namespace EPiServer.ContentGraph
 
             var cacheKey = GetCacheKey(expr, constants);
             var cachedFunction = Cache.Get<Delegate>(cacheKey);
-            if(cachedFunction != default(Delegate))
+            if (cachedFunction != default)
             {
                 return cachedFunction;
             }
@@ -115,7 +113,7 @@ namespace EPiServer.ContentGraph
                 return true;
             }
 
-            obj = default(T);
+            obj = default;
             return false;
         }
     }

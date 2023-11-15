@@ -1,8 +1,9 @@
-﻿using EPiServer.ContentGraph.Helpers;
+﻿using EPiServer.ContentGraph.ExpressionHelper;
+using EPiServer.ContentGraph.Helpers;
 using System.Linq.Expressions;
 
 
-namespace EPiServer.ContentGraph
+namespace EPiServer.ContentGraph.ExpressionHelper
 {
     public class ExpressionEqualityComparer : IEqualityComparer<Expression>
     {

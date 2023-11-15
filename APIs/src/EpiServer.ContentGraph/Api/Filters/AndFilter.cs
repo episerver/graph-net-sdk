@@ -109,7 +109,7 @@ namespace EPiServer.ContentGraph.Api.Filters
         {
         }
         #endregion
-        protected AndFilter And(string field, IFilterOperator filterOperator)
+        public AndFilter And(string field, IFilterOperator filterOperator)
         {
             string filterClause = ConvertNestedFieldToString.ConvertNestedFieldFilter(field, filterOperator);
             if (!filterOperator.Query.IsNullOrEmpty())

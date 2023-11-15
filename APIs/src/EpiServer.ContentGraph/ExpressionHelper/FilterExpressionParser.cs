@@ -4,32 +4,32 @@ using EPiServer.ContentGraph.Helpers.Linq;
 using EPiServer.ContentGraph.Helpers.Reflection;
 using System.Linq.Expressions;
 
-namespace EPiServer.ContentGraph
+namespace EPiServer.ContentGraph.ExpressionHelper
 {
     public class FilterExpressionParser
     {
-        public virtual IFilterWraper GetFilter<TSource>(Expression<Func<TSource, IFilterWraper>> filterExpression)
+        public virtual Filter GetFilter<TSource>(Expression<Func<TSource, Filter>> filterExpression)
         {
             ValidateFilterExpression(filterExpression);
 
             Expression executable = filterExpression.Body;
 
-            //Find and replace methods returning FilterExpression
-            while (executable.Find<MethodCallExpression>(ReturnsFilterExpression).Count() > 0)
-            {
-                executable = executable.Replace<MethodCallExpression>(
-                    ReturnsFilterExpression,
-                    RealizeFilterExpressionMethodCalls);
-            }
+            //Find and replace methods returning FilterExpression (not use for now)
+            //while (executable.Find<MethodCallExpression>(ReturnsFilterExpression).Count() > 0)
+            //{
+            //    executable = executable.Replace<MethodCallExpression>(
+            //        ReturnsFilterExpression,
+            //        RealizeFilterExpressionMethodCalls);
+            //}
             //Find and replace methods returning DelegateFilterBuilder
             executable = executable.Replace<MethodCallExpression>(
                 x => x.Method.ReturnType == typeof(DelegateFilterBuilder),
                 x => Expression.Constant(GetFilterFromDelegateFilterBuilderMethod(x, null)));
 
-            return executable.CachedCompileInvoke<IFilterWraper>();
+            return executable.CachedCompileInvoke<Filter>();
         }
 
-        protected virtual void ValidateFilterExpression<TSource>(Expression<Func<TSource, IFilterWraper>> filterExpression)
+        protected virtual void ValidateFilterExpression<TSource>(Expression<Func<TSource, Filter>> filterExpression)
         {
             if (filterExpression.Body.Find<NewExpression>(x => x.Type == typeof(DelegateFilterBuilder)).Count() > 0)
             {
@@ -51,31 +51,31 @@ namespace EPiServer.ContentGraph
             }
             if (
                 filterExpression.Body.Find<NewExpression>(
-                    x => x.Type.IsGenericType && x.Type.GetGenericTypeDefinition() == typeof(IFilterOperator)).Count() > 0)
+                    x => x.Type.IsGenericType && x.Type.GetGenericTypeDefinition() == typeof(FilterExpression<>)).Count() > 0)
             {
                 throw new NotSupportedException
                     (string.Format("Instantiating new {0} is not supported."
                                    + "The {0} class is intended to be used as a return value from extensions methods.",
-                                   typeof(IFilterOperator).Name));
+                                   typeof(FilterExpression<>).Name));
             }
             var methodsRetuningFilterExpression =
                 filterExpression.Body.Find<MethodCallExpression>(
                     x =>
                     !x.Method.IsExtensionMethod() && x.Type.IsGenericType &&
-                    x.Type.GetGenericTypeDefinition() == typeof(IFilterOperator));
+                    x.Type.GetGenericTypeDefinition() == typeof(FilterExpression<>));
             if (methodsRetuningFilterExpression.Count() > 0)
             {
                 throw new NotSupportedException(
                     string.Format(
                         "Method {0} returns {1}. Only extension methods should return {1}.",
                         methodsRetuningFilterExpression.First().Method.Name,
-                        typeof(IFilterOperator).Name));
+                        typeof(FilterExpression<>).Name));
             }
         }
 
         protected bool ReturnsFilterExpression(MethodCallExpression x)
         {
-            return x.Method.HasGenericTypeDefinition(typeof(IFilterWraper));
+            return x.Method.HasGenericTypeDefinition(typeof(FilterExpression<>));
         }
 
         protected Expression RealizeFilterExpressionMethodCalls(MethodCallExpression methodCall)
@@ -93,7 +93,7 @@ namespace EPiServer.ContentGraph
             }
             var returnValue = methodExpression.Method.Invoke(null, args.ToArray());
             var expression =
-                typeof(IFilterWraper).MakeGenericType(
+                typeof(FilterExpression<>).MakeGenericType(
                     methodExpression.Method.ReturnType.GetGenericArguments()[0]).GetProperty("Expression").
                     GetGetMethod().Invoke(returnValue, new object[0]);
             var expressionBody = (Expression)
@@ -104,7 +104,7 @@ namespace EPiServer.ContentGraph
             return expressionBody.Replace<Expression>(x => x == invocationTarget, x => actualInvocationTarget);
         }
 
-        protected IFilterWraper GetFilterFromDelegateFilterBuilderMethod(MethodCallExpression methodExpression, string fieldName)
+        protected Filter GetFilterFromDelegateFilterBuilderMethod(MethodCallExpression methodExpression, string fieldName)
         {
             if (fieldName.IsNull())
             {

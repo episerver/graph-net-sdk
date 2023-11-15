@@ -13,33 +13,98 @@ namespace EPiServer.ContentGraph.Extensions
         /// <returns></returns>
         public static DelegateFilterBuilder Match(this string field, string value)
         {
-            return new DelegateFilterBuilder(field => new WrappedFilter(field, new StringFilterOperators().Contains(value)));
+            return new DelegateFilterBuilder(field => new TermFilter(field, new StringFilterOperators().Contains(value)));
         }
         public static DelegateFilterBuilder Eq(this string field, string value)
         {
-            return new DelegateFilterBuilder(field => new WrappedFilter(field, new StringFilterOperators().Eq(value)));
+            return new DelegateFilterBuilder(field => new TermFilter(field, new StringFilterOperators().Eq(value)));
         }
         public static DelegateFilterBuilder NotEq(this string field, string value)
         {
-            return new DelegateFilterBuilder(field => new WrappedFilter(field, new StringFilterOperators().NotEq(value)));
+            return new DelegateFilterBuilder(field => new TermFilter(field, new StringFilterOperators().NotEq(value)));
         }
         public static DelegateFilterBuilder NotIn(this string field, string[] values)
         {
-            return new DelegateFilterBuilder(field => new WrappedFilter(field, new StringFilterOperators().NotIn(values)));
+            return new DelegateFilterBuilder(field => new TermFilter(field, new StringFilterOperators().NotIn(values)));
         }
         public static DelegateFilterBuilder In(this string field, string[] values)
         {
-            return new DelegateFilterBuilder(field => new WrappedFilter(field, new StringFilterOperators().In(values)));
+            return new DelegateFilterBuilder(field => new TermFilter(field, new StringFilterOperators().In(values)));
+        }
+        public static DelegateFilterBuilder Like(this string field, string value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new StringFilterOperators().Like(value)));
         }
         #endregion
 
-        public static DelegateFilterBuilder InRange(this DateTime field, (DateTime from, DateTime to) ranges) 
+        #region Date operator
+        public static DelegateFilterBuilder InRange(this DateTime field, DateTime from, DateTime to)
         {
-            return new DelegateFilterBuilder(field => 
-            new WrappedFilter(field, new DateFilterOperators()
-                .Gte(ranges.from.ToString("s") + "Z")
-                .Lt(ranges.to.ToString("s") + "Z")
+            return new DelegateFilterBuilder(field =>
+            new TermFilter(field, new DateFilterOperators()
+                .Gte(from.ToString("s") + "Z")
+                .Lt(to.ToString("s") + "Z")
             ));
         }
+        public static DelegateFilterBuilder Eq(this DateTime field, DateTime value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new DateFilterOperators().Eq(value.ToString("s") + "Z")));
+        }
+        public static DelegateFilterBuilder NotEq(this DateTime field, DateTime value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new DateFilterOperators().NotEq(value.ToString("s") + "Z")));
+        }
+        public static DelegateFilterBuilder Gt(this DateTime field, DateTime value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new DateFilterOperators().Gt(value.ToString("s") + "Z")));
+        }
+        public static DelegateFilterBuilder Gte(this DateTime field, DateTime value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new DateFilterOperators().Gte(value.ToString("s") + "Z")));
+        }
+        public static DelegateFilterBuilder Lt(this DateTime field, DateTime value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new DateFilterOperators().Lt(value.ToString("s") + "Z")));
+        }
+        public static DelegateFilterBuilder Lte(this DateTime field, DateTime value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new DateFilterOperators().Lte(value.ToString("s") + "Z")));
+        }
+        #endregion
+
+        #region Numberic operator
+        public static DelegateFilterBuilder Eq(this int field, int value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Eq(value)));
+        }
+        public static DelegateFilterBuilder NotEq(this int field, int value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().NotEq(value)));
+        }
+        public static DelegateFilterBuilder Gt(this int field, int value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Gt(value)));
+        }
+        public static DelegateFilterBuilder Gte(this int field, int value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Gte(value)));
+        }
+        public static DelegateFilterBuilder Lt(this int field, int value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Lt(value)));
+        }
+        public static DelegateFilterBuilder Lte(this int field, int value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Lte(value)));
+        }
+        public static DelegateFilterBuilder In(this int field, params int[] values)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().In(values)));
+        }
+        public static DelegateFilterBuilder NotIn(this int field, int[] values)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().NotIn(values)));
+        }
+        #endregion
     }
 }

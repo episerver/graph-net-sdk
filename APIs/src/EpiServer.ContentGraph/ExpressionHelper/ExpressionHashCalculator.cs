@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
 
-namespace EPiServer.ContentGraph
+namespace EPiServer.ContentGraph.ExpressionHelper
 {
     public class ExpressionHashCalculator
     {
@@ -9,7 +9,7 @@ namespace EPiServer.ContentGraph
 
         public string CalculateHashCode(Expression obj)
         {
-            return (_debugViewProperty.GetValue(obj) as string);
+            return _debugViewProperty.GetValue(obj) as string;
         }
     }
 }

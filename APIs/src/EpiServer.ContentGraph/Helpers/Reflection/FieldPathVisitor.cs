@@ -1,4 +1,4 @@
-﻿using EPiServer.ContentGraph;
+﻿using EPiServer.ContentGraph.ExpressionHelper;
 using EPiServer.ContentGraph.Helpers.Linq;
 using System.Linq.Expressions;
 using System.Text;
