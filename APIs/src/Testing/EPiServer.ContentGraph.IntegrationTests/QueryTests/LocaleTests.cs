@@ -26,7 +26,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Fields(x => x.Id, x => x.Name, x => x.Status)
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>();
+            var rs = query.GetResult<HomePage>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count == 2);
             Assert.IsTrue(rs.Content.Values.First().Hits.TrueForAll(x => !x.Id.Equals("content1")));
         }

@@ -32,7 +32,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(andFilter)
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>();
+            var rs = query.GetResult<HomePage>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(2));
         }
         [TestMethod]
@@ -48,7 +48,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(andFilter)
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>();
+            var rs = query.GetResult<HomePage>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(1));
             Assert.IsTrue(rs.Content.Values.First().Hits.First().Name.Equals("Home 2"));
         }
@@ -67,7 +67,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(orFilter)
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>();
+            var rs = query.GetResult<HomePage>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(2));
         }
         [TestMethod]
@@ -83,7 +83,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(orFilter)
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>();
+            var rs = query.GetResult<HomePage>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(3));
         }
         #endregion
@@ -100,7 +100,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(notFilter)
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>();
+            var rs = query.GetResult<HomePage>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(2));
         }
         [TestMethod]
@@ -116,7 +116,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(notFilter)
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>();
+            var rs = query.GetResult<HomePage>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.First().Name.Equals("Home 4"));
         }
         #endregion
@@ -145,7 +145,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(orFilter | andFilter1 | andFilter2)
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>();
+            var rs = query.GetResult<HomePage>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(3));
         }
         #endregion

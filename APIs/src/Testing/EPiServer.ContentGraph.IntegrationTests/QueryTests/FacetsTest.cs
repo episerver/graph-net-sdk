@@ -33,7 +33,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                         .OrderType(OrderType.VALUE))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>();
+            var rs = query.GetResult<HomePage>().Result;
             Assert.IsTrue(rs.Content["HomePage"].Facets["IsSecret"].First().Count.Equals(2));
             Assert.IsTrue(rs.Content["HomePage"].Facets["IsSecret"].First().Name.Equals("true"));
             Assert.IsTrue(rs.Content["HomePage"].Facets["IsSecret"].Last().Count.Equals(2));
@@ -50,7 +50,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                     .Projection(FacetProjection.name, FacetProjection.count))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>();
+            var rs = query.GetResult<HomePage>().Result;
             Assert.IsTrue(rs.Content["HomePage"].Facets["Priority"].Count.Equals(2));
             Assert.IsTrue(rs.Content["HomePage"].Facets["Priority"].First().Name.Equals("[100,200)"));
             Assert.IsTrue(rs.Content["HomePage"].Facets["Priority"].First().Count.Equals(2));
@@ -66,7 +66,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                     .Facet(x => x.IsSecret, new StringFacetFilterOperator().Filters("true"))
                     .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>();
+            var rs = query.GetResult<HomePage>().Result;
             Assert.IsTrue(rs.Content["HomePage"].Facets["IsSecret"].Count.Equals(2));
             Assert.IsTrue(rs.Content["HomePage"].Hits.Count.Equals(2));
             Assert.IsTrue(rs.Content["HomePage"].Hits.TrueForAll(x => x.IsSecret));
@@ -81,7 +81,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                     .Facet(x => x.Status, new StringFacetFilterOperator().Filters(TestDataCreator.STATUS_PUBLISHED))
                     .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>();
+            var rs = query.GetResult<HomePage>().Result;
             Assert.IsTrue(rs.Content["HomePage"].Facets.Count.Equals(2));
             Assert.IsNotNull(rs.Content["HomePage"].Facets["IsSecret"]);
             Assert.IsNotNull(rs.Content["HomePage"].Facets["Status"]);
@@ -95,7 +95,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                     .Facet(x => x.Status, new StringFacetFilterOperator().Filters(TestDataCreator.STATUS_PUBLISHED))
                     .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>();
+            var rs = query.GetResult<HomePage>().Result;
             Assert.IsTrue(rs.Content["HomePage"].Facets.Count.Equals(2));
             Assert.IsNotNull(rs.Content["HomePage"].Facets["IsSecret"]);
             Assert.IsNotNull(rs.Content["HomePage"].Facets["Status"]);

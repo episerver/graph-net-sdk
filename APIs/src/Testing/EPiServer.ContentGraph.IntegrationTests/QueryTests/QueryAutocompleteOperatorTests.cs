@@ -27,7 +27,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                     .Autocomplete(x=>x.Id, new AutoCompleteOperators().Value("myid"))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>();
+            var rs = query.GetResult<HomePage>().Result;
             Assert.IsTrue(rs.Content.Values.First().AutoComplete["Id"].Count.Equals(3));
         }
         [TestMethod]
@@ -41,7 +41,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                         .Limit(1))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>();
+            var rs = query.GetResult<HomePage>().Result;
             Assert.IsTrue(rs.Content.Values.First().AutoComplete["Id"].Count.Equals(1));
         }
         [TestMethod]
@@ -54,7 +54,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                     .Autocomplete(x => x.Id, new AutoCompleteOperators().Value(value))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>();
+            var rs = query.GetResult<HomePage>().Result;
             Assert.IsTrue(rs.Content.Values.First().AutoComplete["Id"].Count.Equals(0));
         }
     }

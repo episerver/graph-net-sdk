@@ -34,7 +34,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.StartPublish, new DateFilterOperators().Eq("2022-10-11T17:17:56Z"))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>();
+            var rs = query.GetResult<HomePage>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(1));
             Assert.IsTrue(rs.Content.Values.First().Hits.First().Name.Equals("Home 1"));
         }
@@ -47,7 +47,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.StartPublish, new DateFilterOperators().NotEq("2022-10-11T17:17:56Z"))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>();
+            var rs = query.GetResult<HomePage>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(2));
         }
         [TestMethod]
@@ -59,7 +59,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.StartPublish, new DateFilterOperators().Gt("2022-10-11T17:17:56Z"))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>();
+            var rs = query.GetResult<HomePage>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(1));
         }
         [TestMethod]
@@ -71,7 +71,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.StartPublish, new DateFilterOperators().Gte("2022-10-11T17:17:56Z"))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>();
+            var rs = query.GetResult<HomePage>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(2));
         }
         [TestMethod]
@@ -83,7 +83,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.StartPublish, new DateFilterOperators().Lt("2022-10-11T17:17:56Z"))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>();
+            var rs = query.GetResult<HomePage>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(1));
         }
         [TestMethod]
@@ -95,7 +95,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.StartPublish, new DateFilterOperators().Lte("2022-10-11T17:17:56Z"))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>();
+            var rs = query.GetResult<HomePage>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(2));
         }
         [TestMethod]
@@ -107,7 +107,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.StartPublish, new DateFilterOperators().Gte("2022-09-11T20:17:56Z").Lte("2022-10-11T17:17:56Z"))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>();
+            var rs = query.GetResult<HomePage>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(2));
         }
     }

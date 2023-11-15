@@ -87,7 +87,7 @@ namespace EPiServer.ContentGraph.Api.Querying
                 .AddBody(requestBody);
             return messageBuilder.ToMessage();
         }
-        public ContentGraphResult<TResult> GetResult<TResult>()
+        public async Task<ContentGraphResult<TResult>> GetResult<TResult>()
         {
             string url = GetServiceUrl();
 
@@ -100,7 +100,7 @@ namespace EPiServer.ContentGraph.Api.Querying
                     string body = JsonConvert.SerializeObject(_query, settings);
 
                     jsonRequest.AddRequestHeader("Authorization", GetAuthorization(body));
-                    using (var reader = new StreamReader(jsonRequest.GetResponseStream(body).Result, jsonRequest.Encoding))
+                    using (var reader = new StreamReader(await jsonRequest.GetResponseStream(body), jsonRequest.Encoding))
                     {
                         var jsonReader = new JsonTextReader(reader);
                         return JsonSerializer.CreateDefault().Deserialize<ContentGraphResult<TResult>>(jsonReader);
@@ -118,7 +118,7 @@ namespace EPiServer.ContentGraph.Api.Querying
                 
             }
         }
-        public ContentGraphResult GetResult()
+        public async Task<ContentGraphResult> GetResult()
         {
             string url = GetServiceUrl();
 
@@ -135,7 +135,7 @@ namespace EPiServer.ContentGraph.Api.Querying
                     {
                         jsonRequest.AddRequestHeader("cg-include-deleted", "true");
                     }
-                    using (var reader = new StreamReader(jsonRequest.GetResponseStream(body).Result, jsonRequest.Encoding))
+                    using (var reader = new StreamReader(await jsonRequest.GetResponseStream(body), jsonRequest.Encoding))
                     {
                         var jsonReader = new JsonTextReader(reader);
                         return JsonSerializer.CreateDefault().Deserialize<ContentGraphResult>(jsonReader);

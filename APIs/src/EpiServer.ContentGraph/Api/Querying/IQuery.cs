@@ -4,6 +4,6 @@ namespace EPiServer.ContentGraph.Api.Querying
 {
     public interface IQuery
     {
-        public ContentGraphResult<TResult> GetResult<TResult>();
+        public Task<ContentGraphResult<TResult>> GetResult<TResult>();
     }
 }

@@ -30,7 +30,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.Name, new StringFilterOperators().Eq("Steve Jobs"))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<Content>();
+            var rs = query.GetResult<Content>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.First().Name.Equals("Steve Jobs"));
         }
         [TestMethod]
@@ -42,7 +42,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.Author, new StringFilterOperators().Exists(true))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<Content>();
+            var rs = query.GetResult<Content>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count == 2);
         }
         [TestMethod]
@@ -54,7 +54,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.Author, new StringFilterOperators().StartWith("Ste").EndWith("wey"))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<Content>();
+            var rs = query.GetResult<Content>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count == 1);
             Assert.IsTrue(rs.Content.Values.First().Hits.First().Author.Equals("Steve Howey"));
         }
@@ -69,7 +69,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.Author, new StringFilterOperators().EndWith("Jobs"))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<Content>();
+            var rs = query.GetResult<Content>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count == 1);
             Assert.IsTrue(rs.Content.Values.First().Hits.First().Author.Equals("Steve Jobs"));
         }       
@@ -82,7 +82,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.Name, new StringFilterOperators().Like("st_ve%"))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<Content>();
+            var rs = query.GetResult<Content>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count == 2);
         }
         [TestMethod]
@@ -94,7 +94,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.Id, new StringFilterOperators().In("content1", "content2"))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<Content>();
+            var rs = query.GetResult<Content>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count == 2);
         }
         #endregion
@@ -109,7 +109,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.Name, new StringFilterOperators().Contains("Steve"))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<Content>();
+            var rs = query.GetResult<Content>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count == 2);
         }
         [TestMethod]
@@ -121,7 +121,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.Name, new StringFilterOperators().Match("Steve").Fuzzy(true))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<Content>();
+            var rs = query.GetResult<Content>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count == 2);
         }
         #endregion

@@ -56,7 +56,7 @@ namespace AlloyMvcTemplates.Controllers
                     .ToQuery()
                 .BuildQueries();
 
-            var rs = query.GetResult();
+            var rs = query.GetResult().Result;
             var hits = rs.GetContent<ProxyModels.StartPage>().Hits;
             var hits2 = rs.GetContent<ProxyModels.StandardPage>().Hits;
 

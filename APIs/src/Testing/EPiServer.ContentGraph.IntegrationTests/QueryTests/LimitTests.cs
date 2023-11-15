@@ -28,7 +28,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Limit(1)
                 .ToQuery()
                 .BuildQueries()
-                .GetResult<HomePage>();
+                .GetResult<HomePage>().Result;
             Assert.IsTrue(result.Content["HomePage"].Hits.Count().Equals(1));
         }
 
@@ -41,7 +41,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Limit(100)
                 .ToQuery()
                 .BuildQueries()
-                .GetResult<HomePage>();
+                .GetResult<HomePage>().Result;
             Assert.IsTrue(result.Content["HomePage"].Hits.Count().Equals(4));
         }
 
@@ -59,7 +59,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 
             var exception = Assert.ThrowsException<ServiceException>(() =>
             {
-                result = query.GetResult<HomePage>();
+                result = query.GetResult<HomePage>().Result;
             }
             );
 
