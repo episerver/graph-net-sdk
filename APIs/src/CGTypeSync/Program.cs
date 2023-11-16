@@ -133,37 +133,9 @@ namespace CGTypeSync
                 isIEnumerable = true;
             }
             }
-            if (propType.Equals("ContentModelReference"))
-            {
-                propType = "PageReference";
-            }
-            if (propType.Equals("ContentModelReferenceSearch"))
-            {
-                propType = "PageReference";
-            }
-            if (propType.Equals("ContentLanguageModel"))
-            {
-                propType = "CultureInfo";
-            }
             if (propType.Equals("Date"))
             {
                 propType = "DateTime";
-            }
-            if (propType.Equals("BlobModel"))
-            {
-                propType = "Blob";
-            }
-            if (propType.Equals("LinkItemNode"))
-            {
-                propType = "LinkItemCollection";
-            }
-            if (propType.Equals("CategoryModel"))
-            {
-                propType = "CategoryList";
-            }
-            if (propType.Equals("ContentAreaItemModelSearch"))
-            {
-                propType = "ContentArea";
             }
             if (propType.Equals("Bool"))
             {
@@ -184,30 +156,6 @@ namespace CGTypeSync
             if (propType.Equals("Float"))
             {
                 propType = "float";
-            }
-            if (propType.Equals("FooterSectionFooterRow"))
-            {
-                propType = "FooterRow";
-            }
-            if (propType.Equals("NewsPagePageListBlock"))
-            {
-                propType = "PageListBlock";
-            }
-            if (propType.Equals("StartPageSiteLogotypeBlock"))
-            {
-                propType = "SiteLogotypeBlock";
-            }
-            if (propType.Equals("FooterCategoryFooterSection"))
-            {
-                propType = "FooterSection";
-            }
-            if (propType.Equals("StartPageFooterCategory"))
-            {
-                propType = "FooterCategory";
-            }
-            if (propType.Equals("ContentLanguageModelSearch"))
-            {
-                propType = "CultureInfo";
             }
             if (isIEnumerable)
             {
