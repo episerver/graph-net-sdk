@@ -1,8 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
-using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Json;
-using System.Xml.Linq;
 
 namespace CGTypeSync
 {
@@ -13,6 +11,11 @@ namespace CGTypeSync
             new Program().Run();
         }
 
+        private readonly JsonSerializerOptions _options = new()
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
         public void Run()
         {
             //parse the CGTypes.json file
@@ -20,9 +23,6 @@ namespace CGTypeSync
             string path = System.Reflection.Assembly.GetExecutingAssembly().Location;
             var directory = System.IO.Path.GetDirectoryName(path);
             var schemaFile = Path.Combine(directory, "CGTypes.json");
-
-            Console.WriteLine($"Loading content graph types from {schemaFile}");
-
             JObject json = null;
             using (StreamReader r = new StreamReader(schemaFile))
             {
@@ -46,11 +46,8 @@ namespace CGTypeSync
 
             foreach (JProperty propertyType in propertyTypes)
             {
-                
                 var propertyTypeName = propertyType.Name;
-
-                Console.WriteLine($"Processing property type {propertyTypeName}");
-
+                
                 sb.AppendLine($"    public class {propertyTypeName}");
                 sb.AppendLine ("    {");
 
@@ -58,14 +55,9 @@ namespace CGTypeSync
 
                 foreach (JProperty propertyProperty in properties)
                 {
-                    
                     var name = propertyProperty.Name;
                     var dataType = (propertyProperty.Children()["type"].First() as JValue).Value.ToString();
-
-                    Console.WriteLine($"  Found property '{name}' with data type {dataType}");
                     dataType = ConvertType(dataType);
-
-                    Console.WriteLine($"  Adding property '{name}' with data type {dataType}");
                     sb.Append($"        public {dataType} {name} ");
                     sb.AppendLine("{ get; set; }");
 
@@ -73,14 +65,10 @@ namespace CGTypeSync
 
                 sb.AppendLine("    }");
             }
-            
-            
+
             foreach (JProperty contentType in contentTypes)
             {
-
                 var propertyTypeName = contentType.Name;
-
-                Console.WriteLine($"Processing content type {propertyTypeName}");
 
                 sb.AppendLine($"    public class {propertyTypeName}");
                 sb.AppendLine("    {");
@@ -91,10 +79,7 @@ namespace CGTypeSync
                 {
                     var name = propertyProperty.Name;
                     var dataType = (propertyProperty.Children()["type"].First() as JValue).Value.ToString();
-                    Console.WriteLine($"  Found property '{name}' with data type {dataType}");
                     dataType = ConvertType(dataType);
-
-                    Console.WriteLine($"  Adding property '{name}' with data type {dataType}");
                     sb.Append($"        public {dataType} {name} ");
                     sb.AppendLine("{ get; set; }");
 
@@ -102,19 +87,16 @@ namespace CGTypeSync
 
                 sb.AppendLine("    }");
             }
+
+
             sb.AppendLine("}");
             var classes = sb.ToString();
-            Console.WriteLine($"Finished processing schema");
 
             var outFile = Path.Combine(directory, @"..\..\..\..\Templates\EPiServer.ContentGraph.DataModels\ProxyClasses.cs");
-            Console.WriteLine($"Generate classes to file {outFile}");
             using (var writer = new StreamWriter(outFile, false))
             {
                 writer.Write(sb.ToString());
             }
-            Console.WriteLine("Done!");
-            Console.WriteLine("Press any key to exit");
-            Console.Read();
 
 
         }
@@ -122,22 +104,17 @@ namespace CGTypeSync
 
         private string ConvertType(string propType)
         {
-            var oldProp = propType;
-            
             bool isIEnumerable = false;
             if (propType.StartsWith("[") && propType.EndsWith("]"))//Is IEnumerable
             {
                 propType = propType.Substring(1, propType.Length - 2);
-                if (!propType.Equals("LinkItemNode") && !propType.Equals("CategoryModel") && !propType.Equals("MainContentArea"))
-                {
                 isIEnumerable = true;
-            }
             }
             if (propType.Equals("Date"))
             {
                 propType = "DateTime";
             }
-            if (propType.Equals("Bool"))
+            if (propType.Equals("Bool") || propType.Equals("Boolean"))
             {
                 propType = "bool";
             }
@@ -162,10 +139,6 @@ namespace CGTypeSync
                 propType = $"IEnumerable<{propType}>";
             }
 
-            if(!oldProp.Equals(propType))
-            {
-                Console.WriteLine($"  Converting type from {oldProp} to {propType}");
-            }
             return propType;
 
         }
