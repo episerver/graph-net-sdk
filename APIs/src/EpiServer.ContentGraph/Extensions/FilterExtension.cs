@@ -6,11 +6,11 @@ namespace EPiServer.ContentGraph.Extensions
     {
         #region String operator
         /// <summary>
-        /// Only use for <typeparamref name="Searchable"/> field
+        /// Full text search. Only use for <typeparamref name="Searchable"/> field
         /// </summary>
         /// <param name="field"></param>
         /// <param name="value"></param>
-        /// <returns></returns>
+        /// <returns>DelegateFilterBuilder</returns>
         public static DelegateFilterBuilder Match(this string field, string value)
         {
             return new DelegateFilterBuilder(field => new TermFilter(field, new StringFilterOperators().Contains(value)));
@@ -104,6 +104,10 @@ namespace EPiServer.ContentGraph.Extensions
         public static DelegateFilterBuilder NotIn(this int field, int[] values)
         {
             return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().NotIn(values)));
+        }
+        public static DelegateFilterBuilder InRange(this int field, int from, int to)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Gte(from).Lte(to)));
         }
         #endregion
     }

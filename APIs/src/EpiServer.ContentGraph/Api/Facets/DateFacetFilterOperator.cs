@@ -2,16 +2,16 @@
 
 namespace EPiServer.ContentGraph.Api.Facets
 {
-    public class DateFacetFilterOperator : IFacetFilterOperator
+    public class DateFacetFilterOperator : IFacetOperator
     {
         string _query = string.Empty;
-        IEnumerable<FacetProjection> _projections;
-        public string Query { get { return _query; } }
+        IEnumerable<FacetProperty> _projections;
+        public string FilterClause { get { return _query; } }
         public DateFacetFilterOperator()
         {
-            _projections = new List<FacetProjection> { FacetProjection.name, FacetProjection.count };
+            _projections = new List<FacetProperty> { FacetProperty.name, FacetProperty.count };
         }
-        public IEnumerable<FacetProjection> FacetProjections { get { return _projections; } }
+        public IEnumerable<FacetProperty> FacetProjections { get { return _projections; } }
         public DateFacetFilterOperator Unit(DateUnit dateUnit)
         {
             _query = _query.IsNullOrEmpty() ? $"unit:{dateUnit}" : $"{_query},unit:{dateUnit}";
@@ -22,7 +22,7 @@ namespace EPiServer.ContentGraph.Api.Facets
             _query = _query.IsNullOrEmpty() ? $"value:{value}" : $"{_query},value:{value}";
             return this;
         }
-        public DateFacetFilterOperator Projection(params FacetProjection[] projections)
+        public DateFacetFilterOperator Projection(params FacetProperty[] projections)
         {
             projections.ValidateNotNullArgument("projections");
             _projections = projections.Distinct().ToArray();

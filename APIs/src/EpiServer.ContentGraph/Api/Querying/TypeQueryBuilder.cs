@@ -8,7 +8,6 @@ using EPiServer.ContentGraph.Api.Autocomplete;
 using EPiServer.ContentGraph.Api.Facets;
 using EPiServer.ServiceLocation;
 using EPiServer.ContentGraph.ExpressionHelper;
-using EPiServer.ContentGraph.Extensions;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {
@@ -143,14 +142,32 @@ namespace EPiServer.ContentGraph.Api.Querying
         /// </summary>
         /// <param name="fieldSelector"></param>
         /// <returns></returns>
-        public TypeQueryBuilder<T> Facet(Expression<Func<T, object>> fieldSelector)
+        public TypeQueryBuilder<T> Facet(Expression<Func<T, string>> fieldSelector)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             fieldSelector.Compile();
-            var facet = ConvertNestedFieldToString.ConvertNestedFieldForFacet(fieldSelector.GetFieldPath());
-            graphObject.Facets = graphObject.Facets.IsNullOrEmpty() ?
-                $"{facet}" :
-                $"{graphObject.Facets} {facet}";
+            Facet(fieldSelector.GetFieldPath());
+            return this;
+        }
+        public TypeQueryBuilder<T> Facet(Expression<Func<T, DateTime>> fieldSelector)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            fieldSelector.Compile();
+            Facet(fieldSelector.GetFieldPath());
+            return this;
+        }
+        public TypeQueryBuilder<T> Facet(Expression<Func<T, bool>> fieldSelector)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            fieldSelector.Compile();
+            Facet(fieldSelector.GetFieldPath());
+            return this;
+        }
+        public TypeQueryBuilder<T> Facet(Expression<Func<T, int>> fieldSelector)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            fieldSelector.Compile();
+            Facet(fieldSelector.GetFieldPath());
             return this;
         }
         public TypeQueryBuilder<T> Facet(string propertyName)
@@ -410,7 +427,7 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             return this;
         }
-        private TypeQueryBuilder<T> Facet(string propertyName, IFacetFilterOperator facetFilter)
+        private TypeQueryBuilder<T> Facet(string propertyName, IFacetOperator facetFilter)
         {
             propertyName.ValidateNotNullArgument("propertyName");
             facetFilter.ValidateNotNullArgument("facetFilter");
@@ -418,6 +435,14 @@ namespace EPiServer.ContentGraph.Api.Querying
             graphObject.Facets = graphObject.Facets.IsNullOrEmpty() ?
                 $"{facets}" :
                 $"{graphObject.Facets} {facets}";
+            return this;
+        }
+        public TypeQueryBuilder<T> Facet(Expression<Func<T, IFacetFilter>> facetFilter)
+        {
+            facetFilter.ValidateNotNullArgument("facetFilter");
+            var parser = new FacetExpressionParser();
+            var filterOperator = parser.GetFacetFilter(facetFilter);
+            Facet(filterOperator);
             return this;
         }
         /// <summary>
@@ -464,6 +489,14 @@ namespace EPiServer.ContentGraph.Api.Querying
             facetFilter.ValidateNotNullArgument("facetFilter");
             fieldSelector.Compile();
             Facet(fieldSelector.GetFieldPath(), facetFilter);
+            return this;
+        }
+        public TypeQueryBuilder<T> Facet(IFacetFilter facetFilter)
+        {
+            facetFilter.ValidateNotNullArgument("facetFilter");
+            graphObject.Facets = graphObject.Facets.IsNullOrEmpty() ?
+                $"{facetFilter.FilterClause}" :
+                $"{graphObject.Facets} {facetFilter.FilterClause}";
             return this;
         }
         public TypeQueryBuilder<T> FilterForVisitor(params IFilterForVisitor[] filterForVisitors)

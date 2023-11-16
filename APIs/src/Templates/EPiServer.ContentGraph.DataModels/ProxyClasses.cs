@@ -1,6 +1,7 @@
 using EPiServer.Core;
 using EPiServer.Framework.Blobs;
 using EPiServer.SpecializedProperties;
+using EPiServer.DataAnnotations;
 using System.Globalization;
 
 namespace EPiServer.ContentGraph.DataModels
@@ -176,9 +177,10 @@ namespace EPiServer.ContentGraph.DataModels
         public ContentModelReferenceSearch ContentLink { get; set; }
         public InlineBlockPropertyModelSearch InlineBlock { get; set; }
     }
-    public class IngredientBlock
+    public class IngredientBlock:Content
     {
         public ContentModelReference ContentLink { get; set; }
+        [Searchable]
         public string Name { get; set; }
         public ContentLanguageModel Language { get; set; }
         public IEnumerable<ContentLanguageModel> ExistingLanguages { get; set; }
@@ -194,15 +196,17 @@ namespace EPiServer.ContentGraph.DataModels
         public DateTime Saved { get; set; }
         public string Status { get; set; }
         public IEnumerable<CategoryModel> Category { get; set; }
+        [Searchable]
         public string MainBody { get; set; }
         public IEnumerable<string> Ancestors { get; set; }
         public bool IsCommonDraft { get; set; }
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class VideoFile
+    public class VideoFile:Content
     {
         public ContentModelReference ContentLink { get; set; }
+        [Searchable]
         public string Name { get; set; }
         public ContentLanguageModel Language { get; set; }
         public IEnumerable<ContentLanguageModel> ExistingLanguages { get; set; }
@@ -220,17 +224,20 @@ namespace EPiServer.ContentGraph.DataModels
         public IEnumerable<CategoryModel> Category { get; set; }
         public BlobModel Thumbnail { get; set; }
         public string MimeType { get; set; }
+        [Searchable]
         public string Copyright { get; set; }
         public ContentModelReference PreviewImage { get; set; }
         public IEnumerable<string> Ancestors { get; set; }
         public bool IsCommonDraft { get; set; }
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
+        [Searchable]
         public string Content { get; set; }
     }
-    public class ImageFile
+    public class ImageFile:Content
     {
         public ContentModelReference ContentLink { get; set; }
+        [Searchable]
         public string Name { get; set; }
         public ContentLanguageModel Language { get; set; }
         public IEnumerable<ContentLanguageModel> ExistingLanguages { get; set; }
@@ -248,16 +255,19 @@ namespace EPiServer.ContentGraph.DataModels
         public IEnumerable<CategoryModel> Category { get; set; }
         public BlobModel Thumbnail { get; set; }
         public string MimeType { get; set; }
+        [Searchable]
         public string Copyright { get; set; }
         public IEnumerable<string> Ancestors { get; set; }
         public bool IsCommonDraft { get; set; }
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
+        [Searchable]
         public string Content { get; set; }
     }
-    public class GenericMedia
+    public class GenericMedia:Content
     {
         public ContentModelReference ContentLink { get; set; }
+        [Searchable]
         public string Name { get; set; }
         public ContentLanguageModel Language { get; set; }
         public IEnumerable<ContentLanguageModel> ExistingLanguages { get; set; }
@@ -275,16 +285,19 @@ namespace EPiServer.ContentGraph.DataModels
         public IEnumerable<CategoryModel> Category { get; set; }
         public BlobModel Thumbnail { get; set; }
         public string MimeType { get; set; }
+        [Searchable]
         public string Description { get; set; }
         public IEnumerable<string> Ancestors { get; set; }
         public bool IsCommonDraft { get; set; }
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
+        [Searchable]
         public string Content { get; set; }
     }
-    public class TagHelperPage
+    public class TagHelperPage:Content
     {
         public ContentModelReference ContentLink { get; set; }
+        [Searchable]
         public string Name { get; set; }
         public ContentLanguageModel Language { get; set; }
         public IEnumerable<ContentLanguageModel> ExistingLanguages { get; set; }
@@ -300,14 +313,19 @@ namespace EPiServer.ContentGraph.DataModels
         public DateTime Saved { get; set; }
         public string Status { get; set; }
         public IEnumerable<CategoryModel> Category { get; set; }
+        [Searchable]
         public string MetaTitle { get; set; }
         public ContentModelReference PageImage { get; set; }
         public IEnumerable<string> MetaKeywords { get; set; }
+        [Searchable]
         public string TeaserText { get; set; }
         public bool HideSiteHeader { get; set; }
+        [Searchable]
         public string MetaDescription { get; set; }
         public bool HideSiteFooter { get; set; }
+        [Searchable]
         public string MainBody { get; set; }
+        [Searchable]
         public IEnumerable<ContentAreaItemModelSearch> MainContentArea { get; set; }
         public LinkItemNode Link { get; set; }
         public bool DisableIndexing { get; set; }
@@ -316,9 +334,10 @@ namespace EPiServer.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class StartPage
+    public class StartPage:Content
     {
         public ContentModelReference ContentLink { get; set; }
+        [Searchable]
         public string Name { get; set; }
         public ContentLanguageModel Language { get; set; }
         public IEnumerable<ContentLanguageModel> ExistingLanguages { get; set; }
@@ -338,16 +357,22 @@ namespace EPiServer.ContentGraph.DataModels
         public ContentModelReference ContactsPageLink { get; set; }
         public ContentModelReference SearchPageLink { get; set; }
         public StartPageSiteLogotypeBlock SiteLogotype { get; set; }
+        [Searchable]
         public string MetaTitle { get; set; }
         public ContentModelReference PageImage { get; set; }
         public IEnumerable<string> MetaKeywords { get; set; }
+        [Searchable]
         public string TeaserText { get; set; }
         public bool HideSiteHeader { get; set; }
         public IEnumerable<LinkItemNode> ProductPageLinks { get; set; }
+        [Searchable]
         public string MetaDescription { get; set; }
         public bool HideSiteFooter { get; set; }
+        [Searchable]
         public IEnumerable<ContentAreaItemModelSearch> MainContentArea { get; set; }
+        [Searchable]
         public IEnumerable<ContentAreaItemModelSearch> AllowCertainBlockTypes { get; set; }
+        [Searchable]
         public IEnumerable<ContentAreaItemModelSearch> RestrictCertainBlockTypes { get; set; }
         public IEnumerable<LinkItemNode> CompanyInformationPageLinks { get; set; }
         public IEnumerable<LinkItemNode> NewsPageLinks { get; set; }
@@ -358,9 +383,10 @@ namespace EPiServer.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class NumberEditorTest
+    public class NumberEditorTest:Content
     {
         public ContentModelReference ContentLink { get; set; }
+        [Searchable]
         public string Name { get; set; }
         public ContentLanguageModel Language { get; set; }
         public IEnumerable<ContentLanguageModel> ExistingLanguages { get; set; }
@@ -382,9 +408,10 @@ namespace EPiServer.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class StandardPage
+    public class StandardPage:Content
     {
         public ContentModelReference ContentLink { get; set; }
+        [Searchable]
         public string Name { get; set; }
         public ContentLanguageModel Language { get; set; }
         public IEnumerable<ContentLanguageModel> ExistingLanguages { get; set; }
@@ -400,14 +427,19 @@ namespace EPiServer.ContentGraph.DataModels
         public DateTime Saved { get; set; }
         public string Status { get; set; }
         public IEnumerable<CategoryModel> Category { get; set; }
+        [Searchable]
         public string MetaTitle { get; set; }
         public ContentModelReference PageImage { get; set; }
         public IEnumerable<string> MetaKeywords { get; set; }
+        [Searchable]
         public string TeaserText { get; set; }
         public bool HideSiteHeader { get; set; }
+        [Searchable]
         public string MetaDescription { get; set; }
         public bool HideSiteFooter { get; set; }
+        [Searchable]
         public string MainBody { get; set; }
+        [Searchable]
         public IEnumerable<ContentAreaItemModelSearch> MainContentArea { get; set; }
         public bool DisableIndexing { get; set; }
         public IEnumerable<string> Ancestors { get; set; }
@@ -415,9 +447,10 @@ namespace EPiServer.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class SearchPage
+    public class SearchPage:Content
     {
         public ContentModelReference ContentLink { get; set; }
+        [Searchable]
         public string Name { get; set; }
         public ContentLanguageModel Language { get; set; }
         public IEnumerable<ContentLanguageModel> ExistingLanguages { get; set; }
@@ -433,13 +466,17 @@ namespace EPiServer.ContentGraph.DataModels
         public DateTime Saved { get; set; }
         public string Status { get; set; }
         public IEnumerable<CategoryModel> Category { get; set; }
+        [Searchable]
         public string MetaTitle { get; set; }
         public ContentModelReference PageImage { get; set; }
         public IEnumerable<string> MetaKeywords { get; set; }
+        [Searchable]
         public string TeaserText { get; set; }
         public bool HideSiteHeader { get; set; }
+        [Searchable]
         public string MetaDescription { get; set; }
         public bool HideSiteFooter { get; set; }
+        [Searchable]
         public IEnumerable<ContentAreaItemModelSearch> RelatedContentArea { get; set; }
         public bool DisableIndexing { get; set; }
         public IEnumerable<string> Ancestors { get; set; }
@@ -447,9 +484,10 @@ namespace EPiServer.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class ProductPage
+    public class ProductPage:Content
     {
         public ContentModelReference ContentLink { get; set; }
+        [Searchable]
         public string Name { get; set; }
         public ContentLanguageModel Language { get; set; }
         public IEnumerable<ContentLanguageModel> ExistingLanguages { get; set; }
@@ -465,16 +503,22 @@ namespace EPiServer.ContentGraph.DataModels
         public DateTime Saved { get; set; }
         public string Status { get; set; }
         public IEnumerable<CategoryModel> Category { get; set; }
+        [Searchable]
         public string MetaTitle { get; set; }
         public ContentModelReference PageImage { get; set; }
         public IEnumerable<string> MetaKeywords { get; set; }
+        [Searchable]
         public string TeaserText { get; set; }
         public bool HideSiteHeader { get; set; }
+        [Searchable]
         public string MetaDescription { get; set; }
         public bool HideSiteFooter { get; set; }
         public IEnumerable<string> UniqueSellingPoints { get; set; }
+        [Searchable]
         public string MainBody { get; set; }
+        [Searchable]
         public IEnumerable<ContentAreaItemModelSearch> MainContentArea { get; set; }
+        [Searchable]
         public IEnumerable<ContentAreaItemModelSearch> RelatedContentArea { get; set; }
         public bool DisableIndexing { get; set; }
         public IEnumerable<string> Ancestors { get; set; }
@@ -482,9 +526,10 @@ namespace EPiServer.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class NewsPage
+    public class NewsPage:Content
     {
         public ContentModelReference ContentLink { get; set; }
+        [Searchable]
         public string Name { get; set; }
         public ContentLanguageModel Language { get; set; }
         public IEnumerable<ContentLanguageModel> ExistingLanguages { get; set; }
@@ -500,15 +545,20 @@ namespace EPiServer.ContentGraph.DataModels
         public DateTime Saved { get; set; }
         public string Status { get; set; }
         public IEnumerable<CategoryModel> Category { get; set; }
+        [Searchable]
         public string MetaTitle { get; set; }
         public ContentModelReference PageImage { get; set; }
         public IEnumerable<string> MetaKeywords { get; set; }
+        [Searchable]
         public string TeaserText { get; set; }
         public bool HideSiteHeader { get; set; }
+        [Searchable]
         public string MetaDescription { get; set; }
         public bool HideSiteFooter { get; set; }
         public NewsPagePageListBlock NewsList { get; set; }
+        [Searchable]
         public string MainBody { get; set; }
+        [Searchable]
         public IEnumerable<ContentAreaItemModelSearch> MainContentArea { get; set; }
         public bool DisableIndexing { get; set; }
         public IEnumerable<string> Ancestors { get; set; }
@@ -516,9 +566,10 @@ namespace EPiServer.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class LandingPage
+    public class LandingPage:Content
     {
         public ContentModelReference ContentLink { get; set; }
+        [Searchable]
         public string Name { get; set; }
         public ContentLanguageModel Language { get; set; }
         public IEnumerable<ContentLanguageModel> ExistingLanguages { get; set; }
@@ -534,13 +585,17 @@ namespace EPiServer.ContentGraph.DataModels
         public DateTime Saved { get; set; }
         public string Status { get; set; }
         public IEnumerable<CategoryModel> Category { get; set; }
+        [Searchable]
         public string MetaTitle { get; set; }
         public ContentModelReference PageImage { get; set; }
         public IEnumerable<string> MetaKeywords { get; set; }
+        [Searchable]
         public string TeaserText { get; set; }
         public bool HideSiteHeader { get; set; }
+        [Searchable]
         public string MetaDescription { get; set; }
         public bool HideSiteFooter { get; set; }
+        [Searchable]
         public IEnumerable<ContentAreaItemModelSearch> MainContentArea { get; set; }
         public bool DisableIndexing { get; set; }
         public IEnumerable<string> Ancestors { get; set; }
@@ -548,9 +603,10 @@ namespace EPiServer.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class ContainerPage
+    public class ContainerPage:Content
     {
         public ContentModelReference ContentLink { get; set; }
+        [Searchable]
         public string Name { get; set; }
         public ContentLanguageModel Language { get; set; }
         public IEnumerable<ContentLanguageModel> ExistingLanguages { get; set; }
@@ -566,11 +622,14 @@ namespace EPiServer.ContentGraph.DataModels
         public DateTime Saved { get; set; }
         public string Status { get; set; }
         public IEnumerable<CategoryModel> Category { get; set; }
+        [Searchable]
         public string MetaTitle { get; set; }
         public ContentModelReference PageImage { get; set; }
         public IEnumerable<string> MetaKeywords { get; set; }
+        [Searchable]
         public string TeaserText { get; set; }
         public bool HideSiteHeader { get; set; }
+        [Searchable]
         public string MetaDescription { get; set; }
         public bool HideSiteFooter { get; set; }
         public bool DisableIndexing { get; set; }
@@ -579,9 +638,10 @@ namespace EPiServer.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class ArticlePage
+    public class ArticlePage:Content
     {
         public ContentModelReference ContentLink { get; set; }
+        [Searchable]
         public string Name { get; set; }
         public ContentLanguageModel Language { get; set; }
         public IEnumerable<ContentLanguageModel> ExistingLanguages { get; set; }
@@ -597,14 +657,19 @@ namespace EPiServer.ContentGraph.DataModels
         public DateTime Saved { get; set; }
         public string Status { get; set; }
         public IEnumerable<CategoryModel> Category { get; set; }
+        [Searchable]
         public string MetaTitle { get; set; }
         public ContentModelReference PageImage { get; set; }
         public IEnumerable<string> MetaKeywords { get; set; }
+        [Searchable]
         public string TeaserText { get; set; }
         public bool HideSiteHeader { get; set; }
+        [Searchable]
         public string MetaDescription { get; set; }
         public bool HideSiteFooter { get; set; }
+        [Searchable]
         public string MainBody { get; set; }
+        [Searchable]
         public IEnumerable<ContentAreaItemModelSearch> MainContentArea { get; set; }
         public bool DisableIndexing { get; set; }
         public IEnumerable<string> Ancestors { get; set; }
@@ -612,9 +677,10 @@ namespace EPiServer.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class ContactPage
+    public class ContactPage:Content
     {
         public ContentModelReference ContentLink { get; set; }
+        [Searchable]
         public string Name { get; set; }
         public ContentLanguageModel Language { get; set; }
         public IEnumerable<ContentLanguageModel> ExistingLanguages { get; set; }
@@ -631,13 +697,18 @@ namespace EPiServer.ContentGraph.DataModels
         public string Status { get; set; }
         public IEnumerable<CategoryModel> Category { get; set; }
         public ContentModelReference Image { get; set; }
+        [Searchable]
         public string Phone { get; set; }
+        [Searchable]
         public string Email { get; set; }
+        [Searchable]
         public string MetaTitle { get; set; }
         public ContentModelReference PageImage { get; set; }
         public IEnumerable<string> MetaKeywords { get; set; }
+        [Searchable]
         public string TeaserText { get; set; }
         public bool HideSiteHeader { get; set; }
+        [Searchable]
         public string MetaDescription { get; set; }
         public bool HideSiteFooter { get; set; }
         public bool DisableIndexing { get; set; }
@@ -646,9 +717,10 @@ namespace EPiServer.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class EditorialBlock
+    public class EditorialBlock:Content
     {
         public ContentModelReference ContentLink { get; set; }
+        [Searchable]
         public string Name { get; set; }
         public ContentLanguageModel Language { get; set; }
         public IEnumerable<ContentLanguageModel> ExistingLanguages { get; set; }
@@ -664,15 +736,17 @@ namespace EPiServer.ContentGraph.DataModels
         public DateTime Saved { get; set; }
         public string Status { get; set; }
         public IEnumerable<CategoryModel> Category { get; set; }
+        [Searchable]
         public string MainBody { get; set; }
         public IEnumerable<string> Ancestors { get; set; }
         public bool IsCommonDraft { get; set; }
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class VectorImageFile
+    public class VectorImageFile:Content
     {
         public ContentModelReference ContentLink { get; set; }
+        [Searchable]
         public string Name { get; set; }
         public ContentLanguageModel Language { get; set; }
         public IEnumerable<ContentLanguageModel> ExistingLanguages { get; set; }
@@ -694,11 +768,13 @@ namespace EPiServer.ContentGraph.DataModels
         public bool IsCommonDraft { get; set; }
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
+        [Searchable]
         public string Content { get; set; }
     }
-    public class TeaserBlock
+    public class TeaserBlock:Content
     {
         public ContentModelReference ContentLink { get; set; }
+        [Searchable]
         public string Name { get; set; }
         public ContentLanguageModel Language { get; set; }
         public IEnumerable<ContentLanguageModel> ExistingLanguages { get; set; }
@@ -714,7 +790,9 @@ namespace EPiServer.ContentGraph.DataModels
         public DateTime Saved { get; set; }
         public string Status { get; set; }
         public IEnumerable<CategoryModel> Category { get; set; }
+        [Searchable]
         public string Heading { get; set; }
+        [Searchable]
         public string Text { get; set; }
         public ContentModelReference Image { get; set; }
         public ContentModelReference Link { get; set; }
@@ -723,9 +801,10 @@ namespace EPiServer.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class SiteLogotypeBlock
+    public class SiteLogotypeBlock:Content
     {
         public ContentModelReference ContentLink { get; set; }
+        [Searchable]
         public string Name { get; set; }
         public ContentLanguageModel Language { get; set; }
         public IEnumerable<ContentLanguageModel> ExistingLanguages { get; set; }
@@ -741,15 +820,17 @@ namespace EPiServer.ContentGraph.DataModels
         public DateTime Saved { get; set; }
         public string Status { get; set; }
         public IEnumerable<CategoryModel> Category { get; set; }
+        [Searchable]
         public string Title { get; set; }
         public IEnumerable<string> Ancestors { get; set; }
         public bool IsCommonDraft { get; set; }
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class PageListBlock
+    public class PageListBlock:Content
     {
         public ContentModelReference ContentLink { get; set; }
+        [Searchable]
         public string Name { get; set; }
         public ContentLanguageModel Language { get; set; }
         public IEnumerable<ContentLanguageModel> ExistingLanguages { get; set; }
@@ -765,6 +846,7 @@ namespace EPiServer.ContentGraph.DataModels
         public DateTime Saved { get; set; }
         public string Status { get; set; }
         public IEnumerable<CategoryModel> Category { get; set; }
+        [Searchable]
         public string Heading { get; set; }
         public bool IncludePublishDate { get; set; }
         public bool IncludeIntroduction { get; set; }
@@ -779,9 +861,10 @@ namespace EPiServer.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class NestedBlock
+    public class NestedBlock:Content
     {
         public ContentModelReference ContentLink { get; set; }
+        [Searchable]
         public string Name { get; set; }
         public ContentLanguageModel Language { get; set; }
         public IEnumerable<ContentLanguageModel> ExistingLanguages { get; set; }
@@ -797,16 +880,19 @@ namespace EPiServer.ContentGraph.DataModels
         public DateTime Saved { get; set; }
         public string Status { get; set; }
         public IEnumerable<CategoryModel> Category { get; set; }
+        [Searchable]
         public string MainBody { get; set; }
+        [Searchable]
         public IEnumerable<ContentAreaItemModelSearch> ContentAreaItems { get; set; }
         public IEnumerable<string> Ancestors { get; set; }
         public bool IsCommonDraft { get; set; }
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class ListBlock
+    public class ListBlock:Content
     {
         public ContentModelReference ContentLink { get; set; }
+        [Searchable]
         public string Name { get; set; }
         public ContentLanguageModel Language { get; set; }
         public IEnumerable<ContentLanguageModel> ExistingLanguages { get; set; }
@@ -828,9 +914,10 @@ namespace EPiServer.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class JumbotronBlock
+    public class JumbotronBlock:Content
     {
         public ContentModelReference ContentLink { get; set; }
+        [Searchable]
         public string Name { get; set; }
         public ContentLanguageModel Language { get; set; }
         public IEnumerable<ContentLanguageModel> ExistingLanguages { get; set; }
@@ -847,9 +934,13 @@ namespace EPiServer.ContentGraph.DataModels
         public string Status { get; set; }
         public IEnumerable<CategoryModel> Category { get; set; }
         public ContentModelReference Image { get; set; }
+        [Searchable]
         public string ImageDescription { get; set; }
+        [Searchable]
         public string Heading { get; set; }
+        [Searchable]
         public string SubHeading { get; set; }
+        [Searchable]
         public string ButtonText { get; set; }
         public string ButtonLink { get; set; }
         public IEnumerable<string> Ancestors { get; set; }
@@ -857,9 +948,10 @@ namespace EPiServer.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class AllPropertiesTestPage
+    public class AllPropertiesTestPage:Content
     {
         public ContentModelReference ContentLink { get; set; }
+        [Searchable]
         public string Name { get; set; }
         public ContentLanguageModel Language { get; set; }
         public IEnumerable<ContentLanguageModel> ExistingLanguages { get; set; }
@@ -875,17 +967,24 @@ namespace EPiServer.ContentGraph.DataModels
         public DateTime Saved { get; set; }
         public string Status { get; set; }
         public IEnumerable<CategoryModel> Category { get; set; }
+        [Searchable]
         public string StringNoValidation { get; set; }
+        [Searchable]
         public string StringLength { get; set; }
+        [Searchable]
         public string StringRegex { get; set; }
+        [Searchable]
         public string IntNoValidation { get; set; }
+        [Searchable]
         public string Int { get; set; }
         public float FloatNoValidation { get; set; }
         public float Float { get; set; }
         public ContentModelReference ContentReference1 { get; set; }
         public ContentModelReference ContentReferenceReadonly1 { get; set; }
+        [Searchable]
         public IEnumerable<ContentAreaItemModelSearch> ContentArea1 { get; set; }
         public IEnumerable<AllPropertiesTestPageEditorialBlock> EditorialBlocks { get; set; }
+        [Searchable]
         public IEnumerable<ContentAreaItemModelSearch> ContentAreaReadonly1 { get; set; }
         public IEnumerable<string> XhtmlStrings { get; set; }
         public AllPropertiesTestPageContactBlock ContactBlock { get; set; }
@@ -919,16 +1018,22 @@ namespace EPiServer.ContentGraph.DataModels
         public IEnumerable<string> Guids { get; set; }
         public string UrlReadonly { get; set; }
         public string UrlToImage { get; set; }
+        [Searchable]
         public string Text1 { get; set; }
         public IEnumerable<LinkItemNode> LinksList { get; set; }
+        [Searchable]
         public string TextReadonly1 { get; set; }
         public IEnumerable<LinkItemNode> LinksEnumerable { get; set; }
+        [Searchable]
         public string TextArea1 { get; set; }
         public IEnumerable<ContentModelReference> Pages { get; set; }
+        [Searchable]
         public string TextAreaReadonly1 { get; set; }
         public IEnumerable<string> Urls { get; set; }
+        [Searchable]
         public string PreviewableText1 { get; set; }
         public IEnumerable<ContentModelReference> Images { get; set; }
+        [Searchable]
         public string PreviewableTextReadonly1 { get; set; }
         public IEnumerable<ContentModelReference> Videos { get; set; }
         public DateTime Date1 { get; set; }
@@ -948,12 +1053,19 @@ namespace EPiServer.ContentGraph.DataModels
         public IEnumerable<string> StringListWithRegexValidation { get; set; }
         public IEnumerable<string> StringListWithMax10Characters { get; set; }
         public ContentModelReference ImageReadonly1 { get; set; }
+        [Searchable]
         public string SingleSelect1 { get; set; }
+        [Searchable]
         public string SingleSelectReadonly1 { get; set; }
+        [Searchable]
         public string MultiSelect1 { get; set; }
+        [Searchable]
         public string MultiSelectReadonly1 { get; set; }
+        [Searchable]
         public string SelectionEditor1 { get; set; }
+        [Searchable]
         public string SelectionEditor2 { get; set; }
+        [Searchable]
         public string SelectionEditorReadonly1 { get; set; }
         public IEnumerable<string> CustomStringList { get; set; }
         public IEnumerable<int> IntList { get; set; }
@@ -966,9 +1078,10 @@ namespace EPiServer.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class ContactBlock
+    public class ContactBlock:Content
     {
         public ContentModelReference ContentLink { get; set; }
+        [Searchable]
         public string Name { get; set; }
         public ContentLanguageModel Language { get; set; }
         public IEnumerable<ContentLanguageModel> ExistingLanguages { get; set; }
@@ -985,8 +1098,10 @@ namespace EPiServer.ContentGraph.DataModels
         public string Status { get; set; }
         public IEnumerable<CategoryModel> Category { get; set; }
         public ContentModelReference Image { get; set; }
+        [Searchable]
         public string Heading { get; set; }
         public ContentModelReference ContactPageLink { get; set; }
+        [Searchable]
         public string LinkText { get; set; }
         public string LinkUrl { get; set; }
         public IEnumerable<string> Ancestors { get; set; }
@@ -994,9 +1109,10 @@ namespace EPiServer.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class ButtonBlock
+    public class ButtonBlock:Content
     {
         public ContentModelReference ContentLink { get; set; }
+        [Searchable]
         public string Name { get; set; }
         public ContentLanguageModel Language { get; set; }
         public IEnumerable<ContentLanguageModel> ExistingLanguages { get; set; }
@@ -1012,6 +1128,7 @@ namespace EPiServer.ContentGraph.DataModels
         public DateTime Saved { get; set; }
         public string Status { get; set; }
         public IEnumerable<CategoryModel> Category { get; set; }
+        [Searchable]
         public string ButtonText { get; set; }
         public string ButtonLink { get; set; }
         public IEnumerable<string> Ancestors { get; set; }
@@ -1019,9 +1136,10 @@ namespace EPiServer.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class TestBlock
+    public class TestBlock:Content
     {
         public ContentModelReference ContentLink { get; set; }
+        [Searchable]
         public string Name { get; set; }
         public ContentLanguageModel Language { get; set; }
         public IEnumerable<ContentLanguageModel> ExistingLanguages { get; set; }
@@ -1049,9 +1167,10 @@ namespace EPiServer.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class RecipeBlock
+    public class RecipeBlock:Content
     {
         public ContentModelReference ContentLink { get; set; }
+        [Searchable]
         public string Name { get; set; }
         public ContentLanguageModel Language { get; set; }
         public IEnumerable<ContentLanguageModel> ExistingLanguages { get; set; }
@@ -1067,6 +1186,7 @@ namespace EPiServer.ContentGraph.DataModels
         public DateTime Saved { get; set; }
         public string Status { get; set; }
         public IEnumerable<CategoryModel> Category { get; set; }
+        [Searchable]
         public string MainBody { get; set; }
         public IEnumerable<string> Ancestors { get; set; }
         public bool IsCommonDraft { get; set; }
@@ -1076,6 +1196,7 @@ namespace EPiServer.ContentGraph.DataModels
     public class Content
     {
         public ContentModelReference ContentLink { get; set; }
+        [Searchable]
         public string Name { get; set; }
         public ContentLanguageModel Language { get; set; }
         public IEnumerable<ContentLanguageModel> ExistingLanguages { get; set; }
@@ -1100,6 +1221,7 @@ namespace EPiServer.ContentGraph.DataModels
         public ContentModelReference ContentLink { get; set; }
         public IEnumerable<string> ContentType { get; set; }
         public string Status { get; set; }
+        [Searchable]
         public string Name { get; set; }
         public string Id { get; set; }
         public string EditLocation { get; set; }

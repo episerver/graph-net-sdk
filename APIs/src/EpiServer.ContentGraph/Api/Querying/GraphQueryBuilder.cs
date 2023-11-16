@@ -4,7 +4,6 @@ using EPiServer.ContentGraph.Connection;
 using GraphQL.Transport;
 using Newtonsoft.Json;
 using System.Net;
-using EPiServer.ContentGraph.Helpers;
 using System.Text;
 using EPiServer.ContentGraph.Configuration;
 using EPiServer.Turnstile.Contracts.Hmac;
@@ -24,7 +23,6 @@ namespace EPiServer.ContentGraph.Api.Querying
         private static OptiGraphOptions _optiGraphOptions = new();
         private const string RequestMethod = "POST";
         ITypeQueryBuilder? typeQueryBuilder;
-        IList<ITypeQueryBuilder> _typeQueryBuilders;
 
         public GraphQueryBuilder(IOptions<OptiGraphOptions> optiGraphOptions)
         {
@@ -33,18 +31,14 @@ namespace EPiServer.ContentGraph.Api.Querying
             {
                 OperationName = "SampleQuery"
             };
-            _typeQueryBuilders = new List<ITypeQueryBuilder>();
         }
-        //public GraphQueryBuilder() => _query = new GraphQLRequest();
         public GraphQueryBuilder(GraphQLRequest request)
         {
             _query = request;
-            _typeQueryBuilders ??= new List<ITypeQueryBuilder>();
         }
         public TypeQueryBuilder<T> ForType<T>()
         {
             typeQueryBuilder = new TypeQueryBuilder<T>(_query);
-            _typeQueryBuilders.Add(typeQueryBuilder);
             return (TypeQueryBuilder<T>)typeQueryBuilder;
         }
         public GraphQueryBuilder OperationName(string op)
@@ -159,17 +153,7 @@ namespace EPiServer.ContentGraph.Api.Querying
         /// <returns></returns>
         public GraphQueryBuilder BuildQueries()
         {
-            //if (_typeQueryBuilders != null && _typeQueryBuilders.Count > 0)
-            //{
-            //    foreach (var item in _typeQueryBuilders)
-            //    {
-            //        _query.Query += item.ToQuery().GetQuery().Query;
-            //    }
-            //}
-
             _query.Query = $"query {_query.OperationName} {{{_query.Query}}}";
-
-            //_typeQueryBuilders?.Clear();
             return this;
         }
         public GraphQLRequest GetQuery()

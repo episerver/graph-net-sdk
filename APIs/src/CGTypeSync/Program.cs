@@ -39,6 +39,7 @@ namespace CGTypeSync
             sb.AppendLine("using EPiServer.Core;");
             sb.AppendLine("using EPiServer.Framework.Blobs;");
             sb.AppendLine("using EPiServer.SpecializedProperties;");
+            sb.AppendLine("using EPiServer.DataAnnotations;");
             sb.AppendLine("using System.Globalization;");
             sb.AppendLine();
             sb.AppendLine("namespace EPiServer.ContentGraph.DataModels");
@@ -69,8 +70,15 @@ namespace CGTypeSync
             foreach (JProperty contentType in contentTypes)
             {
                 var propertyTypeName = contentType.Name;
+                var parentTypes = contentType.First()?["contentType"]?.Values();
+                var inheritedFromType = string.Empty;
 
-                sb.AppendLine($"    public class {propertyTypeName}");
+                if (parentTypes != null && parentTypes.Count() > 0)
+                {
+                    inheritedFromType = string.Join(',', parentTypes.Select(type=> type.ToString()));
+                    inheritedFromType = $":{inheritedFromType}";
+                }
+                sb.AppendLine($"    public class {propertyTypeName}{inheritedFromType}");
                 sb.AppendLine("    {");
 
                 var properties = contentType.First().Children().Children().Children();
@@ -78,8 +86,13 @@ namespace CGTypeSync
                 foreach (JProperty propertyProperty in properties.Where(x => x is JProperty))
                 {
                     var name = propertyProperty.Name;
+                    var searchableAttr = (bool)(propertyProperty.Children()["searchable"].First() as JValue).Value;
                     var dataType = (propertyProperty.Children()["type"].First() as JValue).Value.ToString();
                     dataType = ConvertType(dataType);
+                    if (searchableAttr)
+                    {
+                        sb.AppendLine($"        [Searchable]");
+                    }
                     sb.Append($"        public {dataType} {name} ");
                     sb.AppendLine("{ get; set; }");
 

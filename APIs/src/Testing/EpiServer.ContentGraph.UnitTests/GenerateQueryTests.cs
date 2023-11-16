@@ -95,10 +95,10 @@ namespace EPiServer.ContentGraph.UnitTests
                 .Field(x => x.Property2)
                 .Facet(x => x.Property1, new StringFacetFilterOperator()
                     .Filters("somevalue","other value")
-                    .Projection(FacetProjection.name, FacetProjection.count))
+                    .Projection(FacetProperty.name, FacetProperty.count))
                 .Facet(x => x.Property3.NestedProperty, new NumericFacetFilterOperator()
                     .Ranges((1,2),(9,10))
-                    .Projection(FacetProjection.name, FacetProjection.count));
+                    .Projection(FacetProperty.name, FacetProperty.count));
             GraphQueryBuilder query = typeQueryBuilder.ToQuery();
 
             Assert.NotNull(query.GetQuery());

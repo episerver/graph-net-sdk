@@ -1,4 +1,4 @@
-﻿using EPiServer.ContentGraph.Api.Filters;
+﻿using EPiServer.ContentGraph.Api.Facets;
 using EPiServer.ContentGraph.Helpers;
 using EPiServer.ContentGraph.Helpers.Linq;
 using EPiServer.ContentGraph.Helpers.Reflection;
@@ -6,82 +6,65 @@ using System.Linq.Expressions;
 
 namespace EPiServer.ContentGraph.ExpressionHelper
 {
-    public class FilterExpressionParser
+    public class FacetExpressionParser
     {
-        public virtual Filter GetFilter<TSource>(Expression<Func<TSource, Filter>> filterExpression)
+        public virtual IFacetFilter GetFacetFilter<TSource>(Expression<Func<TSource, IFacetFilter>> filterExpression)
         {
             ValidateFilterExpression(filterExpression);
 
             Expression executable = filterExpression.Body;
 
-            //Find and replace methods returning FilterExpression
+            //Find and replace methods returning FilterExpression (not use for now)
             while (executable.Find<MethodCallExpression>(ReturnsFilterExpression).Count() > 0)
             {
                 executable = executable.Replace<MethodCallExpression>(
                     ReturnsFilterExpression,
                     RealizeFilterExpressionMethodCalls);
             }
-            //Find and replace methods returning DelegateFilterBuilder
+            //Find and replace methods returning DelegateFacetFilterBuilder
             executable = executable.Replace<MethodCallExpression>(
-                x => x.Method.ReturnType == typeof(DelegateFilterBuilder),
-                x => Expression.Constant(GetFilterFromDelegateFilterBuilderMethod(x, null)));
+                x => x.Method.ReturnType == typeof(DelegateFacetFilterBuilder),
+                x => Expression.Constant(GetFilterFromDelegateFacetFilterBuilderMethod(x, null)));
 
-            return executable.CachedCompileInvoke<Filter>();
+            return executable.CachedCompileInvoke<IFacetFilter>();
         }
 
-        protected virtual void ValidateFilterExpression<TSource>(Expression<Func<TSource, Filter>> filterExpression)
+        protected virtual void ValidateFilterExpression<TSource>(Expression<Func<TSource, IFacetFilter>> filterExpression)
         {
-            if (filterExpression.Body.Find<NewExpression>(x => x.Type == typeof(DelegateFilterBuilder)).Count() > 0)
+            if (filterExpression.Body.Find<NewExpression>(x => x.Type == typeof(DelegateFacetFilterBuilder)).Count() > 0)
             {
                 throw new NotSupportedException
                     (string.Format("Instantiating new {0} is not supported."
                                    + "The {0} class is intended to be used as a return value from extensions methods.",
-                                   typeof(DelegateFilterBuilder).Name));
+                                   typeof(DelegateFacetFilterBuilder).Name));
             }
             var methodsReturningFilterBuilder =
                 filterExpression.Body.Find<MethodCallExpression>(
-                    x => !x.Method.IsExtensionMethod() && x.Method.ReturnType == typeof(DelegateFilterBuilder));
+                    x => !x.Method.IsExtensionMethod() && x.Method.ReturnType == typeof(DelegateFacetFilterBuilder));
             if (methodsReturningFilterBuilder.Count() > 0)
             {
                 throw new NotSupportedException(
                     string.Format(
                         "Method {0} returns {1}. Only extension methods should return {1}.",
                         methodsReturningFilterBuilder.First().Method.Name,
-                        typeof(DelegateFilterBuilder).Name));
+                        typeof(DelegateFacetFilterBuilder).Name));
             }
-            if (
-                filterExpression.Body.Find<NewExpression>(
-                    x => x.Type.IsGenericType && x.Type.GetGenericTypeDefinition() == typeof(FilterExpression<>)).Count() > 0)
+            if (filterExpression.Body.Find<NewExpression>(
+                    x => x.Type.IsGenericType && x.Type.GetGenericTypeDefinition() == typeof(FacetExpression<>)).Count() > 0)
             {
-                throw new NotSupportedException
-                    (string.Format("Instantiating new {0} is not supported."
-                                   + "The {0} class is intended to be used as a return value from extensions methods.",
-                                   typeof(FilterExpression<>).Name));
+                throw new NotSupportedException($"Instantiating new {typeof(FacetExpression<>).Name} is not supported. " +
+                    $"The {typeof(FacetExpression<>).Name} class is intended to be used as a return value from extensions methods.");
             }
             var methodsRetuningFilterExpression =
                 filterExpression.Body.Find<MethodCallExpression>(
                     x =>
                     !x.Method.IsExtensionMethod() && x.Type.IsGenericType &&
-                    x.Type.GetGenericTypeDefinition() == typeof(FilterExpression<>));
+                    x.Type.GetGenericTypeDefinition() == typeof(FacetExpression<>));
             if (methodsRetuningFilterExpression.Count() > 0)
             {
-                throw new NotSupportedException(
-                    string.Format(
-                        "Method {0} returns {1}. Only extension methods should return {1}.",
-                        methodsRetuningFilterExpression.First().Method.Name,
-                        typeof(FilterExpression<>).Name));
+                throw new NotSupportedException($"Method {methodsRetuningFilterExpression.First().Method.Name} returns {typeof(FacetExpression<>).Name}. " +
+                    $"Only extension methods should return {typeof(FacetExpression<>).Name}.");
             }
-        }
-
-        protected bool ReturnsFilterExpression(MethodCallExpression x)
-        {
-            return x.Method.HasGenericTypeDefinition(typeof(FilterExpression<>));
-        }
-
-        protected Expression RealizeFilterExpressionMethodCalls(MethodCallExpression methodCall)
-        {
-            var parsed = GetExpressionFromFilterExpressionMethod(methodCall);
-            return parsed;
         }
 
         protected Expression GetExpressionFromFilterExpressionMethod(MethodCallExpression methodExpression)
@@ -93,7 +76,7 @@ namespace EPiServer.ContentGraph.ExpressionHelper
             }
             var returnValue = methodExpression.Method.Invoke(null, args.ToArray());
             var expression =
-                typeof(FilterExpression<>).MakeGenericType(
+                typeof(FacetExpression<>).MakeGenericType(
                     methodExpression.Method.ReturnType.GetGenericArguments()[0]).GetProperty("Expression").
                     GetGetMethod().Invoke(returnValue, new object[0]);
             var expressionBody = (Expression)
@@ -104,7 +87,7 @@ namespace EPiServer.ContentGraph.ExpressionHelper
             return expressionBody.Replace<Expression>(x => x == invocationTarget, x => actualInvocationTarget);
         }
 
-        protected Filter GetFilterFromDelegateFilterBuilderMethod(MethodCallExpression methodExpression, string fieldName)
+        protected IFacetFilter GetFilterFromDelegateFacetFilterBuilderMethod(MethodCallExpression methodExpression, string fieldName)
         {
             if (fieldName.IsNull())
             {
@@ -117,7 +100,7 @@ namespace EPiServer.ContentGraph.ExpressionHelper
                 args.Add(methodExpression.Arguments[i].CachedCompileInvoke());
             }
 
-            var returnValue = (DelegateFilterBuilder)methodExpression.Method.Invoke(null, args.ToArray());
+            var returnValue = (DelegateFacetFilterBuilder)methodExpression.Method.Invoke(null, args.ToArray());
 
             if (IsFieldNameExpression(methodExpression.Arguments[0]))
             {
@@ -129,9 +112,18 @@ namespace EPiServer.ContentGraph.ExpressionHelper
                 fieldName = fieldName + methodExpression.Arguments[0].GetFieldPath();
             }
 
-            return returnValue.GetFilter(fieldName);
+            return returnValue.GetFacetFilter(fieldName);
+        }
+        protected bool ReturnsFilterExpression(MethodCallExpression x)
+        {
+            return x.Method.HasGenericTypeDefinition(typeof(FilterExpression<>));
         }
 
+        protected Expression RealizeFilterExpressionMethodCalls(MethodCallExpression methodCall)
+        {
+            var parsed = GetExpressionFromFilterExpressionMethod(methodCall);
+            return parsed;
+        }
         private static bool IsFieldNameExpression(Expression expression)
         {
             if (expression is MemberExpression || expression is MethodCallExpression)

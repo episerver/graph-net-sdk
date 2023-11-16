@@ -2,16 +2,16 @@
 
 namespace EPiServer.ContentGraph.Api.Facets
 {
-    public class StringFacetFilterOperator : IFacetFilterOperator
+    public class StringFacetFilterOperator : IFacetOperator
     {
         string _query = string.Empty;
-        IEnumerable<FacetProjection> _projections;
-        public string Query { get { return _query; } }
+        IEnumerable<FacetProperty> _projections;
+        public string FilterClause { get { return _query; } }
         public StringFacetFilterOperator()
         {
-            _projections = new List<FacetProjection> { FacetProjection.name, FacetProjection.count };
+            _projections = new List<FacetProperty> { FacetProperty.name, FacetProperty.count };
         }
-        public IEnumerable<FacetProjection> FacetProjections { get { return _projections; } }
+        public IEnumerable<FacetProperty> FacetProjections { get { return _projections; } }
 
         public StringFacetFilterOperator OrderBy(OrderMode orderMode)
         {
@@ -34,7 +34,7 @@ namespace EPiServer.ContentGraph.Api.Facets
             _query = _query.IsNullOrEmpty() ? $"orderType: {orderType}" : $"{_query},orderType: {orderType}";
             return this;
         }
-        public StringFacetFilterOperator Projection(params FacetProjection[] projections)
+        public StringFacetFilterOperator Projection(params FacetProperty[] projections)
         {
             projections.ValidateNotNullArgument("projections");
             _projections = projections.Distinct();

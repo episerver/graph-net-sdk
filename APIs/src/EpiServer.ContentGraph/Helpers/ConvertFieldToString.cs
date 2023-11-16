@@ -79,7 +79,7 @@ namespace EPiServer.ContentGraph.Helpers
             }
             return combined;
         }
-        public static string ConvertNestedFieldForFacet(string fieldName, IFacetFilterOperator facetFilter)
+        public static string ConvertNestedFieldForFacet(string fieldName, IFacetOperator facetFilter)
         {
             string facetProperties;
             if (facetFilter.FacetProjections?.Count() > 0)
@@ -98,7 +98,7 @@ namespace EPiServer.ContentGraph.Helpers
             {
                 if (combined.IsNullOrEmpty())
                 {
-                    combined = $"{field}({facetFilter.Query}){{{facetProperties}}}";
+                    combined = $"{field}({facetFilter.FilterClause}){{{facetProperties}}}";
                 }
                 else
                 {

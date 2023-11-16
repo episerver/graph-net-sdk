@@ -47,7 +47,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ForType<HomePage>()
                 .Facet(x=>x.Priority, new NumericFacetFilterOperator()
                     .Ranges((100,200),(200,300))
-                    .Projection(FacetProjection.name, FacetProjection.count))
+                    .Projection(FacetProperty.name, FacetProperty.count))
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResult<HomePage>().Result;

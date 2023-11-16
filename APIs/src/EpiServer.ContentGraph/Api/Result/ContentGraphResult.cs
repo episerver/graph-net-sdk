@@ -14,35 +14,23 @@ namespace EPiServer.ContentGraph.Api.Result
             try
             {
                 string typeName = typeof(TResult).Name;
-                JObject keyValues;
-                if (RawData.TryGetValue(typeName, out keyValues))
-                {
-                    return keyValues.ToObject<ContentGraphHits<TResult>>() ?? new ContentGraphHits<TResult>();
-                }
-                return new ContentGraphHits<TResult>();
+                return RawData[typeName].ToObject<ContentGraphHits<TResult>>();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //TODO: logger to log error
-                return null;
+                throw new Exception($"Can not convert response to type [{typeof(TResult).Name}]", e);
             }
         }
-        public ContentGraphHits<TOtherType> GetCastingContent<TOriginal,TOtherType>()
+        public ContentGraphHits<TOtherType> GetContent<TOriginal,TOtherType>()
         {
             try
             {
                 string typeName = typeof(TOriginal).Name;
-                JObject keyValues;
-                if (RawData.TryGetValue(typeName, out keyValues))
-                {
-                    return keyValues.ToObject<ContentGraphHits<TOtherType>>()?? new ContentGraphHits<TOtherType>();
-                }
-                return new ContentGraphHits<TOtherType>();
+                return RawData[typeName].ToObject<ContentGraphHits<TOtherType>>();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //TODO: logger to log error
-                return null;
+                throw new Exception($"Can not cast data from type [{typeof(TOriginal).Name}] to [{typeof(TOtherType).Name}]", e);
             }
         }
         [JsonIgnore]
