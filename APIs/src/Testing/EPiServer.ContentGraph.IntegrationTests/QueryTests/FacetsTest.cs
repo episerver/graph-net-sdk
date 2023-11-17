@@ -23,7 +23,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_with_string_facet_should_return_2_facets()
         {
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
                     .Field(x => x.IsSecret)
                     .Facet(x => x.IsSecret, 
@@ -43,7 +43,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_with_facet_in_2_ranges_should_return_2_facets()
         {
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
                 .Facet(x=>x.Priority, new NumericFacetFilterOperator()
                     .Ranges((100,200),(200,300))
@@ -60,7 +60,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_with_facet_filters_should_return_correct_items()
         {
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
                     .Field(x=>x.IsSecret)
                     .Facet(x => x.IsSecret, new StringFacetFilterOperator().Filters("true"))
@@ -74,7 +74,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_with_2_facet_should_return_2_facets()
         {
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
                     .Field(x => x.IsSecret)
                     .Facet(x => x.IsSecret, new StringFacetFilterOperator().Filters("true"))
@@ -89,7 +89,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_with_facet_limit_1_should_return_facet_count_equals_1()
         {
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
                     .Facet(x => x.IsSecret, new StringFacetFilterOperator().Filters("true").Limit(1))
                     .Facet(x => x.Status, new StringFacetFilterOperator().Filters(TestDataCreator.STATUS_PUBLISHED))

@@ -10,24 +10,25 @@ using EPiServer.ContentGraph.Configuration;
 using EPiServer.Turnstile.Contracts.Hmac;
 using Microsoft.Extensions.Options;
 using System.Text.RegularExpressions;
+using System.Net.Http;
+using EPiServer.ServiceLocation;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {
     public class GraphQueryBuilder : IQuery
     {
-        internal static HttpClient httpClient = new HttpClient(new HttpClientHandler()
-        {
-            AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip
-        });
-
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly HttpClient _httpClient;
         private GraphQLRequest _query;
         private static OptiGraphOptions _optiGraphOptions = new();
         private const string RequestMethod = "POST";
         ITypeQueryBuilder? typeQueryBuilder;
         IList<ITypeQueryBuilder> _typeQueryBuilders;
 
-        public GraphQueryBuilder(IOptions<OptiGraphOptions> optiGraphOptions)
+        public GraphQueryBuilder(IOptions<OptiGraphOptions> optiGraphOptions, IHttpClientFactory httpClientFactory)
         {
+            _httpClientFactory = httpClientFactory;
+            _httpClient = _httpClientFactory.CreateClient("HttpClientWithAutoDecompression");
             _optiGraphOptions = optiGraphOptions.Value;
             _query = new GraphQLRequest
             {
@@ -38,6 +39,7 @@ namespace EPiServer.ContentGraph.Api.Querying
         //public GraphQueryBuilder() => _query = new GraphQLRequest();
         public GraphQueryBuilder(GraphQLRequest request)
         {
+            _httpClient = ServiceLocator.Current.GetInstance<IHttpClientFactory>().CreateClient("HttpClientWithAutoDecompression");
             _query = request;
             _typeQueryBuilders ??= new List<ITypeQueryBuilder>();
         }
@@ -91,7 +93,7 @@ namespace EPiServer.ContentGraph.Api.Querying
         {
             string url = GetServiceUrl();
 
-            using (JsonRequest jsonRequest = new JsonRequest(url, HttpMethod.Post, httpClient))
+            using (JsonRequest jsonRequest = new JsonRequest(url, HttpMethod.Post, _httpClient))
             {
                 try
                 {
@@ -122,7 +124,7 @@ namespace EPiServer.ContentGraph.Api.Querying
         {
             string url = GetServiceUrl();
 
-            using (JsonRequest jsonRequest = new JsonRequest(url, HttpMethod.Post, httpClient))
+            using (JsonRequest jsonRequest = new JsonRequest(url, HttpMethod.Post, _httpClient))
             {
                 try
                 {

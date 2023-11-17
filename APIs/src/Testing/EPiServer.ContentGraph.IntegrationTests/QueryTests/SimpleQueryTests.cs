@@ -22,7 +22,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_with_fields_should_result_3_items()
         {
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<Content>()
                 .Fields(x => x.Id, x => x.Name, x => x.Status)
                 .ToQuery()
@@ -33,7 +33,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_paging_with_2_should_result_2_items()
         {
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<Content>()
                 .Fields(x => x.Name)
                 .Limit(2)
@@ -46,7 +46,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_order_desc_should_get_correct_order()
         {
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<Content>()
                 .Fields(x => x.Name)
                 .OrderBy(x => x.Name, OrderMode.DESC)
@@ -58,7 +58,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void full_text_search_should_result_correct_data()
         {
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<Content>()
                 .Fields(x => x.Name)
                 .FullTextSearch(new StringFilterOperators().Contains("Alan Turing"))

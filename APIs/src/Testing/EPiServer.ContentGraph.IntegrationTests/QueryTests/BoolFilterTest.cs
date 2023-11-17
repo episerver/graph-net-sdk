@@ -26,7 +26,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
             IFilter andFilter = new AndFilter<HomePage>()
                 .And(x => x.Priority, new NumericFilterOperators().Eq(100));
 
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
                 .Fields(x => x.Priority)
                 .Where(andFilter)
@@ -42,7 +42,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .And(x => x.Priority, new NumericFilterOperators().Eq(100))
                 .And(x => x.StartPublish, new DateFilterOperators().Eq("2022-10-12T17:17:56Z"));
 
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
                 .Fields(x => x.Priority, x => x.Name)
                 .Where(andFilter)
@@ -61,7 +61,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
             IFilter orFilter = new OrFilter<HomePage>()
                 .Or(x => x.Priority, new NumericFilterOperators().Eq(100));
 
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
                 .Fields(x => x.Priority)
                 .Where(orFilter)
@@ -77,7 +77,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Or(x => x.Priority, new NumericFilterOperators().Eq(100))
                 .Or(x => x.Priority, new NumericFilterOperators().Exists(false));
 
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
                 .Fields(x => x.Priority, x => x.Name)
                 .Where(orFilter)
@@ -94,7 +94,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
             IFilter notFilter = new NotFilter<HomePage>()
                 .Not(x => x.Priority, new NumericFilterOperators().Eq(100));
 
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
                 .Fields(x => x.Priority)
                 .Where(notFilter)
@@ -110,7 +110,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Not(x => x.Priority, new NumericFilterOperators().Eq(100))
                 .Not(x => x.Priority, new NumericFilterOperators().Exists(false));
 
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
                 .Fields(x => x.Priority, x => x.Name)
                 .Where(notFilter)
@@ -139,7 +139,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .And(x => x.Priority, new NumericFilterOperators().Eq(300));
 
             //combine all filters we expect 3 items will be returned
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
                 .Fields(x => x.Priority, x => x.Name, x => x.StartPublish)
                 .Where(orFilter | andFilter1 | andFilter2)

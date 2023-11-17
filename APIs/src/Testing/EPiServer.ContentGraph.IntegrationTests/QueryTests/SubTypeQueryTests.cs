@@ -32,7 +32,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_with_sub_type_should_return_result()
         {
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<Content>()
                     .ForSubType<HomePage>(x => x.Name, x=>x.IsSecret)
                 .ToQuery()

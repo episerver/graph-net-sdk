@@ -22,7 +22,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
 		[TestMethod]
         public void autocomplete_id_contains_myid_should_result_3_phrases()
         {
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
                     .Autocomplete(x=>x.Id, new AutoCompleteOperators().Value("myid"))
                 .ToQuery()
@@ -33,7 +33,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void autocomplete_id_contains_myid_and_limit_1_should_result_1_phrase()
         {
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
                     .Autocomplete(x => x.Id, 
                         new AutoCompleteOperators()
@@ -49,7 +49,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         {
             string value = "notmyidandthe";
             Assert.IsTrue(value.Length > 10);
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
                     .Autocomplete(x => x.Id, new AutoCompleteOperators().Value(value))
                 .ToQuery()

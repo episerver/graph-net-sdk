@@ -4,6 +4,7 @@ using EPiServer.ContentGraph.Api.Querying;
 using EPiServer.ContentGraph.IntegrationTests.TestModels;
 using EPiServer.ContentGraph.IntegrationTests.TestSupport;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Net.Http;
 
 namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
 {
@@ -33,7 +34,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void semantic_search_order_should_result_correct_data()
         {
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
                 .Fields(x => x.Name, x=> x.MainBody)
                 .FullTextSearch(new StringFilterOperators().Contains("Wild West"))

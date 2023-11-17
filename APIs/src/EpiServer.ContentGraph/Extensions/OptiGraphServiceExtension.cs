@@ -6,6 +6,7 @@ using EPiServer.Web;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using System.Net;
 
 namespace EPiServer.ContentGraph.Extensions
 {
@@ -37,6 +38,14 @@ namespace EPiServer.ContentGraph.Extensions
             }
             services.AddScoped<IFilterForVisitor,FilterDeletedForVisitor>();
             services.AddScoped<GraphQueryBuilder>();
+            services.AddHttpClient("HttpClientWithAutoDecompression", c => { })
+                .ConfigurePrimaryHttpMessageHandler(() => {
+                    var httpClientHandler = new HttpClientHandler
+                    {
+                        AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+                    };
+                    return httpClientHandler;
+                });
 
             return services;
         }

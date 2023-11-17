@@ -20,7 +20,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_with_fields_should_result_2_items()
         {
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
                 .Locales(new System.Globalization.CultureInfo("en-GB"), new System.Globalization.CultureInfo("en-US"))
                 .Fields(x => x.Id, x => x.Name, x => x.Status)

@@ -12,6 +12,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Optimizely.ContentGraph.Cms.Configuration;
 using Optimizely.ContentGraph.Cms.Services.Internal;
+using System.Net;
 
 namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
 {
@@ -29,6 +30,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
         private static HttpClient? _httpClient;
         private static string USER_AGENT => $"Optimizely-Graph-NET-API/{typeof(IntegrationFixture).Assembly.GetName().Version}";
         protected static IOptions<OptiGraphOptions> _configOptions;
+        protected static IHttpClientFactory _httpClientFactory;
 
         [AssemblyInitialize]
         public static void AssemblyInitialize(TestContext testContext)
@@ -51,6 +53,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
                 .Build();
             //queryOptions = testingHost.Services.GetService<IOptions<QueryOptions>>();
             _configOptions = testingHost.Services.GetService<IOptions<OptiGraphOptions>>();
+            _httpClientFactory = testingHost.Services.GetService<IHttpClientFactory>();
             _httpClient = CreateHttpClient();
         }
 
@@ -101,6 +104,14 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
             services.AddContentGraph();
             services.AddScoped<IFilterForVisitor, CustomForVisitor>();
             services.AddScoped<IFilterForVisitor, FilterDeletedForVisitor>();
+            services.AddHttpClient("HttpClientWithAutoDecompression", c => { })
+               .ConfigurePrimaryHttpMessageHandler(() => {
+                   var httpClientHandler = new HttpClientHandler
+                   {
+                       AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+                   };
+                   return httpClientHandler;
+               });
         }
         private static HttpClient CreateHttpClient()
         {
@@ -185,7 +196,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
         {
             try
             {
-                IQuery query = new GraphQueryBuilder(_configOptions)
+                IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                .ForType<T>()
                .Total()
                .ToQuery()
