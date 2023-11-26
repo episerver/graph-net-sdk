@@ -38,7 +38,7 @@ namespace EPiServer.ContentGraph.Api.Result
         [JsonProperty("extensions")]
         public object Extension { get; set; }
         [JsonProperty("errors")]
-        public object Errors { get; set; }
+        public ContentGraphError[] Errors { get; set; }
     }
     public class ContentGraphResult<T>
     {
@@ -90,6 +90,6 @@ namespace EPiServer.ContentGraph.Api.Result
         [JsonProperty("extensions")]
         public object Extension { get; set; }
         [JsonProperty("errors")]
-        public object Errors { get; set; }
+         public ContentGraphError[] Errors { get; set; }
     }
 }

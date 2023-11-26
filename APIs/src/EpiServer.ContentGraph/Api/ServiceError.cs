@@ -3,11 +3,18 @@
 namespace EPiServer.ContentGraph.Api
 {
     [Serializable]
-    public class ServiceError
+    public class ContentGraphError
     {
-        [JsonProperty("errors")]
-        public string Errors { get; set; }
-        [JsonProperty("extensions")]
-        public string Extensions { get; set; }
+        [JsonProperty("message")]
+        public string Message { get; set; }
+        [JsonProperty("locations")]
+        public TraceLocation[] Locations { get; set; }
+    }
+    [Serializable]
+    public class TraceLocation {
+        [JsonProperty("line")]
+        public int Line { get; set; }
+        [JsonProperty("column")]
+        public int Column { get; set; }
     }
 }

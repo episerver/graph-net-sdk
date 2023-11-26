@@ -14,7 +14,7 @@ namespace EPiServer.ContentGraph.Api.Autocomplete
             _query = _query.IsNullOrEmpty() ? $"value:\"{value}\"" : $"{_query},value:\"{value}\"";
             return this;
         }
-        public AutoCompleteOperators Limit(int limit)
+        public AutoCompleteOperators Limit(int limit = 25)
         {
             _query = _query.IsNullOrEmpty() ? $"limit:{limit}" : $"{_query},limit:{limit}";
             return this;

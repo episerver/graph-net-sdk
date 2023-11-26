@@ -1,4 +1,5 @@
-﻿using EPiServer.ContentGraph.Api.Filters;
+﻿using EPiServer.ContentGraph.Api;
+using EPiServer.ContentGraph.Api.Filters;
 
 namespace EPiServer.ContentGraph.Extensions
 {
@@ -6,12 +7,22 @@ namespace EPiServer.ContentGraph.Extensions
     {
         #region String operator
         /// <summary>
-        /// Full text search. Only use for <typeparamref name="Searchable"/> field
+        /// Full text search. Only use for <typeparamref name="Searchable"/> field.
         /// </summary>
         /// <param name="field"></param>
         /// <param name="value"></param>
         /// <returns>DelegateFilterBuilder</returns>
         public static DelegateFilterBuilder Match(this string field, string value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new StringFilterOperators().Match(value)));
+        }
+        /// <summary>
+        /// Full text search. Only use for <typeparamref name="Searchable"/> field.
+        /// </summary>
+        /// <param name="field"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static DelegateFilterBuilder ContainsValue(this string field, string value)
         {
             return new DelegateFilterBuilder(field => new TermFilter(field, new StringFilterOperators().Contains(value)));
         }
@@ -34,6 +45,26 @@ namespace EPiServer.ContentGraph.Extensions
         public static DelegateFilterBuilder Like(this string field, string value)
         {
             return new DelegateFilterBuilder(field => new TermFilter(field, new StringFilterOperators().Like(value)));
+        }
+        public static DelegateFilterBuilder MatchPrefix(this string field, string value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new StringFilterOperators().StartWith(value)));
+        }
+        public static DelegateFilterBuilder MatchSuffix(this string field, string value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new StringFilterOperators().EndWith(value)));
+        }
+        public static DelegateFilterBuilder MatchFuzzy(this string field, bool value = true)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new StringFilterOperators().Fuzzy(value)));
+        }
+        public static DelegateFilterBuilder FieldExists(this string field, bool value = true)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new StringFilterOperators().Exists(value)));
+        }
+        public static DelegateFilterBuilder Synonyms(this string field, params Synonyms[] values)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new StringFilterOperators().Synonym(values)));
         }
         #endregion
 

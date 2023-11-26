@@ -23,6 +23,12 @@ namespace EPiServer.ContentGraph.Api.Facets
             _query = _query.IsNullOrEmpty() ? $"ranges:[{combineRanges}]" : $",ranges:[{combineRanges}]";
             return this;
         }
+        public NumericFacetFilterOperator Ranges(params (float from, float to)[] values)
+        {
+            string combineRanges = string.Join(',', values.Select(x => $"{{from:{x.from},to:{x.to}}}"));
+            _query = _query.IsNullOrEmpty() ? $"ranges:[{combineRanges}]" : $",ranges:[{combineRanges}]";
+            return this;
+        }
         public NumericFacetFilterOperator Projection(params FacetProperty[] projections)
         {
             projections.ValidateNotNullArgument("projections");

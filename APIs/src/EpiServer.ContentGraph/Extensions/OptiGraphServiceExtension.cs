@@ -11,7 +11,7 @@ namespace EPiServer.ContentGraph.Extensions
 {
     public static class OptiGraphServiceExtension
     {
-        public static IServiceCollection AddContentGraphCore(this IServiceCollection services, Action<OptiGraphOptions>? transformAction = null)
+        public static IServiceCollection AddContentGraphQuery(this IServiceCollection services, Action<OptiGraphOptions>? transformAction = null)
         {
             var optionsBuilder = services
                 .AddOptions<OptiGraphOptions>()
@@ -35,7 +35,6 @@ namespace EPiServer.ContentGraph.Extensions
                 services.TryAddSingleton<ICache>(cache);
                 CacheAccessor.Cache = cache;
             }
-            services.AddScoped<IFilterForVisitor,FilterDeletedForVisitor>();
             services.AddScoped<GraphQueryBuilder>();
 
             return services;

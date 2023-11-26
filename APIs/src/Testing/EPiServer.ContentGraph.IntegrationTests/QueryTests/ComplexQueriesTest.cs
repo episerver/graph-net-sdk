@@ -45,7 +45,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Skip(0).Limit(3)
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>().Result;
+            var rs = query.GetResultAsync<HomePage>().Result;
             Assert.IsTrue(rs.Content["HomePage"].Total.Equals(2));
             Assert.IsTrue(rs.Content["HomePage"].Hits.First().Name.Equals("Action Movie"));
             Assert.IsNotNull(rs.Content["HomePage"].Cursor);

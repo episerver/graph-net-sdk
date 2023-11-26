@@ -37,7 +37,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                     .ForSubType<HomePage>(x => x.Name, x=>x.IsSecret)
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>().Result;
+            var rs = query.GetResultAsync<HomePage>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Last().Name.Equals("My Home"));
             Assert.IsFalse(rs.Content.Values.First().Hits.Last().IsSecret);
         }

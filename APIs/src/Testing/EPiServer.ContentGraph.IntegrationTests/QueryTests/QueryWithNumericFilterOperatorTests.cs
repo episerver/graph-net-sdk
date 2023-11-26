@@ -28,7 +28,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.Priority, new NumericFilterOperators().Eq(100))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>().Result;
+            var rs = query.GetResultAsync<HomePage>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.TrueForAll(x=>x.Priority.Equals(100)));
         }
         [TestMethod]
@@ -40,7 +40,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.Priority, new NumericFilterOperators().NotEq(100))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>().Result;
+            var rs = query.GetResultAsync<HomePage>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.TrueForAll(x => !x.Priority.Equals(100)));
         }
         [TestMethod]
@@ -52,7 +52,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.Priority, new NumericFilterOperators().NotEq(300))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>().Result;
+            var rs = query.GetResultAsync<HomePage>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.TrueForAll(x=> !x.Name.Equals("Home 3")));
         }
         [TestMethod]
@@ -64,7 +64,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.Priority, new NumericFilterOperators().Exists(false))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>().Result;
+            var rs = query.GetResultAsync<HomePage>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.First().Name.Equals("Not exists priority"));
         }
         [TestMethod]
@@ -76,7 +76,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.Priority, new NumericFilterOperators().Gt(100))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>().Result;
+            var rs = query.GetResultAsync<HomePage>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.First().Priority.Equals(300));
         }
         [TestMethod]
@@ -88,7 +88,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.Priority, new NumericFilterOperators().Gte(100))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>().Result;
+            var rs = query.GetResultAsync<HomePage>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(3));
         }
         [TestMethod]
@@ -100,7 +100,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.Priority, new NumericFilterOperators().In(100,300))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>().Result;
+            var rs = query.GetResultAsync<HomePage>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(3));
         }
         [TestMethod]
@@ -112,7 +112,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.Priority, new NumericFilterOperators().NotIn(100,300))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>().Result;
+            var rs = query.GetResultAsync<HomePage>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(1));
         }
         [TestMethod]
@@ -124,7 +124,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.Priority, new NumericFilterOperators().Lt(100))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>().Result;
+            var rs = query.GetResultAsync<HomePage>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(0));
         }
         [TestMethod]
@@ -136,7 +136,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.Priority, new NumericFilterOperators().Lte(200))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>().Result;
+            var rs = query.GetResultAsync<HomePage>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(2));
         }
         [TestMethod]
@@ -148,7 +148,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.Priority, new NumericFilterOperators().Gte(100).Lte(300))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<HomePage>().Result;
+            var rs = query.GetResultAsync<HomePage>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(3));
         }
     }

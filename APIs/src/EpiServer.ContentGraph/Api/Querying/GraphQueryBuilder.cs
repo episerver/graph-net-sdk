@@ -23,7 +23,30 @@ namespace EPiServer.ContentGraph.Api.Querying
         private static OptiGraphOptions _optiGraphOptions = new();
         private const string RequestMethod = "POST";
         ITypeQueryBuilder? typeQueryBuilder;
-
+        public static GraphQueryBuilder CreateFromConfig()
+        {
+            try
+            {
+                var options = ServiceLocation.ServiceLocator.Current.GetService(typeof(OptiGraphOptions));
+                if (options != null)
+                {
+                    return new GraphQueryBuilder(options as OptiGraphOptions);
+                }
+                throw new ApplicationException("Can not create GraphQueryBuilder instance (OptiGraphOptions instance not found)");
+            }
+            catch (Exception e)
+            {
+                throw new ApplicationException("Can not create GraphQueryBuilder instance, please check your settings and configuration", e);
+            }
+        }
+        private GraphQueryBuilder(OptiGraphOptions options)
+        {
+            _optiGraphOptions = options;
+            _query = new GraphQLRequest
+            {
+                OperationName = "SampleQuery"
+            };
+        }
         public GraphQueryBuilder(IOptions<OptiGraphOptions> optiGraphOptions)
         {
             _optiGraphOptions = optiGraphOptions.Value;
@@ -81,7 +104,7 @@ namespace EPiServer.ContentGraph.Api.Querying
                 .AddBody(requestBody);
             return messageBuilder.ToMessage();
         }
-        public async Task<ContentGraphResult<TResult>> GetResult<TResult>()
+        public async Task<ContentGraphResult<TResult>> GetResultAsync<TResult>()
         {
             string url = GetServiceUrl();
 
@@ -97,7 +120,7 @@ namespace EPiServer.ContentGraph.Api.Querying
                     using (var reader = new StreamReader(await jsonRequest.GetResponseStream(body), jsonRequest.Encoding))
                     {
                         var jsonReader = new JsonTextReader(reader);
-                        return JsonSerializer.CreateDefault().Deserialize<ContentGraphResult<TResult>>(jsonReader);
+                        return JsonSerializer.CreateDefault().Deserialize<ContentGraphResult<TResult>>(jsonReader) ?? new ContentGraphResult<TResult>();
                     }
                 }
                 catch (AggregateException asyncException)
@@ -109,10 +132,20 @@ namespace EPiServer.ContentGraph.Api.Querying
                     }
                     throw new ServiceException(asyncException.Message, asyncException);
                 }
-                
+                catch (HttpRequestException e)
+                {
+                    try
+                    {
+                        return JsonConvert.DeserializeObject<ContentGraphResult<TResult>>(e.Message) ?? new ContentGraphResult<TResult>();
+                    }
+                    catch (Exception)
+                    {
+                        throw new ServiceException(e.Message, e);
+                    }
+                }
             }
         }
-        public async Task<ContentGraphResult> GetResult()
+        public async Task<ContentGraphResult> GetResultAsync()
         {
             string url = GetServiceUrl();
 
@@ -144,7 +177,17 @@ namespace EPiServer.ContentGraph.Api.Querying
                     }
                     throw new ServiceException(asyncException.Message, asyncException);
                 }
-
+                catch (HttpRequestException e)
+                {
+                    try
+                    {
+                        return JsonConvert.DeserializeObject<ContentGraphResult>(e.Message);
+                    }
+                    catch (Exception)
+                    {
+                        throw new ServiceException(e.Message, e);
+                    }
+                }
             }
         }
         /// <summary>
