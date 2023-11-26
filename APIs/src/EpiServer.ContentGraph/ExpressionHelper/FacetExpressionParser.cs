@@ -8,18 +8,19 @@ namespace EPiServer.ContentGraph.ExpressionHelper
 {
     public class FacetExpressionParser
     {
-        public virtual IFacetFilter GetFacetFilter<TSource>(Expression<Func<TSource, IFacetFilter>> filterExpression)
+        public virtual IFacetFilter GetFacetFilter<TSource>(Expression<Func<TSource, IFacetFilter>> facetFilterExpression)
         {
-            ValidateFilterExpression(filterExpression);
+            ValidateFacetFilterExpression(facetFilterExpression);
 
-            Expression executable = filterExpression.Body;
+            Expression executable = facetFilterExpression.Body;
 
-            //Find and replace methods returning FilterExpression (not use for now)
-            while (executable.Find<MethodCallExpression>(ReturnsFilterExpression).Count() > 0)
+            //Find and replace methods returning FilterExpression
+            var methods = executable.Find<MethodCallExpression>(ReturnsFacetFilterExpression);
+            while (executable.Find<MethodCallExpression>(ReturnsFacetFilterExpression).Count() > 0)
             {
                 executable = executable.Replace<MethodCallExpression>(
-                    ReturnsFilterExpression,
-                    RealizeFilterExpressionMethodCalls);
+                    ReturnsFacetFilterExpression,
+                    RealizeFacetFilterExpressionMethodCalls);
             }
             //Find and replace methods returning DelegateFacetFilterBuilder
             executable = executable.Replace<MethodCallExpression>(
@@ -29,9 +30,9 @@ namespace EPiServer.ContentGraph.ExpressionHelper
             return executable.CachedCompileInvoke<IFacetFilter>();
         }
 
-        protected virtual void ValidateFilterExpression<TSource>(Expression<Func<TSource, IFacetFilter>> filterExpression)
+        protected virtual void ValidateFacetFilterExpression<TSource>(Expression<Func<TSource, IFacetFilter>> facetFilterExpression)
         {
-            if (filterExpression.Body.Find<NewExpression>(x => x.Type == typeof(DelegateFacetFilterBuilder)).Count() > 0)
+            if (facetFilterExpression.Body.Find<NewExpression>(x => x.Type == typeof(DelegateFacetFilterBuilder)).Count() > 0)
             {
                 throw new NotSupportedException
                     (string.Format("Instantiating new {0} is not supported."
@@ -39,7 +40,7 @@ namespace EPiServer.ContentGraph.ExpressionHelper
                                    typeof(DelegateFacetFilterBuilder).Name));
             }
             var methodsReturningFilterBuilder =
-                filterExpression.Body.Find<MethodCallExpression>(
+                facetFilterExpression.Body.Find<MethodCallExpression>(
                     x => !x.Method.IsExtensionMethod() && x.Method.ReturnType == typeof(DelegateFacetFilterBuilder));
             if (methodsReturningFilterBuilder.Count() > 0)
             {
@@ -49,14 +50,14 @@ namespace EPiServer.ContentGraph.ExpressionHelper
                         methodsReturningFilterBuilder.First().Method.Name,
                         typeof(DelegateFacetFilterBuilder).Name));
             }
-            if (filterExpression.Body.Find<NewExpression>(
+            if (facetFilterExpression.Body.Find<NewExpression>(
                     x => x.Type.IsGenericType && x.Type.GetGenericTypeDefinition() == typeof(FacetExpression<>)).Count() > 0)
             {
                 throw new NotSupportedException($"Instantiating new {typeof(FacetExpression<>).Name} is not supported. " +
                     $"The {typeof(FacetExpression<>).Name} class is intended to be used as a return value from extensions methods.");
             }
             var methodsRetuningFilterExpression =
-                filterExpression.Body.Find<MethodCallExpression>(
+                facetFilterExpression.Body.Find<MethodCallExpression>(
                     x =>
                     !x.Method.IsExtensionMethod() && x.Type.IsGenericType &&
                     x.Type.GetGenericTypeDefinition() == typeof(FacetExpression<>));
@@ -67,7 +68,7 @@ namespace EPiServer.ContentGraph.ExpressionHelper
             }
         }
 
-        protected Expression GetExpressionFromFilterExpressionMethod(MethodCallExpression methodExpression)
+        protected Expression GetExpressionFromFacetFilterExpressionMethod(MethodCallExpression methodExpression)
         {
             List<object> args = new List<object> { null };
             for (int i = 1; i < methodExpression.Arguments.Count; i++)
@@ -114,14 +115,14 @@ namespace EPiServer.ContentGraph.ExpressionHelper
 
             return returnValue.GetFacetFilter(fieldName);
         }
-        protected bool ReturnsFilterExpression(MethodCallExpression x)
+        protected bool ReturnsFacetFilterExpression(MethodCallExpression x)
         {
-            return x.Method.HasGenericTypeDefinition(typeof(FilterExpression<>));
+            return x.Method.HasGenericTypeDefinition(typeof(FacetExpression<>));
         }
 
-        protected Expression RealizeFilterExpressionMethodCalls(MethodCallExpression methodCall)
+        protected Expression RealizeFacetFilterExpressionMethodCalls(MethodCallExpression methodCall)
         {
-            var parsed = GetExpressionFromFilterExpressionMethod(methodCall);
+            var parsed = GetExpressionFromFacetFilterExpressionMethod(methodCall);
             return parsed;
         }
         private static bool IsFieldNameExpression(Expression expression)

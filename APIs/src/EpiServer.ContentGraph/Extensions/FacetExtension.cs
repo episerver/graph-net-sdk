@@ -33,5 +33,9 @@ namespace EPiServer.ContentGraph.Extensions
         {
             return new DelegateFacetFilterBuilder(field => new TermFacetFilter(field, new NumericFacetFilterOperator().Ranges((from, to))));
         }
+        public static DelegateFacetFilterBuilder FacetInRange(this float field, float from, float to)
+        {
+            return new DelegateFacetFilterBuilder(field => new TermFacetFilter(field, new NumericFacetFilterOperator().Ranges((from, to))));
+        }
     }
 }

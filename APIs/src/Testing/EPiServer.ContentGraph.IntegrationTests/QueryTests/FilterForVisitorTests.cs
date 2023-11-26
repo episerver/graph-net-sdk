@@ -31,7 +31,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Fields(x => x.Id, x => x.Name, x => x.Status)
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<Content>().Result;
+            var rs = query.GetResultAsync<Content>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count == 3);
             Assert.IsTrue(rs.Content.Values.First().Hits.Where(x=>x.Status == TestDataCreator.STATUS_PUBLISHED).Count().Equals(2));
         }
@@ -45,7 +45,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .FilterForVisitor(filterForvistors)
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<Content>().Result;
+            var rs = query.GetResultAsync<Content>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count == 1);
             Assert.IsTrue(rs.Content.Values.First().Hits.First().Status.Equals(TestDataCreator.STATUS_PUBLISHED));
         }

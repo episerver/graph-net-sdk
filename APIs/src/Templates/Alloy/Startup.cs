@@ -90,7 +90,6 @@ namespace EPiServer.Templates.Alloy.Mvc
                 .AddTinyMce()
                 .AddAdminUserRegistration(options => options.Behavior = RegisterAdminUserBehaviors.Enabled |
                                                                         RegisterAdminUserBehaviors.LocalRequestsOnly);
-            services.AddScoped<IFilterForVisitor,FilterForModified>();
 
             services.ConfigureContentApiOptions(o =>
             {
@@ -101,9 +100,10 @@ namespace EPiServer.Templates.Alloy.Mvc
             services.AddContentDeliveryApi(); // required, for further configurations, see https://docs.developers.optimizely.com/content-cloud/v1.5.0-content-delivery-api/docs/configuration
             
             services.AddContentGraph();
-            services.AddContentGraphCore(options=>
+            services.AddContentGraphQuery(options=>
             {
                 //options.UseHmacKey = false;
+                //options.QueryPath = "content/v2?cache=false";
             });
             //the following is obsolete and is kept for compatibility for now
             //services.AddContentGraph(_configuration);

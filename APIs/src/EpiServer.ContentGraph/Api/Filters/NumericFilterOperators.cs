@@ -59,5 +59,46 @@ namespace EPiServer.ContentGraph.Api.Filters
             _query += _query.IsNullOrEmpty() ? $"notIn: [{string.Join(',', values)}]" : $",notIn: [{string.Join(',', values)}]";
             return this;
         }
+
+        public NumericFilterOperators Eq(float value)
+        {
+            _query += _query.IsNullOrEmpty() ? $"eq: {value}" : $",eq: {value}";
+            return this;
+        }
+        public NumericFilterOperators NotEq(float value)
+        {
+            _query += _query.IsNullOrEmpty() ? $"notEq: {value}" : $",notEq: {value}";
+            return this;
+        }
+        public NumericFilterOperators Gt(float value)
+        {
+            _query += _query.IsNullOrEmpty() ? $"gt: {value}" : $",gt: {value}";
+            return this;
+        }
+        public NumericFilterOperators Gte(float value)
+        {
+            _query += _query.IsNullOrEmpty() ? $"gte: {value}" : $",gte: {value}";
+            return this;
+        }
+        public NumericFilterOperators Lt(float value)
+        {
+            _query += _query.IsNullOrEmpty() ? $"lt: {value}" : $",lt: {value}";
+            return this;
+        }
+        public NumericFilterOperators Lte(float value)
+        {
+            _query += _query.IsNullOrEmpty() ? $"lte: {value}" : $",lte: {value}";
+            return this;
+        }
+        public NumericFilterOperators In(params float[] values)
+        {
+            _query += _query.IsNullOrEmpty() ? $"in: [{string.Join(',', values)}]" : $",in: [{string.Join(',', values)}]";
+            return this;
+        }
+        public NumericFilterOperators NotIn(params float[] values)
+        {
+            _query += _query.IsNullOrEmpty() ? $"notIn: [{string.Join(',', values)}]" : $",notIn: [{string.Join(',', values)}]";
+            return this;
+        }
     }
 }

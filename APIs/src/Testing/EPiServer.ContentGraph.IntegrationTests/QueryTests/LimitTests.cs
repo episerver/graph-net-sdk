@@ -28,7 +28,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Limit(1)
                 .ToQuery()
                 .BuildQueries()
-                .GetResult<HomePage>().Result;
+                .GetResultAsync<HomePage>().Result;
             Assert.IsTrue(result.Content["HomePage"].Hits.Count().Equals(1));
         }
 
@@ -41,12 +41,12 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Limit(100)
                 .ToQuery()
                 .BuildQueries()
-                .GetResult<HomePage>().Result;
+                .GetResultAsync<HomePage>().Result;
             Assert.IsTrue(result.Content["HomePage"].Hits.Count().Equals(4));
         }
 
         [TestMethod]
-        public void search_with_limit_101_should_produce_exception()
+        public void search_with_limit_101_should_produce_errors()
         {
             ContentGraphResult<HomePage>? result = null;
 
@@ -56,14 +56,9 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Limit(101)
                 .ToQuery()
                 .BuildQueries();
-                
-            var exception = Assert.ThrowsException<ServiceException>(() =>
-            {
-                result = query.GetResult<HomePage>().Result;
-            }
-            );
 
-            Assert.IsTrue(exception.Message.StartsWith("{\"errors\":"));
+            result = query.GetResultAsync<HomePage>().Result;
+            Assert.IsTrue(result.Errors.Length > 0);
         }
     }
 }

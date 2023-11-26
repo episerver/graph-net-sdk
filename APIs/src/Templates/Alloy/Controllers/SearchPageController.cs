@@ -20,7 +20,7 @@ namespace AlloyMvcTemplates.Controllers
         public ViewResult Index(SearchPage currentPage, string q)
         {
             //var query = _client.OperationName("AlloyQuery")
-            //        .ForType<Models.Content>()
+            //        .ForType<ProxyModels.Content>()
             //        .Fields(x => x.Language.Name, x => x.Url, x=> x.Name)
             //        .Search(q)
             //        .ToQuery()
@@ -53,7 +53,7 @@ namespace AlloyMvcTemplates.Controllers
             //        .ToQuery()
             //    .BuildQueries();
 
-            var rs = query.GetResult().Result;
+            var rs = query.GetResultAsync().Result;
             var hits = rs.GetContent< ProxyModels.ArticlePage>().Hits;
             var hits2 = rs.GetContent<ProxyModels.ContactPage>().Hits;
 

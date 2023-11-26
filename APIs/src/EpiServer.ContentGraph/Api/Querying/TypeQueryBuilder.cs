@@ -47,7 +47,6 @@ namespace EPiServer.ContentGraph.Api.Querying
         public TypeQueryBuilder<T> Field(Expression<Func<T, object>> fieldSelector)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
-            fieldSelector.Compile();
             var propertyName = fieldSelector.GetFieldPath();
             Field(propertyName);
             return this;
@@ -62,7 +61,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             return this;
         }
         /// <summary>
-        /// Select fields in a subtype
+        /// Select fields in a subtype. The response of your query may need to convert data type. If then consider to use GetContent<TOriginal,TExpectedType> method.
         /// </summary>
         /// <typeparam name="TSub">Subtype must be inherited from type <typeparamref name="T"/></typeparam>
         /// <param name="propertyName"></param>
@@ -76,7 +75,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             return this;
         }
         /// <summary>
-        /// Select fields in a subtype
+        /// Select fields in a subtype. The response of your query may need to convert data type. If then consider to use GetContent<TOriginal,TExpectedType> method.
         /// </summary>
         /// <typeparam name="TSub">Subtype must be inherited from type <typeparamref name="T"/></typeparam>
         /// <param name="fieldSelector"></param>
@@ -87,7 +86,6 @@ namespace EPiServer.ContentGraph.Api.Querying
             string propertyName = string.Empty;
             foreach (var fieldSelector in fieldSelectors)
             {
-                fieldSelector.Compile();
                 if (!propertyName.IsNullOrEmpty())
                 {
                     propertyName += " ";
@@ -102,7 +100,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             return this;
         }
         /// <summary>
-        /// Select fields in a subtype
+        /// Select fields in a subtype. The response of your query may need to convert data type. If then consider to use GetContent<TOriginal,TExpectedType> method.
         /// </summary>
         /// <typeparam name="TSub">Subtype must be inherited from type <typeparamref name="T"/></typeparam>
         /// <param name="propertyName"></param>
@@ -110,10 +108,6 @@ namespace EPiServer.ContentGraph.Api.Querying
         public TypeQueryBuilder<T> ForSubType<TSub>(SubTypeQueryBuilder<TSub> subTypeQuery) where TSub : T
         {
             subTypeQuery.ValidateNotNullArgument("subTypeQuery");
-            //if (!typeof(TSub).IsAssignableTo(typeof(T)))
-            //{
-            //    throw new ArgumentException($"Type [{typeof(TSub).Name}] is not inherit from type [{typeof(T).Name}]");
-            //}
             string subTypeName = typeof(TSub).Name;
             graphObject.SelectItems = graphObject.SelectItems.IsNullOrEmpty() ?
                 $"... on {subTypeName}{{{subTypeQuery.Query}}}" :
@@ -125,7 +119,6 @@ namespace EPiServer.ContentGraph.Api.Querying
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             autocomplete.ValidateNotNullArgument("autocompleteOperator");
-            fieldSelector.Compile();
             var propertyName = ConvertNestedFieldToString.ConvertNestedFieldForAutoComplete(fieldSelector.GetFieldPath(), autocomplete);
             if (graphObject.Autocomplete.IsNullOrEmpty())
             {
@@ -142,31 +135,27 @@ namespace EPiServer.ContentGraph.Api.Querying
         /// </summary>
         /// <param name="fieldSelector"></param>
         /// <returns></returns>
-        public TypeQueryBuilder<T> Facet(Expression<Func<T, string>> fieldSelector)
+        public TypeQueryBuilder<T> Facet(Expression<Func<T, object>> fieldSelector)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
-            fieldSelector.Compile();
             Facet(fieldSelector.GetFieldPath());
             return this;
         }
         public TypeQueryBuilder<T> Facet(Expression<Func<T, DateTime>> fieldSelector)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
-            fieldSelector.Compile();
             Facet(fieldSelector.GetFieldPath());
             return this;
         }
         public TypeQueryBuilder<T> Facet(Expression<Func<T, bool>> fieldSelector)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
-            fieldSelector.Compile();
             Facet(fieldSelector.GetFieldPath());
             return this;
         }
         public TypeQueryBuilder<T> Facet(Expression<Func<T, int>> fieldSelector)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
-            fieldSelector.Compile();
             Facet(fieldSelector.GetFieldPath());
             return this;
         }
@@ -278,7 +267,6 @@ namespace EPiServer.ContentGraph.Api.Querying
         public TypeQueryBuilder<T> OrderBy(Expression<Func<T, object>> fieldSelector, OrderMode orderMode = OrderMode.ASC)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
-            fieldSelector.Compile();
             var propertyName = fieldSelector.GetFieldPath();
 
             if (graphObject.OrderBy.IsNullOrEmpty())
@@ -294,7 +282,6 @@ namespace EPiServer.ContentGraph.Api.Querying
         public TypeQueryBuilder<T> OrderBy(Expression<Func<T, object>> fieldSelector, OrderMode orderMode, Ranking? ranking)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
-            fieldSelector.Compile();
             var propertyName = fieldSelector.GetFieldPath();
 
             if (graphObject.OrderBy.IsNullOrEmpty())
@@ -372,7 +359,6 @@ namespace EPiServer.ContentGraph.Api.Querying
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             filterOperator.ValidateNotNullArgument("filterOperator");
-            fieldSelector.Compile();
             Where(fieldSelector.GetFieldPath(), filterOperator);
 
             return this;
@@ -381,7 +367,6 @@ namespace EPiServer.ContentGraph.Api.Querying
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             filterOperator.ValidateNotNullArgument("filterOperator");
-            fieldSelector.Compile();
             Where(fieldSelector.GetFieldPath(), filterOperator);
 
             return this;
@@ -390,7 +375,6 @@ namespace EPiServer.ContentGraph.Api.Querying
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             filterOperator.ValidateNotNullArgument("filterOperator");
-            fieldSelector.Compile();
             Where(fieldSelector.GetFieldPath(), filterOperator);
 
             return this;
@@ -399,7 +383,6 @@ namespace EPiServer.ContentGraph.Api.Querying
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             filterOperator.ValidateNotNullArgument("filterOperator");
-            fieldSelector.Compile();
             Where(fieldSelector.GetFieldPath(), filterOperator);
 
             return this;
@@ -408,7 +391,6 @@ namespace EPiServer.ContentGraph.Api.Querying
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             filterOperator.ValidateNotNullArgument("filterOperator");
-            fieldSelector.Compile();
             Where(fieldSelector.GetFieldPath(), filterOperator);
 
             return this;
@@ -455,7 +437,6 @@ namespace EPiServer.ContentGraph.Api.Querying
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             facetFilter.ValidateNotNullArgument("facetFilter");
-            fieldSelector.Compile();
             Facet(fieldSelector.GetFieldPath(), facetFilter);
             return this;
         }
@@ -463,7 +444,6 @@ namespace EPiServer.ContentGraph.Api.Querying
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             facetFilter.ValidateNotNullArgument("facetFilter");
-            fieldSelector.Compile();
             Facet(fieldSelector.GetFieldPath(), facetFilter);
             return this;
         }
@@ -471,7 +451,6 @@ namespace EPiServer.ContentGraph.Api.Querying
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             facetFilter.ValidateNotNullArgument("facetFilter");
-            fieldSelector.Compile();
             Facet(fieldSelector.GetFieldPath(), facetFilter);
             return this;
         }
@@ -479,7 +458,6 @@ namespace EPiServer.ContentGraph.Api.Querying
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             facetFilter.ValidateNotNullArgument("facetFilter");
-            fieldSelector.Compile();
             Facet(fieldSelector.GetFieldPath(), facetFilter);
             return this;
         }
@@ -487,7 +465,6 @@ namespace EPiServer.ContentGraph.Api.Querying
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             facetFilter.ValidateNotNullArgument("facetFilter");
-            fieldSelector.Compile();
             Facet(fieldSelector.GetFieldPath(), facetFilter);
             return this;
         }

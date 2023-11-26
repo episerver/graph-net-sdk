@@ -1,6 +1,7 @@
 ﻿using EPiServer.ContentGraph.Api.Filters;
 using EPiServer.ContentGraph.Api.Querying;
 using EPiServer.ContentGraph.Configuration;
+using EPiServer.ContentGraph.Extensions;
 using EPiServer.Data;
 using EPiServer.DependencyInjection;
 using EPiServer.ServiceLocation;
@@ -21,7 +22,6 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
         private static readonly int MAX_RETRY = 100;
         //protected static IOptions<QueryOptions> queryOptions;
         protected static IHost? testingHost;
-        protected static readonly string QUERY_PATH = "content/v2?cache=false";
         protected static readonly string INDEXING_PATH = "api/content/v2/data";
         protected static readonly string CLEAR_MAPPING_AND_DATA_PATH = "api/content/v3/sources";
         protected static readonly string MAPPING_PATH = "api/content/v3/types";
@@ -49,7 +49,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
                 })
                 .ConfigureServices(services => ConfigureServices(services))
                 .Build();
-            //queryOptions = testingHost.Services.GetService<IOptions<QueryOptions>>();
+
             _configOptions = testingHost.Services.GetService<IOptions<OptiGraphOptions>>();
             _httpClient = CreateHttpClient();
         }
@@ -97,10 +97,10 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
                 o.IncludeSiteHosts = true;
                 //o.EnablePreviewFeatures = true;// optional
             });
-            
+
+            services.AddContentGraphQuery();
             services.AddContentGraph();
             services.AddScoped<IFilterForVisitor, CustomForVisitor>();
-            services.AddScoped<IFilterForVisitor, FilterDeletedForVisitor>();
         }
         private static HttpClient CreateHttpClient()
         {
@@ -190,7 +190,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
                .Total()
                .ToQuery()
                .BuildQueries();
-                var rs = query.GetResult<T>().Result;
+                var rs = query.GetResultAsync<T>().Result;
                 return rs.Content.Values.First().Total > 0;
             }
             catch (Exception)
@@ -209,19 +209,5 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
                 BulkIndexing<T>(indexingData);
             }
         }
-        //private static OptiGraphOptions TransformConfigOptions(IOptions<QueryOptions> source, bool useHmacKey)
-        //{
-        //    if (source.Value != null)
-        //    {
-        //        return new OptiGraphOptions(useHmacKey)
-        //        {
-        //            GatewayAddress = source.Value.GatewayAddress + QUERY_PATH,
-        //            Key = source.Value.SingleKey,
-        //            SecretKey = source.Value.Secret,
-        //            AppKey = source.Value.AppKey
-        //        };
-        //    }
-        //    return new OptiGraphOptions(useHmacKey);
-        //}
     }
 }

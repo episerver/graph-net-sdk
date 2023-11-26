@@ -27,7 +27,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Fields(x => x.Id, x => x.Name, x => x.Status)
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<Content>().Result;
+            var rs = query.GetResultAsync<Content>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count == 3);
         }
         [TestMethod]
@@ -40,7 +40,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Skip(0)
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<Content>().Result;
+            var rs = query.GetResultAsync<Content>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.Count == 2);
         }
         [TestMethod]
@@ -52,7 +52,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .OrderBy(x => x.Name, OrderMode.DESC)
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<Content>().Result;
+            var rs = query.GetResultAsync<Content>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.First().Name.Equals("Tim Cook"));
         }
         [TestMethod]
@@ -64,7 +64,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .FullTextSearch(new StringFilterOperators().Contains("Alan Turing"))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResult<Content>().Result;
+            var rs = query.GetResultAsync<Content>().Result;
             Assert.IsTrue(rs.Content.Values.First().Hits.First().Name.Equals("Alan Turing"));
         }
     }
