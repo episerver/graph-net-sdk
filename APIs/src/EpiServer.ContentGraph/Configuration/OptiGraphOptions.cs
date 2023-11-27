@@ -31,6 +31,10 @@ namespace EPiServer.ContentGraph.Configuration
         /// Flag to mark that request should uese HMAC key. Default to true.
         /// </summary>
         public bool UseHmacKey { get; set; }
+        /// <summary>
+        /// Override the value of enabled cache on CG. Default to true.
+        /// </summary>
+        public bool Cache { get; set; } = true;
         [Required(AllowEmptyStrings = false)]
         public string GatewayAddress { get; set; }
 

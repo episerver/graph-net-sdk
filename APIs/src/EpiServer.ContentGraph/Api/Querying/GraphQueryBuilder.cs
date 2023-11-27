@@ -22,6 +22,7 @@ namespace EPiServer.ContentGraph.Api.Querying
         private GraphQLRequest _query;
         private static OptiGraphOptions _optiGraphOptions = new();
         private const string RequestMethod = "POST";
+        private const string UnCachedPath = "?cache=false";
         ITypeQueryBuilder? typeQueryBuilder;
         public static GraphQueryBuilder CreateFromConfig()
         {
@@ -116,7 +117,7 @@ namespace EPiServer.ContentGraph.Api.Querying
                     settings.ContractResolver = new LowercaseContractResolver();
                     string body = JsonConvert.SerializeObject(_query, settings);
 
-                    jsonRequest.AddRequestHeader("Authorization", GetAuthorization(body));
+                    AdditionalInformation(jsonRequest, body);
                     using (var reader = new StreamReader(await jsonRequest.GetResponseStream(body), jsonRequest.Encoding))
                     {
                         var jsonReader = new JsonTextReader(reader);
@@ -157,11 +158,7 @@ namespace EPiServer.ContentGraph.Api.Querying
                     settings.ContractResolver = new LowercaseContractResolver();
                     string body = JsonConvert.SerializeObject(_query, settings);
 
-                    jsonRequest.AddRequestHeader("Authorization", GetAuthorization(body));
-                    if (_optiGraphOptions.UseHmacKey)
-                    {
-                        jsonRequest.AddRequestHeader("cg-include-deleted", "true");
-                    }
+                    AdditionalInformation(jsonRequest, body);
                     using (var reader = new StreamReader(await jsonRequest.GetResponseStream(body), jsonRequest.Encoding))
                     {
                         var jsonReader = new JsonTextReader(reader);
@@ -202,6 +199,20 @@ namespace EPiServer.ContentGraph.Api.Querying
         public GraphQLRequest GetQuery()
         {
             return _query;
+        }
+        
+        private void AdditionalInformation(JsonRequest request, string body)
+        {
+            request.AddRequestHeader("Authorization", GetAuthorization(body));
+            if (_optiGraphOptions.UseHmacKey)
+            {
+                request.AddRequestHeader("cg-include-deleted", "true");
+            }
+            if (!_optiGraphOptions.Cache)
+            {
+                Regex regex = new Regex(@"\?cache=\w*");
+                _optiGraphOptions.QueryPath = _optiGraphOptions.QueryPath.Replace(regex.Match(_optiGraphOptions.QueryPath).Value, UnCachedPath);
+            }
         }
     }
 }
