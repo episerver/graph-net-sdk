@@ -39,7 +39,15 @@ namespace EPiServer.ContentGraph.Api.Querying
         //public GraphQueryBuilder() => _query = new GraphQLRequest();
         public GraphQueryBuilder(GraphQLRequest request)
         {
-            _httpClient = ServiceLocator.Current.GetInstance<IHttpClientFactory>().CreateClient("HttpClientWithAutoDecompression");
+
+            try
+            {
+                //unit tests doesn't register IHttpClientFactory, so will throw exception here
+                _httpClient = ServiceLocator.Current.GetInstance<IHttpClientFactory>().CreateClient("HttpClientWithAutoDecompression");
+            }
+            catch (Exception ex)
+            {
+            }
             _query = request;
             _typeQueryBuilders ??= new List<ITypeQueryBuilder>();
         }

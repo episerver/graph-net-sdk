@@ -1,6 +1,7 @@
 ﻿using EPiServer.ContentGraph.Api.Filters;
 using EPiServer.ContentGraph.Api.Querying;
 using EPiServer.ContentGraph.Configuration;
+using EPiServer.ContentGraph.Extensions;
 using EPiServer.Data;
 using EPiServer.DependencyInjection;
 using EPiServer.ServiceLocation;
@@ -102,6 +103,10 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
             });
             
             services.AddContentGraph();
+            services.AddContentGraphCore(options =>
+            {
+                //options.UseHmacKey = false;
+            });
             services.AddScoped<IFilterForVisitor, CustomForVisitor>();
             services.AddScoped<IFilterForVisitor, FilterDeletedForVisitor>();
             services.AddHttpClient("HttpClientWithAutoDecompression", c => { })
