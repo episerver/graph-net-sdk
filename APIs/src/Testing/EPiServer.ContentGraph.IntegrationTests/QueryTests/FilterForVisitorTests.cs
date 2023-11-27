@@ -26,7 +26,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_without_filter_for_visitors_should_result_3_items()
         {
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<Content>()
                 .Fields(x => x.Id, x => x.Name, x => x.Status)
                 .ToQuery()
@@ -39,7 +39,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         public void search_with_filter_for_visitors_should_result_1_item()
         {
             var filterForvistors = testingHost.Services.GetServices<IFilterForVisitor>().ToArray();
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<Content>()
                 .Fields(x => x.Id, x => x.Name, x => x.Status)
                 .FilterForVisitor(filterForvistors)

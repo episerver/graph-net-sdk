@@ -24,7 +24,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_name_Equals_operator_should_result_exactly_1_item()
         {
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<Content>()
                 .Fields(x => x.Id, x => x.Name, x => x.Status)
                 .Where(x => x.Name, new StringFilterOperators().Eq("Steve Jobs"))
@@ -36,7 +36,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_Exists_operator_should_result_2_item()
         {
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<Content>()
                 .Fields(x => x.Author)
                 .Where(x => x.Author, new StringFilterOperators().Exists(true))
@@ -48,7 +48,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_startWith_endsWith_operator_should_result_1_item()
         {
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<Content>()
                 .Fields(x => x.Author)
                 .Where(x => x.Author, new StringFilterOperators().StartWith("Ste").EndWith("wey"))
@@ -62,7 +62,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_with_filter_on_2_fields_should_result_1_item()
         {
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<Content>()
                 .Fields(x => x.Author, x=>x.Name)
                 .Where(x => x.Name, new StringFilterOperators().Match("Steve"))
@@ -76,7 +76,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_with_Like_operator_should_result_2_items()
         {
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<Content>()
                 .Fields(x => x.Author, x=>x.Name)
                 .Where(x => x.Name, new StringFilterOperators().Like("st_ve%"))
@@ -88,7 +88,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_with_In_operator_should_result_2_items()
         {
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<Content>()
                 .Fields(x => x.Author, x => x.Name)
                 .Where(x => x.Id, new StringFilterOperators().In("content1", "content2"))
@@ -103,7 +103,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_Contains_operator_should_result_2_items()
         {
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<Content>()
                 .Fields(x => x.Id, x => x.Name, x => x.Status)
                 .Where(x => x.Name, new StringFilterOperators().Contains("Steve"))
@@ -115,7 +115,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void search_Match_operator_should_result_2_items()
         {
-            IQuery query = new GraphQueryBuilder(_configOptions)
+            IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<Content>()
                 .Fields(x => x.Name)
                 .Where(x => x.Name, new StringFilterOperators().Match("Steve").Fuzzy(true))

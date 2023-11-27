@@ -24,7 +24,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void orderby_on_searchable_string_should_return_correct_order()
         {
-            var result = new GraphQueryBuilder(_configOptions)
+            var result = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
                 .Fields(x => x.Name, x => x.MainBody )
                 .OrderBy(x => x.Name)
@@ -38,7 +38,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void orderby_on_datetime_should_return_correct_order()
         {
-            var result = new GraphQueryBuilder(_configOptions)
+            var result = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
                 .Fields(x => x.Name, x => x.StartPublish)
                 .OrderBy(x => x.StartPublish)
@@ -59,7 +59,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         [TestMethod]
         public void orderby_on_int_should_return_correct_order()
         {
-            var result = new GraphQueryBuilder(_configOptions)
+            var result = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
                 .Fields(x => x.Name, x => x.Priority)
                 .OrderBy(x => x.Priority)
