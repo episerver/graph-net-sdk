@@ -13,7 +13,7 @@ namespace EPiServer.ContentGraph.Api.Facets
         }
         public IEnumerable<FacetProperty> FacetProjections { get { return _projections; } }
 
-        public StringFacetFilterOperator OrderBy(OrderMode orderMode)
+        public StringFacetFilterOperator OrderBy(OrderMode orderMode = OrderMode.DESC)
         {
             _query = _query.IsNullOrEmpty() ? $"orderBy: {orderMode}" : $"{_query},orderBy: {orderMode}";
             return this;
@@ -24,20 +24,21 @@ namespace EPiServer.ContentGraph.Api.Facets
             _query = _query.IsNullOrEmpty() ? $"filters: [{combineValues}]" : $"{_query},filters: [{combineValues}]";
             return this;
         }
-        public StringFacetFilterOperator Limit(int limit)
+        public StringFacetFilterOperator Limit(int limit=5)
         {
             _query = _query.IsNullOrEmpty() ? $"limit: {limit}" : $"{_query},limit: {limit}";
             return this;
         }
-        public StringFacetFilterOperator OrderType(OrderType orderType)
+        public StringFacetFilterOperator OrderType(OrderType orderType=Api.OrderType.COUNT)
         {
             _query = _query.IsNullOrEmpty() ? $"orderType: {orderType}" : $"{_query},orderType: {orderType}";
             return this;
         }
-        public StringFacetFilterOperator Projection(params FacetProperty[] projections)
+
+        public IFacetOperator Projection(params FacetProperty[] facetProperties)
         {
-            projections.ValidateNotNullArgument("projections");
-            _projections = projections.Distinct();
+            facetProperties.ValidateNotNullArgument("facetProperties");
+            _projections = facetProperties.Distinct();
             return this;
         }
     }

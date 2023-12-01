@@ -12,7 +12,7 @@ using EPiServer.ContentGraph.ExpressionHelper;
 namespace EPiServer.ContentGraph.Api.Querying
 {
     //TODO: Very important=> remove all quotes, prefix wilcard and script-injection for security
-    public partial class TypeQueryBuilder<T> : BaseTypeQueryBuilder
+    public partial class TypeQueryBuilder<T> : TypeQueryBuilder
     {
         private static IEnumerable<IFilterForVisitor>? _filters;
         public TypeQueryBuilder(GraphQLRequest request) : base(request)
@@ -108,6 +108,7 @@ namespace EPiServer.ContentGraph.Api.Querying
         public TypeQueryBuilder<T> ForSubType<TSub>(SubTypeQueryBuilder<TSub> subTypeQuery) where TSub : T
         {
             subTypeQuery.ValidateNotNullArgument("subTypeQuery");
+            subTypeQuery.Parent = this.Parent;
             string subTypeName = typeof(TSub).Name;
             graphObject.SelectItems = graphObject.SelectItems.IsNullOrEmpty() ?
                 $"... on {subTypeName}{{{subTypeQuery.Query}}}" :
@@ -115,7 +116,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             return this;
         }
 
-        public TypeQueryBuilder<T> Autocomplete(Expression<Func<T, string>> fieldSelector, AutoCompleteOperators autocomplete)
+        public TypeQueryBuilder<T> Autocomplete(Expression<Func<T, object>> fieldSelector, AutoCompleteOperators autocomplete)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             autocomplete.ValidateNotNullArgument("autocompleteOperator");
@@ -308,7 +309,7 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             return this;
         }
-        public TypeQueryBuilder<T> Limit(long limit)
+        public TypeQueryBuilder<T> Limit(long limit=20)
         {
             graphObject.Limit = $"limit:{limit}";
             return this;
@@ -319,13 +320,13 @@ namespace EPiServer.ContentGraph.Api.Querying
             return this;
         }
         /// <summary>
-        /// Full text search
+        /// Full text search using Match operator
         /// </summary>
         /// <param name="q"></param>
         /// <returns></returns>
         public TypeQueryBuilder<T> Search(string q)
         {
-            Where("_fulltext", new StringFilterOperators().Contains(q));
+            Where("_fulltext", new StringFilterOperators().Match(q));
             return this;
         }
         public TypeQueryBuilder<T> Where(string fieldName, IFilterOperator filterOperator)
@@ -379,7 +380,7 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             return this;
         }
-        public TypeQueryBuilder<T> Where(Expression<Func<T, bool>> fieldSelector, StringFilterOperators filterOperator)
+        public TypeQueryBuilder<T> Where(Expression<Func<T, bool>> fieldSelector, BooleanFilterOperators filterOperator)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             filterOperator.ValidateNotNullArgument("filterOperator");
@@ -419,12 +420,22 @@ namespace EPiServer.ContentGraph.Api.Querying
                 $"{graphObject.Facets} {facets}";
             return this;
         }
-        public TypeQueryBuilder<T> Facet(Expression<Func<T, IFacetFilter>> facetFilter)
+        public TypeQueryBuilder<T> Facet(Expression<Func<T, object>> fieldSelector, IFacetOperator facetFilter)
         {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
             facetFilter.ValidateNotNullArgument("facetFilter");
+            Facet(fieldSelector.GetFieldPath(), facetFilter);
+            return this;
+        }
+        public TypeQueryBuilder<T> Facet(params Expression<Func<T, IFacetFilter>>[] facetFilters)
+        {
+            facetFilters.ValidateNotNullArgument("facetFilters");
             var parser = new FacetExpressionParser();
-            var filterOperator = parser.GetFacetFilter(facetFilter);
-            Facet(filterOperator);
+            foreach (var facetFilter in facetFilters)
+            {
+                var filter = parser.GetFacetFilter(facetFilter);
+                Facet(filter);
+            }
             return this;
         }
         /// <summary>
@@ -558,7 +569,17 @@ namespace EPiServer.ContentGraph.Api.Querying
                 graphObject.Autocomplete = $"autocomplete{{{graphObject.Autocomplete}}}";
             }
             _query.Query += graphObject.ToString();
-            return new GraphQueryBuilder(_query);
+            return new GraphQueryBuilder(_query, this);
+        }
+    }
+
+    public class TypeQueryBuilder : BaseTypeQueryBuilder
+    {
+        public TypeQueryBuilder(GraphQLRequest request) : base(request)
+        {
+        }
+        public TypeQueryBuilder() : base()
+        {
         }
     }
 }

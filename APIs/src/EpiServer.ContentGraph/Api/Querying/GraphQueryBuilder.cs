@@ -3,35 +3,32 @@ using EPiServer.ContentGraph.Json;
 using EPiServer.ContentGraph.Connection;
 using GraphQL.Transport;
 using Newtonsoft.Json;
-using System.Net;
 using System.Text;
 using EPiServer.ContentGraph.Configuration;
 using EPiServer.Turnstile.Contracts.Hmac;
 using Microsoft.Extensions.Options;
 using System.Text.RegularExpressions;
-using System.Net.Http;
 using EPiServer.ServiceLocation;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {
     public class GraphQueryBuilder : IQuery
     {
-        //TODO: remove static keyword for IHttpClientFactory & HttpClient
-        private static IHttpClientFactory _httpClientFactory;
-        private static HttpClient _httpClient;
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly HttpClient _httpClient;
         private GraphQLRequest _query;
-        private static OptiGraphOptions _optiGraphOptions = new();
+        private readonly OptiGraphOptions _optiGraphOptions;
         private const string RequestMethod = "POST";
         private const string UnCachedPath = "?cache=false";
-        ITypeQueryBuilder? typeQueryBuilder;
         public static GraphQueryBuilder CreateFromConfig()
         {
             try
             {
-                var options = ServiceLocator.Current.GetService(typeof(OptiGraphOptions));
+                var options = ServiceLocator.Current.GetService(typeof(OptiGraphOptions)) as OptiGraphOptions;
+                var httpClientFactory = ServiceLocator.Current.GetService(typeof(IHttpClientFactory)) as IHttpClientFactory;
                 if (options != null)
                 {
-                    return new GraphQueryBuilder(options as OptiGraphOptions);
+                    return new GraphQueryBuilder(options, httpClientFactory);
                 }
                 throw new ApplicationException("Can not create GraphQueryBuilder instance (OptiGraphOptions instance not found)");
             }
@@ -40,34 +37,48 @@ namespace EPiServer.ContentGraph.Api.Querying
                 throw new ApplicationException("Can not create GraphQueryBuilder instance, please check your settings and configuration", e);
             }
         }
-        private GraphQueryBuilder(OptiGraphOptions options)
+        private GraphQueryBuilder(OptiGraphOptions options, IHttpClientFactory httpClientFactory)
         {
             _optiGraphOptions = options;
             _query = new GraphQLRequest
             {
                 OperationName = "SampleQuery"
             };
-        }
-
-        public GraphQueryBuilder(IOptions<OptiGraphOptions> optiGraphOptions, IHttpClientFactory httpClientFactory)
-        {
             _httpClientFactory = httpClientFactory;
             _httpClient = _httpClientFactory.CreateClient("HttpClientWithAutoDecompression");
-            _optiGraphOptions = optiGraphOptions.Value;
-            _query = new GraphQLRequest
-            {
-                OperationName = "SampleQuery"
-            };
         }
-        public GraphQueryBuilder(GraphQLRequest request)
+
+        public GraphQueryBuilder(IOptions<OptiGraphOptions> optiGraphOptions, IHttpClientFactory httpClientFactory) : 
+            this(optiGraphOptions.Value, httpClientFactory)
         {
+        }
+        public GraphQueryBuilder(GraphQLRequest request, ITypeQueryBuilder typeQueryBuilder)
+        {
+            if (typeQueryBuilder.Parent != null)
+            {
+                _optiGraphOptions ??= ((GraphQueryBuilder)typeQueryBuilder.Parent)._optiGraphOptions;
+                _httpClientFactory ??= ((GraphQueryBuilder)typeQueryBuilder.Parent)._httpClientFactory;
+                _httpClient ??= _httpClientFactory.CreateClient("HttpClientWithAutoDecompression");
+            }
             _query = request;
         }
+
         public TypeQueryBuilder<T> ForType<T>()
         {
-            typeQueryBuilder = new TypeQueryBuilder<T>(_query);
+            var typeQueryBuilder = new TypeQueryBuilder<T>(_query);
+            typeQueryBuilder.Parent = this;
             return (TypeQueryBuilder<T>)typeQueryBuilder;
         }
+        public TypeQueryBuilder<T> ForType<T>(TypeQueryBuilder<T> typeQueryBuilder)
+        {
+            typeQueryBuilder.Parent = this;
+            return typeQueryBuilder;
+        }
+        /// <summary>
+        /// Optional name for operation. Name should not start with number (only underscores and letters) and can't have any space.
+        /// </summary>
+        /// <param name="op"></param>
+        /// <returns></returns>
         public GraphQueryBuilder OperationName(string op)
         {
             Regex reg = new Regex(@"^[a-zA-Z_]\w*$");
@@ -191,6 +202,45 @@ namespace EPiServer.ContentGraph.Api.Querying
             }
         }
         /// <summary>
+        /// Get raw response to a string
+        /// </summary>
+        /// <returns>string</returns>
+        /// <exception cref="ServiceException"></exception>
+        public async Task<string?> GetRawResultAsync()
+        {
+            string url = GetServiceUrl();
+
+            using (JsonRequest jsonRequest = new JsonRequest(url, HttpMethod.Post, _httpClient))
+            {
+                try
+                {
+                    var settings = new JsonSerializerSettings();
+                    settings.ContractResolver = new LowercaseContractResolver();
+                    string body = JsonConvert.SerializeObject(_query, settings);
+
+                    AdditionalInformation(jsonRequest, body);
+                    using (var reader = new StreamReader(await jsonRequest.GetResponseStream(body), jsonRequest.Encoding))
+                    {
+                        var jsonReader = new JsonTextReader(reader);
+                        return jsonReader.ReadAsString();
+                    }
+                }
+                catch (AggregateException asyncException)
+                {
+                    var httpRequestException = asyncException.InnerExceptions.FirstOrDefault(e => e.GetType() == typeof(HttpRequestException)) as HttpRequestException;
+                    if (httpRequestException != null)
+                    {
+                        throw new ServiceException(httpRequestException.Message, httpRequestException.InnerException);
+                    }
+                    throw new ServiceException(asyncException.Message, asyncException);
+                }
+                catch (HttpRequestException e)
+                {
+                    throw new ServiceException(e.Message, e);
+                }
+            }
+        }
+        /// <summary>
         /// Call this method to generate query for all types
         /// </summary>
         /// <returns></returns>
@@ -203,7 +253,7 @@ namespace EPiServer.ContentGraph.Api.Querying
         {
             return _query;
         }
-        
+
         private void AdditionalInformation(JsonRequest request, string body)
         {
             request.AddRequestHeader("Authorization", GetAuthorization(body));

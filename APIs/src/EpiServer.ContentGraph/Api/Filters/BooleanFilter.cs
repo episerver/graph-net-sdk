@@ -1,9 +1,18 @@
 ﻿namespace EPiServer.ContentGraph.Api.Filters
 {
-    public class BooleanFilter<T>
+    public class BooleanFilter
     {
-        public static AndFilter<T> AndFilter { get { return new AndFilter<T>(); } }
-        public static OrFilter<T> OrFilter { get { return new OrFilter<T>(); } }
-        public static NotFilter<T> NotFilter { get { return new NotFilter<T>(); } }
+        public static AndFilter<T> AndFilter<T>()
+        {
+            return new AndFilter<T>();
+        }
+        public static OrFilter<T> OrFilter<T>()
+        {
+            return new OrFilter<T>();
+        }
+        public static NotFilter<T> NotFilter<T>()
+        {
+            return new NotFilter<T>();
+        }
     }
 }

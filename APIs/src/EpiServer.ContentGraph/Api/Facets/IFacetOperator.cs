@@ -4,5 +4,6 @@
     {
         public string FilterClause { get;}
         public IEnumerable<FacetProperty> FacetProjections { get; }
+        public IFacetOperator Projection(params FacetProperty[] facetProperties);
     }
 }

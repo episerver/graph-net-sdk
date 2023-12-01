@@ -51,12 +51,32 @@ namespace EPiServer.ContentGraph.Api.Filters
         }
         public NumericFilterOperators In(params int[] values)
         {
-            _query += _query.IsNullOrEmpty() ? $"in: [{string.Join(',',values)}]" : $",in: [{string.Join(',', values)}]";
+            _query += _query.IsNullOrEmpty() ? $"in: [{string.Join(',', values)}]" : $",in: [{string.Join(',', values)}]";
             return this;
         }
         public NumericFilterOperators NotIn(params int[] values)
         {
             _query += _query.IsNullOrEmpty() ? $"notIn: [{string.Join(',', values)}]" : $",notIn: [{string.Join(',', values)}]";
+            return this;
+        }
+        public NumericFilterOperators InRange(int? from, int? to)
+        {
+            if (from.HasValue)
+            {
+                Gte(from.Value);
+            }
+            if (to.HasValue)
+            {
+                Lte(to.Value);
+            }
+            return this;
+        }
+        public NumericFilterOperators InRanges(params (int? from, int? to)[] ranges)
+        {
+            foreach (var range in ranges)
+            {
+                InRange(range.from, range.to);
+            }
             return this;
         }
 
@@ -98,6 +118,26 @@ namespace EPiServer.ContentGraph.Api.Filters
         public NumericFilterOperators NotIn(params float[] values)
         {
             _query += _query.IsNullOrEmpty() ? $"notIn: [{string.Join(',', values)}]" : $",notIn: [{string.Join(',', values)}]";
+            return this;
+        }
+        public NumericFilterOperators InRange(float? from, float? to)
+        {
+            if (from.HasValue)
+            {
+                Gte(from.Value);
+            }
+            if (to.HasValue)
+            {
+                Lte(to.Value);
+            }
+            return this;
+        }
+        public NumericFilterOperators InRanges(params (float? from, float? to)[] ranges)
+        {
+            foreach (var range in ranges)
+            {
+                InRange(range.from, range.to);
+            }
             return this;
         }
     }

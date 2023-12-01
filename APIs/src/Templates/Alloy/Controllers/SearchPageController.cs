@@ -72,7 +72,7 @@ namespace AlloyMvcTemplates.Controllers
                     Title = x.Name
                 }))
                 ,
-                NumberOfHits = hits.Count,
+                NumberOfHits = hits.Count(),
                 SearchServiceDisabled = false,
                 SearchedQuery = q
             };

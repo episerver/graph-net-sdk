@@ -47,7 +47,7 @@ namespace EPiServer.ContentGraph.Configuration
         [Required(AllowEmptyStrings = false)]
         public string AppKey { get; set; }
 
-        public string QueryPath { get; set; }
+        public string QueryPath { get; set; } = "content/v2";
         public string Authorization
         {
             get

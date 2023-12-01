@@ -1,4 +1,5 @@
-﻿using EPiServer.ContentGraph.Helpers;
+﻿using EPiServer.ContentGraph.ExpressionHelper;
+using EPiServer.ContentGraph.Helpers;
 using EPiServer.ContentGraph.Helpers.Reflection;
 using System.Linq.Expressions;
 
@@ -65,6 +66,23 @@ namespace EPiServer.ContentGraph.Api.Filters
             Not(fieldSelector.GetFieldPath(), filterOperator);
             return this;
         }
+        private NotFilter<T> Not(Expression<Func<T, Filter>> fieldSelector)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            var paser = new FilterExpressionParser();
+            var filter = paser.GetFilter(fieldSelector);
+            AddFilter(filter);
+            return this;
+        }
+        public NotFilter<T> Not(params Expression<Func<T, Filter>>[] fieldSelectors)
+        {
+            fieldSelectors.ValidateNotNullArgument("fieldSelectors");
+            foreach (var field in fieldSelectors)
+            {
+                Not(field);
+            }
+            return this;
+        }
     }
 
     public class NotFilter : Filter
@@ -74,16 +92,16 @@ namespace EPiServer.ContentGraph.Api.Filters
         {
             _query = query;
         }
-        public NotFilter()
+        public NotFilter() : base()
         {
         }
         public override string FilterClause
         {
             get
             {
-                if (Filters.IsNotNull() && Filters.Count > 0)
+                if (_filters != null && _filters.Count > 0)
                 {
-                    string otherFilters = string.Join(',', Filters.Select(x => $"{{{x.FilterClause}}}"));
+                    string otherFilters = string.Join(',', _filters.Select(x => $"{{{x.FilterClause}}}"));
                     if (_query.IsNullOrEmpty())
                     {
                         return $"_not:[{otherFilters}]";

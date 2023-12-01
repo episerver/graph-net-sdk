@@ -28,7 +28,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Values.First().AutoComplete["Id"].Count.Equals(3));
+            Assert.IsTrue(rs.Content.Values.First().AutoComplete["Id"].Count().Equals(3));
         }
         [TestMethod]
         public void autocomplete_id_contains_myid_and_limit_1_should_result_1_phrase()
@@ -42,7 +42,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Values.First().AutoComplete["Id"].Count.Equals(1));
+            Assert.IsTrue(rs.Content.Values.First().AutoComplete["Id"].Count().Equals(1));
         }
         [TestMethod]
         public void autocomplete_has_value_more_than_10_characters_will_be_ignore()
@@ -55,7 +55,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Values.First().AutoComplete["Id"].Count.Equals(0));
+            Assert.IsTrue(rs.Content.Values.First().AutoComplete["Id"].Count().Equals(0));
         }
     }
 }

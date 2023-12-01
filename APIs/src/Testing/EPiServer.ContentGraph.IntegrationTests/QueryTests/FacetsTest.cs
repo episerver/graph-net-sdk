@@ -51,7 +51,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content["HomePage"].Facets["Priority"].Count.Equals(2));
+            Assert.IsTrue(rs.Content["HomePage"].Facets["Priority"].Count().Equals(2));
             Assert.IsTrue(rs.Content["HomePage"].Facets["Priority"].First().Name.Equals("[100,200)"));
             Assert.IsTrue(rs.Content["HomePage"].Facets["Priority"].First().Count.Equals(2));
             Assert.IsTrue(rs.Content["HomePage"].Facets["Priority"].Last().Name.Equals("[200,300)"));
@@ -67,9 +67,9 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                     .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content["HomePage"].Facets["IsSecret"].Count.Equals(2));
-            Assert.IsTrue(rs.Content["HomePage"].Hits.Count.Equals(2));
-            Assert.IsTrue(rs.Content["HomePage"].Hits.TrueForAll(x => x.IsSecret));
+            Assert.IsTrue(rs.Content["HomePage"].Facets["IsSecret"].Count().Equals(2));
+            Assert.IsTrue(rs.Content["HomePage"].Hits.Count().Equals(2));
+            Assert.IsTrue(rs.Content["HomePage"].Hits.Select(x=>x.IsSecret).ToList().TrueForAll(x => x));
         }
         [TestMethod]
         public void search_with_2_facet_should_return_2_facets()

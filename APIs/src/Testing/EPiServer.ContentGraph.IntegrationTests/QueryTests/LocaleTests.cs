@@ -18,6 +18,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
             SetupData<HomePage>(item1 + item2 + item3 + item4);
         }
         [TestMethod]
+        [Ignore("Moved this test to Optigraph.CMS package")]
         public void search_with_fields_should_result_2_items()
         {
             IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
@@ -27,8 +28,8 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync().Result;
-            Assert.IsTrue(rs.GetContent<HomePage>().Hits.Count == 2);
-            Assert.IsTrue(rs.GetContent<HomePage>().Hits.TrueForAll(x => !x.Id.Equals("content1")));
+            Assert.IsTrue(rs.GetContent<HomePage>().Hits.Count() == 2);
+            Assert.IsTrue(rs.GetContent<HomePage>().Hits.ToList().TrueForAll(x => !x.Id.Equals("content1")));
         }
     }
 }

@@ -6,13 +6,13 @@ namespace EPiServer.ContentGraph.Api.Result
     public class ContentGraphHits<T>
     {
         [JsonIgnore]
-        Dictionary<string, List<ContentGraphFacet>> facets = null;
+        Dictionary<string, IEnumerable<ContentGraphFacet>> facets = null;
         [JsonIgnore]
-        Dictionary<string, List<string>> autocompletes = null;
+        Dictionary<string, IEnumerable<string>> autocompletes = null;
         [JsonProperty("items")]
-        public List<T> Hits { get; set; }
+        public IEnumerable<T> Hits { get; set; }
         [JsonIgnore]
-        public Dictionary<string, List<ContentGraphFacet>> Facets
+        public Dictionary<string, IEnumerable<ContentGraphFacet>> Facets
         {
             get
             {
@@ -23,17 +23,17 @@ namespace EPiServer.ContentGraph.Api.Result
                 if (RawFacets != null)
                 {
                     var keys = RawFacets.Keys;
-                    facets = new Dictionary<string, List<ContentGraphFacet>>();
+                    facets = new Dictionary<string, IEnumerable<ContentGraphFacet>>();
                     foreach (var key in keys)
                     {
-                        facets.Add(key, RawFacets[key].ToObject<List<ContentGraphFacet>>());
+                        facets.Add(key, RawFacets[key].ToObject<IEnumerable<ContentGraphFacet>>());
                     }
                 }
                 return facets;
             }
         }
         [JsonIgnore]
-        public Dictionary<string, List<string>> AutoComplete
+        public Dictionary<string, IEnumerable<string>> AutoComplete
         {
             get
             {
@@ -44,10 +44,10 @@ namespace EPiServer.ContentGraph.Api.Result
                 if (RawAutoComplete != null)
                 {
                     var keys = RawAutoComplete.Keys;
-                    autocompletes = new Dictionary<string, List<string>>();
+                    autocompletes = new Dictionary<string, IEnumerable<string>>();
                     foreach (var key in keys)
                     {
-                        autocompletes.Add(key, RawAutoComplete[key].ToObject<List<string>>());
+                        autocompletes.Add(key, RawAutoComplete[key].ToObject<IEnumerable<string>>());
                     }
                 }
                 return autocompletes;

@@ -90,15 +90,17 @@ namespace EPiServer.ContentGraph.UnitTests
         {
             string expectedFields = @"items{Property1 Property2}";
             string expectedFacets = @"facets{Property1(filters: [""somevalue"",""other value""]){name count} Property3{NestedProperty(ranges:[{from:1,to:2},{from:9,to:10}]){name count}}}";
+            var facetFilter1 = new StringFacetFilterOperator()
+                    .Filters("somevalue", "other value")
+                    .Projection(FacetProperty.name, FacetProperty.count);
+            var facetFilter2 = new NumericFacetFilterOperator()
+                    .Ranges((1, 2), (9, 10))
+                    .Projection(FacetProperty.name, FacetProperty.count);
             typeQueryBuilder
                 .Field(x => x.Property1)
                 .Field(x => x.Property2)
-                .Facet(x => x.Property1, new StringFacetFilterOperator()
-                    .Filters("somevalue","other value")
-                    .Projection(FacetProperty.name, FacetProperty.count))
-                .Facet(x => x.Property3.NestedProperty, new NumericFacetFilterOperator()
-                    .Ranges((1,2),(9,10))
-                    .Projection(FacetProperty.name, FacetProperty.count));
+                .Facet(x => x.Property1, facetFilter1)
+                .Facet(x => x.Property3.NestedProperty, facetFilter2);
             GraphQueryBuilder query = typeQueryBuilder.ToQuery();
 
             Assert.NotNull(query.GetQuery());

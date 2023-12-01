@@ -33,7 +33,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(2));
+            Assert.IsTrue(rs.Content.Values.First().Hits.Count().Equals(2));
         }
         [TestMethod]
         public void search_2_conditions_in_and_filter_should_return_1_item()
@@ -49,7 +49,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(1));
+            Assert.IsTrue(rs.Content.Values.First().Hits.Count().Equals(1));
             Assert.IsTrue(rs.Content.Values.First().Hits.First().Name.Equals("Home 2"));
         }
 
@@ -68,7 +68,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(2));
+            Assert.IsTrue(rs.Content.Values.First().Hits.Count().Equals(2));
         }
         [TestMethod]
         public void search_2_conditions_in_or_filter_should_return_3_items()
@@ -84,7 +84,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(3));
+            Assert.IsTrue(rs.Content.Values.First().Hits.Count().Equals(3));
         }
         #endregion
         #region Not filter
@@ -101,7 +101,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(2));
+            Assert.IsTrue(rs.Content.Values.First().Hits.Count().Equals(2));
         }
         [TestMethod]
         public void search_2_conditions_in_not_filter_should_return_2_items()
@@ -146,7 +146,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(3));
+            Assert.IsTrue(rs.Content.Values.First().Hits.Count().Equals(3));
         }
         #endregion
     }

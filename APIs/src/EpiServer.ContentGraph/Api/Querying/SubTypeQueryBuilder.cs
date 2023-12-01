@@ -17,13 +17,12 @@ namespace EPiServer.ContentGraph.Api.Querying
         public override GraphQueryBuilder ToQuery()
         {
             _query.Query = builder.ToString();
-            return new GraphQueryBuilder(_query);
+            return new GraphQueryBuilder(_query, this);
         }
 
         public SubTypeQueryBuilder<T> Field(Expression<Func<T, object>> fieldSelector)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
-            fieldSelector.Compile();
             var propertyName = fieldSelector.GetFieldPath();
             if (builder.Length > 0)
             {
@@ -37,7 +36,6 @@ namespace EPiServer.ContentGraph.Api.Querying
             fieldSelectors.ValidateNotNullArgument("fieldSelectors");
             foreach (var fieldSelector in fieldSelectors)
             {
-                fieldSelector.Compile();
                 var propertyName = fieldSelector.GetFieldPath();
                 if (builder.Length > 0)
                 {

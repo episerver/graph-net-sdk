@@ -21,7 +21,6 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
     public class IntegrationFixture
     {
         private static readonly int MAX_RETRY = 100;
-        //protected static IOptions<QueryOptions> queryOptions;
         protected static IHost? testingHost;
         protected static readonly string INDEXING_PATH = "api/content/v2/data";
         protected static readonly string CLEAR_MAPPING_AND_DATA_PATH = "api/content/v3/sources";
@@ -105,14 +104,6 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
             services.AddContentGraph();
             services.AddScoped<IFilterForVisitor, CustomForVisitor>();
             services.AddScoped<IFilterForVisitor, FilterDeletedForVisitor>();
-            services.AddHttpClient("HttpClientWithAutoDecompression", c => { })
-               .ConfigurePrimaryHttpMessageHandler(() => {
-                   var httpClientHandler = new HttpClientHandler
-                   {
-                       AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
-                   };
-                   return httpClientHandler;
-               });
         }
         private static HttpClient CreateHttpClient()
         {
@@ -131,7 +122,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
         protected static void ClearData<T>(string id = "test")
         {
             var res = _httpClient.DeleteAsync(INDEXING_PATH + $"?id={id}").Result;
-            if (res.StatusCode == System.Net.HttpStatusCode.OK || res.StatusCode == System.Net.HttpStatusCode.NoContent)
+            if (res.StatusCode == HttpStatusCode.OK || res.StatusCode == HttpStatusCode.NoContent)
             {
                 //wait until docs had been deleted
                 int retry = 0;
@@ -152,7 +143,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
         protected static void ClearMapping(string id = "test")
         {
             var res = _httpClient.DeleteAsync(CLEAR_MAPPING_AND_DATA_PATH + $"?id={id}").Result;
-            if (res.StatusCode == System.Net.HttpStatusCode.OK || res.StatusCode == System.Net.HttpStatusCode.NotFound)
+            if (res.StatusCode == HttpStatusCode.OK || res.StatusCode == HttpStatusCode.NotFound)
             {
                 Console.WriteLine($"Deleted mappings for source {id}");
             }
@@ -164,7 +155,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
         protected static void PushMapping(string json, string id = "test")
         {
             var res = _httpClient.PutAsync(MAPPING_PATH + $"?id={id}", new StringContent(json)).Result;
-            if (res.StatusCode == System.Net.HttpStatusCode.OK || res.StatusCode == System.Net.HttpStatusCode.Created)
+            if (res.StatusCode == HttpStatusCode.OK || res.StatusCode == HttpStatusCode.Created)
             {
                 Console.WriteLine("Mapping done");
             }
@@ -176,7 +167,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
         protected static void BulkIndexing<T>(string bulk, string id = "test")
         {
             var res = _httpClient.PostAsync(INDEXING_PATH + $"?id={id}", new StringContent(bulk)).Result;
-            if (res.StatusCode == System.Net.HttpStatusCode.OK || res.StatusCode == System.Net.HttpStatusCode.Created)
+            if (res.StatusCode == HttpStatusCode.OK || res.StatusCode == HttpStatusCode.Created)
             {
                 //wait until docs had been indexed
                 int retry = 0;

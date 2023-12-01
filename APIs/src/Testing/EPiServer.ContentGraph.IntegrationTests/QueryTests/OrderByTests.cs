@@ -45,10 +45,11 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries()
                 .GetResultAsync<HomePage>().Result;
+            var resultArray = result.Content["HomePage"].Hits.ToArray();
             var dates = new DateTime[4];
             for (int i = 0; i < 4; i++)
             {
-                dates[i] = result.Content["HomePage"].Hits[i].StartPublish;
+                dates[i] = resultArray[i].StartPublish.Value;
             }
 
             Assert.IsTrue(dates[0] < dates[1]);
@@ -67,9 +68,10 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .BuildQueries()
                 .GetResultAsync<HomePage>().Result;
             var ints = new int?[4];
+            var resultArray = result.Content["HomePage"].Hits.ToArray();
             for (int i = 0; i < 4; i++)
             {
-                ints[i] = result.Content["HomePage"].Hits[i].Priority;
+                ints[i] = resultArray[i].Priority;
             }
 
             Assert.IsTrue(ints[0] < ints[1]);

@@ -6,7 +6,7 @@ namespace EPiServer.ContentGraph.Api.Filters
     {
         string _query = string.Empty;
         public string Query => _query;
-        public DateFilterOperators Boost(uint value)
+        public DateFilterOperators Boost(int value)
         {
             _query += _query.IsNullOrEmpty() ? $"boost: {value}" : $",boost: {value}";
             return this;
@@ -39,6 +39,12 @@ namespace EPiServer.ContentGraph.Api.Filters
         public DateFilterOperators Lte(string value)
         {
             _query += _query.IsNullOrEmpty() ? $"lte: \"{value}\"" : $",lte: \"{value}\"";
+            return this;
+        }
+        public DateFilterOperators InRange(string from, string to)
+        {
+            Gte(from);
+            Lt(to);
             return this;
         }
     }

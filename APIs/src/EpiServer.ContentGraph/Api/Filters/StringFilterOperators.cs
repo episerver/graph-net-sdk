@@ -4,7 +4,7 @@ namespace EPiServer.ContentGraph.Api.Filters
 {
     public class StringFilterOperators : IFilterOperator
     {
-        string _query;
+        string _query = string.Empty;
         public string Query => _query;
         /// <summary>
         /// Only for searchable field
@@ -16,7 +16,7 @@ namespace EPiServer.ContentGraph.Api.Filters
             _query += _query.IsNullOrEmpty() ? $"contains: \"{value}\"" : $",contains: \"{value}\"";
             return this;
         }
-        public StringFilterOperators Boost(uint value)
+        public StringFilterOperators Boost(int value)
         {
             _query += _query.IsNullOrEmpty() ? $"boost: {value}" : $",boost: {value}";
             return this;

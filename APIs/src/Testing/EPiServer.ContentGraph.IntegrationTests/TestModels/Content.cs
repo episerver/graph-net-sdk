@@ -1,4 +1,5 @@
 ﻿using EPiServer.DataAnnotations;
+using Newtonsoft.Json;
 
 namespace EPiServer.ContentGraph.IntegrationTests.TestModels
 {
@@ -11,6 +12,10 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestModels
         public string Status { get; set; }
         public Language Language { get; set; }
         public HomePage HomePage { get; set; }
+        [JsonProperty("__typename")]
+        public string TypeName { get; set; }
+        [JsonProperty("ContentType")]
+        public string[]? ContentType { get; set; }
     }
     internal class Language
     {

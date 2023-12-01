@@ -1,4 +1,5 @@
-﻿using EPiServer.ContentGraph.Helpers;
+﻿using EPiServer.ContentGraph.ExpressionHelper;
+using EPiServer.ContentGraph.Helpers;
 using EPiServer.ContentGraph.Helpers.Reflection;
 using System.Linq.Expressions;
 
@@ -37,43 +38,54 @@ namespace EPiServer.ContentGraph.Api.Filters
         public AndFilter<T> And(Expression<Func<T, string>> fieldSelector, IFilterOperator filterOperator)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
-            fieldSelector.Compile();
             And(fieldSelector.GetFieldPath(), filterOperator);
             return this;
         }
         public AndFilter<T> And(Expression<Func<T, DateTime?>> fieldSelector, IFilterOperator filterOperator)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
-            fieldSelector.Compile();
             And(fieldSelector.GetFieldPath(), filterOperator);
             return this;
         }
         public AndFilter<T> And(Expression<Func<T, long?>> fieldSelector, IFilterOperator filterOperator)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
-            fieldSelector.Compile();
             And(fieldSelector.GetFieldPath(), filterOperator);
             return this;
         }
         public AndFilter<T> And(Expression<Func<T, double?>> fieldSelector, IFilterOperator filterOperator)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
-            fieldSelector.Compile();
             And(fieldSelector.GetFieldPath(), filterOperator);
             return this;
         }
         public AndFilter<T> And(Expression<Func<T, int>> fieldSelector, IFilterOperator filterOperator)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
-            fieldSelector.Compile();
             And(fieldSelector.GetFieldPath(), filterOperator);
             return this;
         }
         public AndFilter<T> And(Expression<Func<T, bool>> fieldSelector, IFilterOperator filterOperator)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
-            fieldSelector.Compile();
             And(fieldSelector.GetFieldPath(), filterOperator);
+            return this;
+        }
+        private AndFilter<T> And(Expression<Func<T, Filter>> fieldSelector)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            var paser = new FilterExpressionParser();
+            var filter = paser.GetFilter(fieldSelector);
+            AddFilter(filter);
+            return this;
+        }
+        public AndFilter<T> And(params Expression<Func<T, Filter>>[] fieldSelectors)
+        {
+            fieldSelectors.ValidateNotNullArgument("fieldSelectors");
+            foreach (var field in fieldSelectors)
+            {
+                And(field);
+            }
             return this;
         }
     }
@@ -85,9 +97,9 @@ namespace EPiServer.ContentGraph.Api.Filters
         {
             get
             {
-                if (Filters.IsNotNull() && Filters.Count > 0)
+                if (_filters != null && _filters.Count > 0)
                 {
-                    string otherFilters = string.Join(',', Filters.Select(x => $"{{{x.FilterClause}}}"));
+                    string otherFilters = string.Join(',', _filters.Select(x => $"{{{x.FilterClause}}}"));
                     if (_query.IsNullOrEmpty())
                     {
                         return $"_and:[{otherFilters}]";
@@ -105,7 +117,7 @@ namespace EPiServer.ContentGraph.Api.Filters
         {
             _query = query;
         }
-        public AndFilter()
+        public AndFilter() : base()
         {
         }
         #endregion

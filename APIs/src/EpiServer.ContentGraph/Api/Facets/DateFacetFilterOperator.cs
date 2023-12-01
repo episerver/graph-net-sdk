@@ -12,17 +12,17 @@ namespace EPiServer.ContentGraph.Api.Facets
             _projections = new List<FacetProperty> { FacetProperty.name, FacetProperty.count };
         }
         public IEnumerable<FacetProperty> FacetProjections { get { return _projections; } }
-        public DateFacetFilterOperator Unit(DateUnit dateUnit)
+        public DateFacetFilterOperator Unit(DateUnit dateUnit = DateUnit.DAY)
         {
             _query = _query.IsNullOrEmpty() ? $"unit:{dateUnit}" : $"{_query},unit:{dateUnit}";
             return this;
         }
-        public DateFacetFilterOperator Value(int value)
+        public DateFacetFilterOperator Value(int value = 1)
         {
             _query = _query.IsNullOrEmpty() ? $"value:{value}" : $"{_query},value:{value}";
             return this;
         }
-        public DateFacetFilterOperator Projection(params FacetProperty[] projections)
+        public IFacetOperator Projection(params FacetProperty[] projections)
         {
             projections.ValidateNotNullArgument("projections");
             _projections = projections.Distinct().ToArray();

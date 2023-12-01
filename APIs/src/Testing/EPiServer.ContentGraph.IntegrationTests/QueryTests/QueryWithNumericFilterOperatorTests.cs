@@ -29,7 +29,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Values.First().Hits.TrueForAll(x=>x.Priority.Equals(100)));
+            Assert.IsTrue(rs.Content.Values.First().Hits.ToList().TrueForAll(x=>x.Priority.Equals(100)));
         }
         [TestMethod]
         public void search_priority_notEQ_100_should_return_2_items()
@@ -41,7 +41,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Values.First().Hits.TrueForAll(x => !x.Priority.Equals(100)));
+            Assert.IsTrue(rs.Content.Values.First().Hits.ToList().TrueForAll(x => !x.Priority.Equals(100)));
         }
         [TestMethod]
         public void search_priority_NotEq_filter()
@@ -53,7 +53,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Values.First().Hits.TrueForAll(x=> !x.Name.Equals("Home 3")));
+            Assert.IsTrue(rs.Content.Values.First().Hits.ToList().TrueForAll(x=> !x.Name.Equals("Home 3")));
         }
         [TestMethod]
         public void search_priority_Exists_false_should_return_1_item()
@@ -89,7 +89,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(3));
+            Assert.IsTrue(rs.Content.Values.First().Hits.Count().Equals(3));
         }
         [TestMethod]
         public void search_priority_in_100_and_300_should_return_3_items()
@@ -101,7 +101,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(3));
+            Assert.IsTrue(rs.Content.Values.First().Hits.Count().Equals(3));
         }
         [TestMethod]
         public void search_priority_notIn_100_and_300_should_return_1_item()
@@ -113,7 +113,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(1));
+            Assert.IsTrue(rs.Content.Values.First().Hits.Count().Equals(1));
         }
         [TestMethod]
         public void search_priority_LessThan_100_should_return_0_item()
@@ -125,7 +125,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(0));
+            Assert.IsTrue(rs.Content.Values.First().Hits.Count().Equals(0));
         }
         [TestMethod]
         public void search_priority_Lte_200_should_return_2_items()
@@ -137,7 +137,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(2));
+            Assert.IsTrue(rs.Content.Values.First().Hits.Count().Equals(2));
         }
         [TestMethod]
         public void search_priority_in_range_100_to_300_should_return_3_items()
@@ -149,7 +149,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Values.First().Hits.Count.Equals(3));
+            Assert.IsTrue(rs.Content.Values.First().Hits.Count().Equals(3));
         }
     }
 }
