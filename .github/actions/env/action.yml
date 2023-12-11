@@ -1,0 +1,89 @@
+name: 'Apply versioning'
+description: 'Get packages version'
+inputs:
+  publishPackages:
+    description: "Set publish packages"
+    required: false
+    default: "False"
+runs:
+  using: "composite"
+  steps:
+    - name: Get version
+      shell: powershell
+      id: set_vars
+      run: |
+        $branchName=$env:GITHUB_REF_NAME
+        $buildCounter=$env:GITHUB_RUN_NUMBER
+        $publishPackages="${{ inputs.publishPackages }}"
+
+        if (!$branchName -or !$buildCounter) {
+            Write-Error "`$branchName and `$buildCounter parameters must be supplied"
+            exit 1
+        }
+
+        Function GetVersion($path) {
+            [xml] $versionFile = Get-Content $path
+            return $versionFile.SelectSingleNode("Project/PropertyGroup/VersionPrefix").InnerText
+        }
+
+        $assemblyVersion = GetVersion "msbuild/version.props"
+
+        if (!$assemblyVersion) {
+            $assemblyVersion = "1.0.0"
+        }
+
+        switch -wildcard ($branchName) {
+            "master" {
+                $preReleaseInfo = ""
+                $publishPackages = "True"
+            }
+            "develop" {
+                $preReleaseInfo = "-inte-{0:D6}"
+                $publishPackages = "True"
+            }
+            "bugfix/*" {
+                $preReleaseInfo = "-ci-{0:D6}"
+                $publishPackages = "True"
+            }
+            "hotfix/*" {
+                $preReleaseInfo = ""
+                $publishPackages = "True"
+            }
+            "release/*" {
+                $preReleaseInfo = "-pre-{0:D6}"
+                $publishPackages = "True"
+            }
+            "feature/*" {
+                $isMatch = $branchName -match ".*/([A-Z]+-[\d]+)-"
+                if ($isMatch -eq $TRUE) {
+                    $feature = $Matches[1]
+                    $preReleaseInfo = "-feature-$feature-{0:D6}"
+                    $publishPackages = "True"
+                }
+                else {
+                    $preReleaseInfo = "-feature-{0:D6}"
+                }
+            }
+            default { $preReleaseInfo = "-ci-{0:D6}" }
+        }
+
+        $informationalVersion = "$assemblyVersion$preReleaseInfo" -f $buildCounter
+
+        "AssemblyVersion: $assemblyVersion"
+        "AssemblyInformationalVersion: $informationalVersion"
+
+        ##Set environment variable for GitHub Actions
+        "releaseVersion=$assemblyVersion" >> $env:GITHUB_ENV
+        "packageVersion=$informationalVersion" >> $env:GITHUB_ENV
+        "publishPackages=$publishPackages" >> $env:GITHUB_ENV
+        "release_sha=$(git rev-parse HEAD)" >> $env:GITHUB_ENV
+
+        #Set DNX_BUILD_VERSION for dnx compiling (without dash)
+        $dnxPreReleaseInfo = ""
+        if ($preReleaseInfo.Length -gt 0) {
+            $dnxPreReleaseInfo = ($preReleaseInfo.Substring(1)) -f $buildCounter
+        }
+
+        ##Set environment variable for GitHub Actions
+        "buildSuffix=$dnxPreReleaseInfo" >> $env:GITHUB_ENV
+        "DNX_BUILD_VERSION=$dnxPreReleaseInfo" >> $env:GITHUB_ENV

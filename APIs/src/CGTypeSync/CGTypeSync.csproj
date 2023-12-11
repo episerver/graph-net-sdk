@@ -8,13 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="C:\source\opti-graph-netclient\APIs\src\packages\episerver.cms.tinymce\4.4.2\contentFiles\any\any\modules\_protected\EPiServer.Cms.TinyMce\EPiServer.Cms.TinyMce.zip" />
-    <None Remove="C:\source\opti-graph-netclient\APIs\src\packages\episerver.cms.ui.admin\12.23.0\contentFiles\any\any\modules\_protected\EPiServer.Cms.UI.Admin\EPiServer.Cms.UI.Admin.zip" />
-    <None Remove="C:\source\opti-graph-netclient\APIs\src\packages\episerver.cms.ui.settings\12.23.0\contentFiles\any\any\modules\_protected\EPiServer.Cms.UI.Settings\EPiServer.Cms.UI.Settings.zip" />
-    <None Remove="C:\source\opti-graph-netclient\APIs\src\packages\episerver.cms.ui.visitorgroups\12.23.0\contentFiles\any\any\modules\_protected\EPiServer.Cms.UI.VisitorGroups\EPiServer.Cms.UI.VisitorGroups.zip" />
-    <None Remove="C:\source\opti-graph-netclient\APIs\src\packages\episerver.cms.ui\12.23.0\contentFiles\any\any\modules\_protected\CMS\CMS.zip" />
-    <None Remove="C:\source\opti-graph-netclient\APIs\src\packages\episerver.cms.ui\12.23.0\contentFiles\any\any\modules\_protected\Shell\Shell.zip" />
-    <None Remove="C:\source\opti-graph-netclient\APIs\src\packages\optimizely.contentgraph.cms\3.4.1\contentFiles\any\any\modules\_protected\Optimizely.ContentGraph.Cms.NetCore\Optimizely.ContentGraph.Cms.NetCore.zip" />
   </ItemGroup>
 
   <ItemGroup>

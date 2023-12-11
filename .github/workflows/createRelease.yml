@@ -1,0 +1,359 @@
+name: NetCore| Build & Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      runUnitTest:
+        type: boolean
+        description: Run Unit Tests
+        default: true
+
+      runIntergrationTest:
+        type: boolean
+        description: Run Intergrations Tests
+        default: true
+
+      buildOptions:
+        required: false
+        type: choice
+        description: Build Options
+        default: Build
+        options:
+          - Build
+          - Build + Upload T3
+
+      releaseOption:
+        required: false
+        type: choice
+        description: Release Options
+        default: None
+        options:
+          - None
+          - PRE-RELEASE (release/** branches)
+          - RELEASE (master branch)
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  WindowsSDKPath: 'C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools'
+
+jobs:
+  manageVariable:
+    name: Manage Variables
+    runs-on: windows-latest
+    outputs:
+      releaseVersion: ${{ env.releaseVersion }}
+      packageVersion: ${{ env.packageVersion }}
+      publishPackages: ${{ env.publishPackages }}
+      release_sha: ${{ env.release_sha }}
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Apply versioning
+        if: success()
+        uses: ./.github/actions/env
+
+      - name: Package information
+        run: |
+          Write-Host "Release version: ${{ env.releaseVersion }}"
+          Write-Host "Package version: ${{ env.packageVersion }}"
+          Write-Host "Publish package: ${{ env.publishPackages }}"
+          Write-Host "Build Suffix: ${{ env.buildSuffix }}"
+          Write-Host "DNX_BUILD_VERSION: ${{ env.DNX_BUILD_VERSION  }}"
+          Write-output "::notice title=Build branch::${{ github.ref_name }}"
+          Write-output "::notice title=Release version::${{ env.releaseVersion }}"
+          Write-output "::notice title=Packages version::${{ env.packageVersion }}"
+          Write-output "::notice title=Publish packages::${{ env.publishPackages }}"
+
+  build:
+    name: Build
+    needs: [manageVariable]
+    runs-on: windows-latest
+    env:
+      releaseVersion: ${{ needs.manageVariable.outputs.releaseVersion }}
+      packageVersion: ${{ needs.manageVariable.outputs.packageVersion }}
+      publishPackages: ${{ needs.manageVariable.outputs.publishPackages }}
+      release_sha: ${{ needs.manageVariable.outputs.release_sha }}
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Build
+        if: success()
+        run: msbuild\build.ps1 -configuration "Release" -skiptests "true" -verbosity "normal"
+
+      - name: Materialize strong name key
+        id: materialize-snk
+        uses: timheuer/base64-to-file@v1.2
+        if: success()
+        with:
+          fileName: episerver.snk
+          encodedString: ${{ secrets.EPISERVER_STRONG_NAME_KEY }}
+
+      - name: Materialize code signing sertificate
+        id: materialize-cert
+        uses: timheuer/base64-to-file@v1.2
+        if: success()
+        with:
+          fileName: episerver.pfx
+          encodedString: ${{ secrets.EPISERVER_CODE_SIGNING_CERTIFICATE }}
+
+      - name: Sign assembly
+        if: success()
+        run: |
+          msBuild\SignGH.ps1 -WindowsSDKPath "${{ env.WindowsSDKPath }}" -SNKPath "${{ steps.materialize-snk.outputs.filePath }}" -CertPath "${{ steps.materialize-cert.outputs.filePath }}" -CertPassword "${{ secrets.EPISERVER_CODE_SIGNING_CERTIFICATE_PASSWORD }}"
+
+      - name: Packages
+        if: success() && env.publishPackages == 'true'
+        run: msbuild\packGH.ps1 -version ${{ env.packageVersion }} -configuration "Release"
+
+      - name: Upload parkages to artifacts
+        if: success() && env.publishPackages == 'true'
+        uses: actions/upload-artifact@v3
+        with:
+          name: Optimizely.ContentGraph.Client-${{ env.packageVersion }}
+          path: ${{ github.workspace}}/artifacts/
+          # retention-days: 90
+
+  unit_test:
+    needs: [manageVariable, build]
+    name: Unit test
+    if: ${{ github.event.inputs.runUnitTest == 'true' }}
+    uses: ./.github/workflows/unitTest.yml
+        # env:
+        #   unitTest: ${{ matrix.unitTest}}
+
+  intergration_test:
+    needs: [manageVariable, build]
+    name: Intergrations test
+    if: ${{ github.event.inputs.runIntergrationTest == 'true' }}
+    strategy:
+      matrix:
+        intergrationTest:
+          [
+            "EPiServer.ContentGraph.IntegrationTests"
+          ]
+    uses: ./.github/workflows/intergrationTest.yml
+    secrets:
+      EPISERVER_ACR_USR_PUSH: ${{ secrets.EPISERVER_ACR_USR_PUSH }}
+      EPISERVER_ACR_PWD_PUSH: ${{ secrets.EPISERVER_ACR_PWD_PUSH }}
+      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+    with:
+      intergrationTest: ${{matrix.intergrationTest}}
+
+  upload_T3:
+    name: Publish NuGet Packages
+    runs-on: [self-hosted, find]
+    if: |
+      github.event.inputs.buildOptions == 'Build + Upload T3' ||
+      github.event.inputs.releaseOption == 'PRE-RELEASE (release/** branches)' ||
+      github.event.inputs.releaseOption == 'RELEASE (master branch)'
+    needs: [manageVariable, build, unit_test, intergration_test]
+    env:
+      releaseVersion: ${{ needs.manageVariable.outputs.releaseVersion }}
+      packageVersion: ${{ needs.manageVariable.outputs.packageVersion }}
+      publishPackages: ${{ needs.manageVariable.outputs.publishPackages }}
+      release_sha: ${{ needs.manageVariable.outputs.release_sha }}
+    steps:
+      - name: Checkout without
+        uses: actions/checkout@v3
+        with:
+          clean: 'false'
+
+      - name: Create artifacts folder
+        run: |
+          if (Test-Path -Path "artifacts") {
+            Remove-Item -LiteralPath "artifacts" -Force -Recurse
+          }
+          New-Item -Path "artifacts" -ItemType Directory
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: Optimizely.ContentGraph.Client-${{env.packageVersion}}
+          path: artifacts
+
+      - name: Publish Nuget Packages
+        if: github.ref == 'refs/heads/master' && github.event.inputs.releaseOption == 'RELEASE (master branch)'
+        run: |
+          $branch = "${{github.ref_name}}"
+          $regexList = @(
+              'Optimizely.ContentGraph.Client.[0-9]+.[0-9]+.[0-9]+'
+            )
+
+          $sourceDirectory = '${{github.workspace}}\artifacts'
+          $destinationDirectory = '\\nuget.ep.se\Releases\thisweek'
+
+          foreach ($pattern in $regexList) {
+            $file = Get-ChildItem -Path "$sourceDirectory" -Recurse | Where-Object {$_.Name -match $pattern}
+            xcopy $file.FullName $destinationDirectory /Y
+          }
+
+  creatPreRelease:
+    name: Create Jira Release
+    needs: [manageVariable, build, upload_T3]
+    if: startsWith(github.ref, 'refs/heads/release') == true && github.event.inputs.releaseOption == 'PRE-RELEASE (release/** branches)'
+    runs-on: windows-latest
+    env:
+      releaseVersion: ${{ needs.manageVariable.outputs.releaseVersion }}
+      packageVersion: ${{ needs.manageVariable.outputs.packageVersion }}
+      publishPackages: ${{ needs.manageVariable.outputs.publishPackages }}
+      release_sha: ${{ needs.manageVariable.outputs.release_sha }}
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Fetch all tags
+        run: |
+          git fetch --prune --unshallow
+          git fetch --tags
+
+      - name: Prepare release notes
+        shell: powershell
+        run: |
+          Write-Output "Prepare release note"
+          APIs\buildscripts\github\GetReleaseNotes.ps1 | Set-Content -Path "APIs\buildscripts\github\ReleaseNotes.txt" -Force
+
+      - name: Create Github Release
+        id: create_github_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.releaseVersion }}
+          release_name: ${{ env.releaseVersion }}
+          commitish: ${{ env.release_sha }}
+          body_path: "APIs/buildscripts/github/ReleaseNotes.txt"
+          draft: false
+          prerelease: true
+
+      - name: Create artifacts folder
+        run: |
+          if (Test-Path -Path "artifacts") {
+            Remove-Item -LiteralPath "artifacts" -Force -Recurse
+          }
+          New-Item -Path "artifacts" -ItemType Directory
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: Optimizely.ContentGraph.Client-${{ env.packageVersion }}
+          path: artifacts
+
+      - name: Archive artifacts Release
+        uses: thedoctor0/zip-release@master
+        with:
+          type: 'zip'
+          filename: 'Optimizely.ContentGraph.Client-${{ env.packageVersion }}.zip'
+          path: ./artifacts/*
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_github_release.outputs.upload_url }}
+          asset_path: ./Optimizely.ContentGraph.Client-${{ env.packageVersion }}.zip
+          asset_name: Optimizely.ContentGraph.Client-${{ env.packageVersion }}.zip
+          asset_content_type: application/zip
+
+      - name: Create Jira release
+        shell: powershell
+        run: |
+          $jiraReleaseParams = @{
+            JiraUrl    = '${{secrets.JIRA_URL}}'
+            Username   = '${{secrets.JIRA_USERNAME}}'
+            Password   = '${{secrets.JIRA_PASSWORD}}'
+            PreVersion = "${{env.releaseVersion}}"
+          }
+
+          Write-Output "Create Jira release"
+          APIs\buildscripts\SetJiraRelease.ps1 @jiraReleaseParams
+
+  creatGitHubRelease:
+    name: Publish GitHub Release
+    needs: [manageVariable, build, upload_T3]
+    if: github.ref == 'refs/heads/master' && github.event.inputs.releaseOption == 'RELEASE (master branch)'
+    runs-on: windows-latest
+    env:
+      releaseVersion: ${{ needs.manageVariable.outputs.releaseVersion }}
+      packageVersion: ${{ needs.manageVariable.outputs.packageVersion }}
+      publishPackages: ${{ needs.manageVariable.outputs.publishPackages }}
+      release_sha: ${{ needs.manageVariable.outputs.release_sha }}
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Check tag exist
+        uses: mukunku/tag-exists-action@v1.2.0
+        id: checkTag
+        with:
+          tag: ${{env.releaseVersion}}
+
+      - name: Delete Pre-Release if exist
+        if: ${{ steps.checkTag.outputs.exists }} == "true"
+        uses: dev-drprasad/delete-tag-and-release@v0.2.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{env.releaseVersion}}
+          delete_release: true
+
+      - name: Fetch all tags
+        run: |
+          git fetch --prune --unshallow
+          git fetch --tags
+
+      - name: Prepare release notes
+        shell: powershell
+        run: |
+          Write-Output "Prepare release note"
+          .NET-API\buildscripts\github\GetReleaseNotes.ps1 | Set-Content -Path ".NET-API\buildscripts\github\ReleaseNotes.txt" -Force
+
+      - name: Create Github Release
+        id: create_github_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.releaseVersion }}
+          release_name: ${{ env.releaseVersion }}
+          commitish: ${{ env.release_sha }}
+          body_path: ".NET-API/buildscripts/github/ReleaseNotes.txt"
+          draft: false
+          prerelease: false
+
+      - name: Create artifacts folder
+        run: |
+          if (Test-Path -Path "artifacts") {
+            Remove-Item -LiteralPath "artifacts" -Force -Recurse
+          }
+          New-Item -Path "artifacts" -ItemType Directory
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: EPiServer.Find-${{ env.packageVersion }}
+          path: artifacts
+
+      - name: Archive artifacts Release
+        uses: thedoctor0/zip-release@master
+        with:
+          type: 'zip'
+          filename: 'EPiServer.Find-${{ env.packageVersion }}.zip'
+          path: ./artifacts/*
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_github_release.outputs.upload_url }}
+          asset_path: ./EPiServer.Find-${{ env.packageVersion }}.zip
+          asset_name: EPiServer.Find-${{ env.packageVersion }}.zip
+          asset_content_type: application/zip

@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <DependencyVersions_props>true</DependencyVersions_props>
+    <TurnstileVersion>4.5.2</TurnstileVersion>
+  </PropertyGroup>
+</Project>

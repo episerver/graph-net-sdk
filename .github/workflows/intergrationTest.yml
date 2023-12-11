@@ -1,0 +1,46 @@
+name: NetCore| _Intergration Test
+
+on:
+  workflow_call:
+    inputs:
+      intergrationTest:
+        description: 'A token passed from the caller workflow'
+        type: string
+        required: true
+
+    secrets:
+      EPISERVER_ACR_USR_PUSH:
+        required: true
+
+      EPISERVER_ACR_PWD_PUSH:
+        required: true
+
+      PAT_TOKEN:
+        required: true
+
+env:
+  acrName: "episerver"
+
+jobs:
+  intergration_test:
+    name: Intergrations test
+    runs-on: windows-latest
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v3
+
+      - name: Setup test environment
+        if: success()
+        uses: ./.github/actions/setup
+
+      - name: Build and run tests
+        if: success()
+        run: msbuild\intergrationTest.ps1 -configuration "Release" -intergrationTest ${{ inputs.intergrationTest }} -verbosity "normal"
+
+      - name: Show test result
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: IT-TestResult-${{ inputs.intergrationTest }}
+          path: TestResults/*.trx
+          reporter: dotnet-trx
