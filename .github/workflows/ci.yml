@@ -60,7 +60,7 @@ jobs:
 
   intergration_test:
     needs: [manageVariable]
-    name: IntergrationsTest
+    name: Intergrations Test
     if: github.event_name == 'pull_request' || ${{ github.event.inputs.runIntergrationTest == 'true' }}
     strategy:
       matrix:

@@ -71,7 +71,7 @@ jobs:
   build:
     name: Build
     needs: [manageVariable]
-    runs-on: windows-latest
+    runs-on: windows-2019
     env:
       releaseVersion: ${{ needs.manageVariable.outputs.releaseVersion }}
       packageVersion: ${{ needs.manageVariable.outputs.packageVersion }}
@@ -312,7 +312,7 @@ jobs:
         shell: powershell
         run: |
           Write-Output "Prepare release note"
-          .NET-API\buildscripts\github\GetReleaseNotes.ps1 | Set-Content -Path ".NET-API\buildscripts\github\ReleaseNotes.txt" -Force
+          msbuild\github\GetReleaseNotes.ps1 | Set-Content -Path "msbuild\github\ReleaseNotes.txt" -Force
 
       - name: Create Github Release
         id: create_github_release
@@ -323,7 +323,7 @@ jobs:
           tag_name: ${{ env.releaseVersion }}
           release_name: ${{ env.releaseVersion }}
           commitish: ${{ env.release_sha }}
-          body_path: ".NET-API/buildscripts/github/ReleaseNotes.txt"
+          body_path: "msbuild/github/ReleaseNotes.txt"
           draft: false
           prerelease: false
 
@@ -337,14 +337,14 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v3
         with:
-          name: EPiServer.Find-${{ env.packageVersion }}
+          name: EPiServer.ContentGraph-${{ env.packageVersion }}
           path: artifacts
 
       - name: Archive artifacts Release
         uses: thedoctor0/zip-release@master
         with:
           type: 'zip'
-          filename: 'EPiServer.Find-${{ env.packageVersion }}.zip'
+          filename: 'EPiServer.ContentGraph-${{ env.packageVersion }}.zip'
           path: ./artifacts/*
 
       - name: Upload Release Asset
@@ -354,6 +354,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_github_release.outputs.upload_url }}
-          asset_path: ./EPiServer.Find-${{ env.packageVersion }}.zip
-          asset_name: EPiServer.Find-${{ env.packageVersion }}.zip
+          asset_path: ./EPiServer.ContentGraph-${{ env.packageVersion }}.zip
+          asset_name: EPiServer.ContentGraph-${{ env.packageVersion }}.zip
           asset_content_type: application/zip

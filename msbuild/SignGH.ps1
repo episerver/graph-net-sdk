@@ -28,11 +28,11 @@ function Get-Cert()
     return Get-PfxCertificate -FilePath $CertPath -Password $password
 }
 
-$rootDir = Get-Location 
+$rootDir = Get-Location
 Write-Host $rootDir
 
 Write-Host "Finding assemblies"
-$srcProjects = [Array](Get-ChildItem -Directory -Path (Join-Path ($rootDir) ".\.NET-API\src\"))
+$srcProjects = [Array](Get-ChildItem -Directory -Path (Join-Path ($rootDir) ".\APIs\src\"))
 
 $assemblies = @()
 foreach($item in $srcProjects)
@@ -47,7 +47,6 @@ foreach($item in $srcProjects)
 }
 
 Write-Host "Signing assemblies"
-$signError = $false
 foreach ($assembly in $assemblies)
 {
    Write-Host (" Signing " + $assembly.FullName)
@@ -73,8 +72,8 @@ foreach($item in $assemblies)
     Set-AuthenticodeSignature -FilePath $item.FullName -Certificate $cert -TimestampServer $url -WarningAction Stop | Out-Null
 
     $signed = (Get-AuthenticodeSignature -filepath $item.FullName).Status
-    if($signed -eq "NotSigned") 
-    { 
+    if($signed -eq "NotSigned")
+    {
         Write-Host ("Authenticode signing failed " + $item.FullName)
         exit 1
     }
