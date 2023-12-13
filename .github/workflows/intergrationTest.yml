@@ -23,7 +23,7 @@ env:
 
 jobs:
   intergration_test:
-    name: Intergrations test
+    name: Intergrations Test
     runs-on: windows-latest
     steps:
       - name: Checkout current branch

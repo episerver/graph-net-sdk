@@ -71,7 +71,7 @@ jobs:
   build:
     name: Build
     needs: [manageVariable]
-    runs-on: windows-2019
+    runs-on: windows-latest
     env:
       releaseVersion: ${{ needs.manageVariable.outputs.releaseVersion }}
       packageVersion: ${{ needs.manageVariable.outputs.packageVersion }}
