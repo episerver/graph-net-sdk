@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+    <Import xdt:Transform="RemoveAll" />
+    <ItemGroup>
+        <ProjectReference xdt:Transform="RemoveAll" />
+        <PackageReference xdt:Transform="Remove" xdt:Locator="Match(Include)" Include="EPiServer.CMS" />
+        <PackageReference xdt:Transform="Remove" xdt:Locator="Match(Include)" Include="EPiServer.CMS.Core" />
+        <PackageReference xdt:Transform="Remove" xdt:Locator="Match(Include)" Include="EPiServer.CMS.AspNetCore" />
+        <PackageReference xdt:Transform="Remove" xdt:Locator="Match(Include)" Include="EPiServer.CMS.AspNetCore.TagHelpers" />
+        <PackageReference xdt:Transform="Remove" xdt:Locator="Match(Include)" Include="EPiServer.Framework" />
+        <PackageReference xdt:Transform="Remove" xdt:Locator="Match(Include)" Include="EPiServer.Hosting" />
+        <PackageReference xdt:Transform="Remove" xdt:Locator="Match(Include)" Include="Newtonsoft.Json" />
+        <PackageReference xdt:Transform="Insert" Include="EPiServer.CMS" Version="CMSVersion" />
+        <PackageReference xdt:Transform="Insert" Include="EPiServer.CMS.Core" Version="CoreVersion" />
+        <PackageReference xdt:Transform="Insert" Include="EPiServer.CMS.AspNetCore" Version="CoreVersion" />
+        <PackageReference xdt:Transform="Insert" Include="EPiServer.CMS.AspNetCore.TagHelpers" Version="CoreVersion" />
+        <PackageReference xdt:Transform="Insert" Include="EPiServer.Framework" Version="CoreVersion" />
+        <PackageReference xdt:Transform="Insert" Include="EPiServer.Hosting" Version="CoreVersion" />
+        <PackageReference xdt:Transform="Insert" Include="Newtonsoft.Json" Version="NewtonsoftVersion" />
+    </ItemGroup>
+</Project>

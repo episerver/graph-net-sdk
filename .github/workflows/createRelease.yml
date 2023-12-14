@@ -110,7 +110,11 @@ jobs:
         if: success() && env.publishPackages == 'true'
         run: msbuild\packGH.ps1 -version ${{ env.packageVersion }} -configuration "Release"
 
-      - name: Upload parkages to artifacts
+      - name: Create Zip file
+        if: success() && env.publishPackages == 'true'
+        run: msbuild\createZipFile.ps1 -findVersion ${{ env.packageVersion }}
+
+      - name: Upload packages to artifacts
         if: success() && env.publishPackages == 'true'
         uses: actions/upload-artifact@v3
         with:
