@@ -47,6 +47,8 @@ namespace EPiServer.ContentGraph.Api.Querying
         public TypeQueryBuilder<T> Field(Expression<Func<T, object>> fieldSelector)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
+            var x = fieldSelector.Compile();
+
             var propertyName = fieldSelector.GetFieldPath();
             Field(propertyName);
             return this;
@@ -66,7 +68,7 @@ namespace EPiServer.ContentGraph.Api.Querying
         /// <typeparam name="TSub">Subtype must be inherited from type <typeparamref name="T"/></typeparam>
         /// <param name="propertyName"></param>
         /// <returns></returns>
-        public TypeQueryBuilder<T> ForSubType<TSub>(string propertyName) where TSub : T
+        public TypeQueryBuilder<T> AsType<TSub>(string propertyName) where TSub : T
         {
             string subTypeName = typeof(TSub).Name;
             graphObject.SelectItems = graphObject.SelectItems.IsNullOrEmpty() ?
@@ -80,7 +82,7 @@ namespace EPiServer.ContentGraph.Api.Querying
         /// <typeparam name="TSub">Subtype must be inherited from type <typeparamref name="T"/></typeparam>
         /// <param name="fieldSelector"></param>
         /// <returns></returns>
-        public TypeQueryBuilder<T> ForSubType<TSub>(params Expression<Func<TSub, object>>[] fieldSelectors) where TSub : T
+        public TypeQueryBuilder<T> AsType<TSub>(params Expression<Func<TSub, object>>[] fieldSelectors) where TSub : T
         {
             fieldSelectors.ValidateNotNullArgument("fieldSelectors");
             string propertyName = string.Empty;
@@ -105,7 +107,7 @@ namespace EPiServer.ContentGraph.Api.Querying
         /// <typeparam name="TSub">Subtype must be inherited from type <typeparamref name="T"/></typeparam>
         /// <param name="propertyName"></param>
         /// <returns></returns>
-        public TypeQueryBuilder<T> ForSubType<TSub>(SubTypeQueryBuilder<TSub> subTypeQuery) where TSub : T
+        public TypeQueryBuilder<T> AsType<TSub>(SubTypeQueryBuilder<TSub> subTypeQuery) where TSub : T
         {
             subTypeQuery.ValidateNotNullArgument("subTypeQuery");
             subTypeQuery.Parent = this.Parent;
@@ -427,7 +429,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             Facet(fieldSelector.GetFieldPath(), facetFilter);
             return this;
         }
-        public TypeQueryBuilder<T> Facet(params Expression<Func<T, IFacetFilter>>[] facetFilters)
+        public TypeQueryBuilder<T> Facet(params Expression<Func<T, FacetFilter>>[] facetFilters)
         {
             facetFilters.ValidateNotNullArgument("facetFilters");
             var parser = new FacetExpressionParser();
@@ -581,5 +583,6 @@ namespace EPiServer.ContentGraph.Api.Querying
         public TypeQueryBuilder() : base()
         {
         }
+
     }
 }

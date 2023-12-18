@@ -8,7 +8,7 @@ namespace EPiServer.ContentGraph.ExpressionHelper
 {
     public class FacetExpressionParser
     {
-        public virtual IFacetFilter GetFacetFilter<TSource>(Expression<Func<TSource, IFacetFilter>> facetFilterExpression)
+        public virtual FacetFilter GetFacetFilter<TSource>(Expression<Func<TSource, FacetFilter>> facetFilterExpression)
         {
             ValidateFacetFilterExpression(facetFilterExpression);
 
@@ -27,10 +27,10 @@ namespace EPiServer.ContentGraph.ExpressionHelper
                 x => x.Method.ReturnType == typeof(DelegateFacetFilterBuilder),
                 x => Expression.Constant(GetFilterFromDelegateFacetFilterBuilderMethod(x, null)));
 
-            return executable.CachedCompileInvoke<IFacetFilter>();
+            return executable.CachedCompileInvoke<FacetFilter>();
         }
 
-        protected virtual void ValidateFacetFilterExpression<TSource>(Expression<Func<TSource, IFacetFilter>> facetFilterExpression)
+        protected virtual void ValidateFacetFilterExpression<TSource>(Expression<Func<TSource, FacetFilter>> facetFilterExpression)
         {
             if (facetFilterExpression.Body.Find<NewExpression>(x => x.Type == typeof(DelegateFacetFilterBuilder)).Count() > 0)
             {
@@ -88,7 +88,7 @@ namespace EPiServer.ContentGraph.ExpressionHelper
             return expressionBody.Replace<Expression>(x => x == invocationTarget, x => actualInvocationTarget);
         }
 
-        protected IFacetFilter GetFilterFromDelegateFacetFilterBuilderMethod(MethodCallExpression methodExpression, string fieldName)
+        protected FacetFilter GetFilterFromDelegateFacetFilterBuilderMethod(MethodCallExpression methodExpression, string fieldName)
         {
             if (fieldName.IsNull())
             {

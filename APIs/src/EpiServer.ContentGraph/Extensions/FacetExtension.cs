@@ -1,5 +1,6 @@
 ﻿using EPiServer.ContentGraph.Api;
 using EPiServer.ContentGraph.Api.Facets;
+using EPiServer.ContentGraph.ExpressionHelper;
 
 namespace EPiServer.ContentGraph.Extensions
 {

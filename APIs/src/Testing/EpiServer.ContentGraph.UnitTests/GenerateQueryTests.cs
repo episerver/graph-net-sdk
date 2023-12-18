@@ -140,7 +140,7 @@ namespace EPiServer.ContentGraph.UnitTests
             typeQueryBuilder
                 .Field(x => x.Property1)
                 .Field(x => x.Property2)
-                .ForSubType(subQuery)
+                .AsType(subQuery)
                 .Facet(x => x.Property3.NestedProperty);
             GraphQueryBuilder query = typeQueryBuilder.ToQuery();
 

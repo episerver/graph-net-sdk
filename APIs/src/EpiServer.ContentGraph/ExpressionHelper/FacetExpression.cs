@@ -3,21 +3,21 @@ using System.Linq.Expressions;
 
 namespace EPiServer.ContentGraph.ExpressionHelper
 {
-    internal class FacetExpression<T> : IFacetFilter
+    internal class FacetExpression<T> : FacetFilter
     {
-        internal static IFacetFilter ParseFilterExpression<TSource>(Expression<Func<TSource, IFacetFilter>> filterExpression)
+        internal static FacetFilter ParseFilterExpression<TSource>(Expression<Func<TSource, FacetFilter>> filterExpression)
         {
             return new FacetExpressionParser().GetFacetFilter(filterExpression);
         }
 
-        public FacetExpression(Expression<Func<T, IFacetFilter>> expression)
+        public FacetExpression(Expression<Func<T, FacetFilter>> expression):base(string.Empty)
         {
             this.Expression = expression;
         }
 
-        public Expression<Func<T, IFacetFilter>> Expression { get; set; }
+        public Expression<Func<T, FacetFilter>> Expression { get; set; }
 
-        public string FilterClause => throw new NotImplementedException();
+        public override string FilterClause => string.Empty;
 
     }
 }

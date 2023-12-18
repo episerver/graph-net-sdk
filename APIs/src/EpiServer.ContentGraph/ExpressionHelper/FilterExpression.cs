@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace EPiServer.ContentGraph.ExpressionHelper
 {
-    public class FilterExpression<T> : Filter
+    internal class FilterExpression<T> : Filter
     {
         internal static Filter ParseFilterExpression<TSource>(Expression<Func<TSource, Filter>> filterExpression)
         {

@@ -37,7 +37,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
             IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<Content>()
                 .Fields(x => x.Name)
-                    .ForSubType<HomePage>(x=>x.MainBody)
+                    .AsType<HomePage>(x=>x.MainBody)
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync().Result;
@@ -51,7 +51,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
             IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<Content>()
                 .Fields(x => x.Name)
-                    .ForSubType<HomePage>(x => x.MainBody)
+                    .AsType<HomePage>(x => x.MainBody)
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync().Result;
