@@ -35,7 +35,7 @@ namespace EPiServer.ContentGraph.Api.Result
         [JsonIgnore]
         public string[] DataTypes { get => RawData.Keys.ToArray(); }
         [JsonProperty("extensions")]
-        public object Extension { get; set; }
+        public Extensions Extensions { get; set; }
         [JsonProperty("errors")]
         public ContentGraphError[] Errors { get; set; }
     }
@@ -87,7 +87,7 @@ namespace EPiServer.ContentGraph.Api.Result
         [JsonIgnore]
         public string[] DataTypes { get => RawData.Keys.ToStringArray(); }
         [JsonProperty("extensions")]
-        public object Extension { get; set; }
+        public Extensions Extensions { get; set; }
         [JsonProperty("errors")]
          public ContentGraphError[] Errors { get; set; }
     }

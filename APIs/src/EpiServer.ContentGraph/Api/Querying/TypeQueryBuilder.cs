@@ -11,7 +11,6 @@ using EPiServer.ContentGraph.ExpressionHelper;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {
-    //TODO: Very important=> remove all quotes, prefix wilcard and script-injection for security
     public partial class TypeQueryBuilder<T> : TypeQueryBuilder
     {
         private static IEnumerable<IFilterForVisitor>? _filters;
@@ -27,6 +26,31 @@ namespace EPiServer.ContentGraph.Api.Querying
         }
 
         #region Queries
+        public TypeQueryBuilder<T> Link<TLink>(TypeQueryBuilder<TLink> link)
+        {
+            link.ValidateNotNullArgument("link");
+            string linkItems = link.ToQuery()?.GetQuery()?.Query ?? string.Empty;
+            if (!linkItems.IsNullOrEmpty())
+            {
+                graphObject.SelectItems += graphObject.SelectItems.IsNullOrEmpty() ?
+                    $"_link{{{linkItems}}}" :
+                    $" _link{{{linkItems}}}";
+            }
+            return this;
+        }
+        public TypeQueryBuilder<T> Children<TChildren>(TypeQueryBuilder<TChildren> children)
+        {
+            children.ValidateNotNullArgument("children");
+            string childrenItems = children.ToQuery()?.GetQuery()?.Query ?? string.Empty;
+            if (!childrenItems.IsNullOrEmpty())
+            {
+                graphObject.SelectItems += graphObject.SelectItems.IsNullOrEmpty() ?
+                    $"_children{{{childrenItems}}}" :
+                    $" _children{{{childrenItems}}}";
+            }
+           
+            return this;
+        }
         public TypeQueryBuilder<T> Field(string propertyName)
         {
             if (!propertyName.IsNullOrEmpty())
