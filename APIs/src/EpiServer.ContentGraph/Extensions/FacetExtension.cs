@@ -14,6 +14,10 @@ namespace EPiServer.ContentGraph.Extensions
         {
             return new DelegateFacetFilterBuilder(field => new TermFacetFilter(field, new StringFacetFilterOperator().Filters(values)));
         }
+        public static DelegateFacetFilterBuilder FacetFilters(this IEnumerable<string> field, params string[] values)
+        {
+            return new DelegateFacetFilterBuilder(field => new TermFacetFilter(field, new StringFacetFilterOperator().Filters(values)));
+        }
         public static DelegateFacetFilterBuilder FacetOrder(this string field, OrderType orderType, OrderMode orderMode = OrderMode.ASC)
         {
             return new DelegateFacetFilterBuilder(field => new TermFacetFilter(field, new StringFacetFilterOperator().OrderType(orderType).OrderBy(orderMode)));

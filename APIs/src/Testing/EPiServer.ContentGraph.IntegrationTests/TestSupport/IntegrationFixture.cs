@@ -194,7 +194,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
                .ToQuery()
                .BuildQueries();
                 var rs = query.GetResultAsync<T>().Result;
-                return rs.Content.Values.First().Total > 0;
+                return rs.Content.Total > 0;
             }
             catch (Exception)
             {

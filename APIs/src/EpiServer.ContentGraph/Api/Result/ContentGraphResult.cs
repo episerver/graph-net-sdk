@@ -42,12 +42,10 @@ namespace EPiServer.ContentGraph.Api.Result
     public class ContentGraphResult<T>
     {
         [JsonIgnore]
-        Dictionary<string, ContentGraphHits<T>> rs = null;
-        [JsonIgnore]
-        public int StatusCode { get; set; } = 200;
+        ContentGraphHits<T> rs = null;
         [JsonProperty("data")]
         private Dictionary<string, JObject> RawData { get; set; }
-        public Dictionary<string, ContentGraphHits<T>> Content
+        public ContentGraphHits<T> Content
         {
             get
             {
@@ -55,33 +53,25 @@ namespace EPiServer.ContentGraph.Api.Result
                 {
                     return rs;
                 }
-                if (RawData != null)
-                {
-                    rs = new Dictionary<string, ContentGraphHits<T>>();
-                    foreach (var key in DataTypes)
-                    {
-                        rs.Add(key, RawData[key].ToObject<ContentGraphHits<T>>());
-                    }
-                }
-                return rs;
+
+                return GetContent<T>();
             }
         }
-
-        public ContentGraphHits<TResult> GetContent<TResult>()
+        private ContentGraphHits<TResult> GetContent<TResult>()
         {
             try
             {
                 string typeName = typeof(TResult).Name;
                 JObject keyValues;
-                if (RawData.TryGetValue(typeName, out keyValues))
+                if (RawData.TryGetValue(typeName, out keyValues) && keyValues != null)
                 {
                     return keyValues.ToObject<ContentGraphHits<TResult>>();
                 }
                 return null;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return null;
+               throw new Exception($"Can not convert response to type [{typeof(TResult).Name}]", e);
             }
         }
         [JsonIgnore]

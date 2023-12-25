@@ -34,10 +34,10 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content["HomePage"].Facets["IsSecret"].First().Count.Equals(2));
-            Assert.IsTrue(rs.Content["HomePage"].Facets["IsSecret"].First().Name.Equals("true"));
-            Assert.IsTrue(rs.Content["HomePage"].Facets["IsSecret"].Last().Count.Equals(2));
-            Assert.IsTrue(rs.Content["HomePage"].Facets["IsSecret"].Last().Name.Equals("false"));
+            Assert.IsTrue(rs.Content.Facets["IsSecret"].First().Count.Equals(2));
+            Assert.IsTrue(rs.Content.Facets["IsSecret"].First().Name.Equals("true"));
+            Assert.IsTrue(rs.Content.Facets["IsSecret"].Last().Count.Equals(2));
+            Assert.IsTrue(rs.Content.Facets["IsSecret"].Last().Name.Equals("false"));
         }
 
         [TestMethod]
@@ -51,11 +51,11 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content["HomePage"].Facets["Priority"].Count().Equals(2));
-            Assert.IsTrue(rs.Content["HomePage"].Facets["Priority"].First().Name.Equals("[100,200)"));
-            Assert.IsTrue(rs.Content["HomePage"].Facets["Priority"].First().Count.Equals(2));
-            Assert.IsTrue(rs.Content["HomePage"].Facets["Priority"].Last().Name.Equals("[200,300)"));
-            Assert.IsTrue(rs.Content["HomePage"].Facets["Priority"].Last().Count.Equals(0));
+            Assert.IsTrue(rs.Content.Facets["Priority"].Count().Equals(2));
+            Assert.IsTrue(rs.Content.Facets["Priority"].First().Name.Equals("[100,200)"));
+            Assert.IsTrue(rs.Content.Facets["Priority"].First().Count.Equals(2));
+            Assert.IsTrue(rs.Content.Facets["Priority"].Last().Name.Equals("[200,300)"));
+            Assert.IsTrue(rs.Content.Facets["Priority"].Last().Count.Equals(0));
         }
         [TestMethod]
         public void search_with_facet_filters_should_return_correct_items()
@@ -67,9 +67,9 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                     .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content["HomePage"].Facets["IsSecret"].Count().Equals(2));
-            Assert.IsTrue(rs.Content["HomePage"].Hits.Count().Equals(2));
-            Assert.IsTrue(rs.Content["HomePage"].Hits.Select(x=>x.IsSecret).ToList().TrueForAll(x => x));
+            Assert.IsTrue(rs.Content.Facets["IsSecret"].Count().Equals(2));
+            Assert.IsTrue(rs.Content.Hits.Count().Equals(2));
+            Assert.IsTrue(rs.Content.Hits.Select(x=>x.IsSecret).ToList().TrueForAll(x => x));
         }
         [TestMethod]
         public void search_with_2_facet_should_return_2_facets()
@@ -82,9 +82,9 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                     .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content["HomePage"].Facets.Count.Equals(2));
-            Assert.IsNotNull(rs.Content["HomePage"].Facets["IsSecret"]);
-            Assert.IsNotNull(rs.Content["HomePage"].Facets["Status"]);
+            Assert.IsTrue(rs.Content.Facets.Count.Equals(2));
+            Assert.IsNotNull(rs.Content.Facets["IsSecret"]);
+            Assert.IsNotNull(rs.Content.Facets["Status"]);
         }
         [TestMethod]
         public void search_with_facet_limit_1_should_return_facet_count_equals_1()
@@ -96,9 +96,9 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                     .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content["HomePage"].Facets.Count.Equals(2));
-            Assert.IsNotNull(rs.Content["HomePage"].Facets["IsSecret"]);
-            Assert.IsNotNull(rs.Content["HomePage"].Facets["Status"]);
+            Assert.IsTrue(rs.Content.Facets.Count.Equals(2));
+            Assert.IsNotNull(rs.Content.Facets["IsSecret"]);
+            Assert.IsNotNull(rs.Content.Facets["Status"]);
         }
     }
 }

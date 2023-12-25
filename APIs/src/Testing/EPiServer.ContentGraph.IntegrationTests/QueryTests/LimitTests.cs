@@ -29,7 +29,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries()
                 .GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(result.Content["HomePage"].Hits.Count().Equals(1));
+            Assert.IsTrue(result.Content.Hits.Count().Equals(1));
         }
 
         [TestMethod]
@@ -42,7 +42,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries()
                 .GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(result.Content["HomePage"].Hits.Count().Equals(4));
+            Assert.IsTrue(result.Content.Hits.Count().Equals(4));
         }
 
         [TestMethod]
