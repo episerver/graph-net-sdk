@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using EPiServer.ContentGraph.Api.Querying;
 using ProxyModels = EPiServer.ContentGraph.DataModels;
 using EPiServer.ContentGraph.Extensions;
+using System.Collections.Generic;
+using EPiServer.ContentGraph.Api;
 
 namespace AlloyMvcTemplates.Controllers
 {
@@ -17,64 +19,41 @@ namespace AlloyMvcTemplates.Controllers
             _client = client;
         }
 
-        public ViewResult Index(SearchPage currentPage, string q)
+        public ViewResult Index(SearchPage currentPage, string q, string t, string p = "1")
         {
-            //var query = _client.OperationName("AlloyQuery")
-            //        .ForType<ProxyModels.Content>()
-            //        .Fields(x => x.Language.Name, x => x.Url, x=> x.Name)
-            //        .Search(q)
-            //        .ToQuery()
-            //        .BuildQueries();
-
-            var query = _client.OperationName("Fragment")
-                .ForType<ProxyModels.Content>()
-                .Fields(x => x.Name, x=> x.Url)
-                    .ForSubType<ProxyModels.ArticlePage>(x => x.MetaTitle, x => x.MetaDescription)
-                    .ForSubType<ProxyModels.NewsPage>(x => x.MetaTitle, x => x.MetaDescription)
-                    .ForSubType<ProxyModels.ContactPage>(x => x.MetaTitle, x => x.MetaDescription)
-                .Search(q)
-                .Facet(x=>x.Status, new EPiServer.ContentGraph.Api.Facets.StringFacetFilterOperator().Limit(1))
-                .Facet(x=>x.Name.FacetLimit(10))
-                .ToQuery()
+            var query = _client
+                .OperationName("Alloy_Sample_Query")
+                    .ForType<ProxyModels.Content>()
+                    .Skip((int.Parse(p) -1) * 10)
+                    .Limit(10)
+                    .Fields(x=>x.Name, x=> x.Url)
+                    .Total()
+                        .AsType<ProxyModels.ArticlePage>(x=>x.MetaDescription, x=> x.MetaTitle)
+                    .Search(q)
+                    .Facet(x=>x.ContentType.FacetFilters(t))
+                    .ToQuery()
                 .BuildQueries();
 
-            //var rs = query.GetResult();
-            //var hits = rs.GetCastingContent<Models.Content, Models.ArticlePage>().Hits;
-
-            //var query = _client.OperationName("Multiple_Types")
-            //    .ForType<ProxyModels.ArticlePage>()
-            //        .Fields(x => x.Name, x => x.MetaTitle, x => x.MetaDescription)
-            //        .Search(q)
-            //        .FilterForVisitor()
-            //        .ToQuery()
-            //    .ForType<ProxyModels.ContactPage>()
-            //        .Fields(x => x.Name, x => x.MetaDescription)
-            //        .Search(q)
-            //        .ToQuery()
-            //    .BuildQueries();
-
-            var rs = query.GetResultAsync().Result;
-            var hits = rs.GetContent< ProxyModels.ArticlePage>().Hits;
-            var hits2 = rs.GetContent<ProxyModels.ContactPage>().Hits;
-
+            var content = query.GetResultAsync().Result.GetContent<ProxyModels.Content,ProxyModels.ArticlePage>();
+            var hits = content.Hits;
+            var facets = content.Facets["ContentType"];
             var model = new SearchContentModel(currentPage)
             {
-                Hits = hits.Select(x => new SearchContentModel.SearchHit
+                Hits = hits?.Select(x => new SearchContentModel.SearchHit
                 {
                     Url = x.Url,
                     Excerpt = x.MetaDescription,
                     Title = x.Name
                 })
-                .Concat(hits2.Select(x => new SearchContentModel.SearchHit
-                {
-                    Url = x.Url,
-                    Excerpt = x.MetaDescription,
-                    Title = x.Name
-                }))
                 ,
-                NumberOfHits = hits.Count(),
+                Facets = facets?.Select(x=> new SearchContentModel.SearchFacet { 
+                    Name = x.Name,
+                    Count = x.Count
+                }),
+                NumberOfHits = content.Total,
                 SearchServiceDisabled = false,
-                SearchedQuery = q
+                SearchedQuery = q,
+                FacetName = content.Facets.Keys.First()
             };
 
             return View(model);
