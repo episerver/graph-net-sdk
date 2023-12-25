@@ -28,7 +28,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<Content>().Result;
-            Assert.IsTrue(rs.Content.Values.First().Hits.Count() == 3);
+            Assert.IsTrue(rs.Content.Hits.Count() == 3);
         }
         [TestMethod]
         public void search_paging_with_2_should_result_2_items()
@@ -41,7 +41,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<Content>().Result;
-            Assert.IsTrue(rs.Content.Values.First().Hits.Count() == 2);
+            Assert.IsTrue(rs.Content.Hits.Count() == 2);
         }
         [TestMethod]
         public void search_order_desc_should_get_correct_order()
@@ -53,7 +53,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<Content>().Result;
-            Assert.IsTrue(rs.Content.Values.First().Hits.First().Name.Equals("Tim Cook"));
+            Assert.IsTrue(rs.Content.Hits.First().Name.Equals("Tim Cook"));
         }
         [TestMethod]
         public void full_text_search_should_result_correct_data()
@@ -65,7 +65,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<Content>().Result;
-            Assert.IsTrue(rs.Content.Values.First().Hits.First().Name.Equals("Alan Turing"));
+            Assert.IsTrue(rs.Content.Hits.First().Name.Equals("Alan Turing"));
         }
     }
 }

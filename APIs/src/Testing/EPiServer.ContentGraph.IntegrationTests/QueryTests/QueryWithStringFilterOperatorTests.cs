@@ -31,7 +31,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<Content>().Result;
-            Assert.IsTrue(rs.Content.Values.First().Hits.First().Name.Equals("Steve Jobs"));
+            Assert.IsTrue(rs.Content.Hits.First().Name.Equals("Steve Jobs"));
         }
         [TestMethod]
         public void search_Exists_operator_should_result_2_item()
@@ -43,7 +43,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<Content>().Result;
-            Assert.IsTrue(rs.Content.Values.First().Hits.Count() == 2);
+            Assert.IsTrue(rs.Content.Hits.Count() == 2);
         }
         [TestMethod]
         public void search_startWith_endsWith_operator_should_result_1_item()
@@ -55,8 +55,8 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<Content>().Result;
-            Assert.IsTrue(rs.Content.Values.First().Hits.Count() == 1);
-            Assert.IsTrue(rs.Content.Values.First().Hits.First().Author.Equals("Steve Howey"));
+            Assert.IsTrue(rs.Content.Hits.Count() == 1);
+            Assert.IsTrue(rs.Content.Hits.First().Author.Equals("Steve Howey"));
         }
 
         [TestMethod]
@@ -70,8 +70,8 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<Content>().Result;
-            Assert.IsTrue(rs.Content.Values.First().Hits.Count() == 1);
-            Assert.IsTrue(rs.Content.Values.First().Hits.First().Author.Equals("Steve Jobs"));
+            Assert.IsTrue(rs.Content.Hits.Count() == 1);
+            Assert.IsTrue(rs.Content.Hits.First().Author.Equals("Steve Jobs"));
         }       
         [TestMethod]
         public void search_with_Like_operator_should_result_2_items()
@@ -83,7 +83,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<Content>().Result;
-            Assert.IsTrue(rs.Content.Values.First().Hits.Count() == 2);
+            Assert.IsTrue(rs.Content.Hits.Count() == 2);
         }
         [TestMethod]
         public void search_with_In_operator_should_result_2_items()
@@ -95,7 +95,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<Content>().Result;
-            Assert.IsTrue(rs.Content.Values.First().Hits.Count() == 2);
+            Assert.IsTrue(rs.Content.Hits.Count() == 2);
         }
         #endregion
 
@@ -110,7 +110,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<Content>().Result;
-            Assert.IsTrue(rs.Content.Values.First().Hits.Count() == 2);
+            Assert.IsTrue(rs.Content.Hits.Count() == 2);
         }
         [TestMethod]
         public void search_Match_operator_should_result_2_items()
@@ -122,7 +122,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<Content>().Result;
-            Assert.IsTrue(rs.Content.Values.First().Hits.Count() == 2);
+            Assert.IsTrue(rs.Content.Hits.Count() == 2);
         }
         #endregion
     }

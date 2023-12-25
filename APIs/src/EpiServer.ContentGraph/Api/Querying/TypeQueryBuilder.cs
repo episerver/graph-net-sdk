@@ -14,6 +14,7 @@ namespace EPiServer.ContentGraph.Api.Querying
     //TODO: Very important=> remove all quotes, prefix wilcard and script-injection for security
     public partial class TypeQueryBuilder<T> : TypeQueryBuilder
     {
+        private bool _compiled = false;
         private static IEnumerable<IFilterForVisitor>? _filters;
         public TypeQueryBuilder(GraphQLRequest request) : base(request)
         {
@@ -219,28 +220,6 @@ namespace EPiServer.ContentGraph.Api.Querying
         {
             ids.ValidateNotNullArgument("ids");
             graphObject.Ids = $"ids:[{string.Join(',', ids.Select(id => $"\"{id}\""))}]";
-            return this;
-        }
-        /// <summary>
-        /// Set locale for query. Currently not support localization culture.
-        /// </summary>
-        /// <param name="language">Culture for query, if null it will be ALL cultures</param>
-        /// <returns>TypeQueryBuilder</returns>
-        public TypeQueryBuilder<T> Locale(CultureInfo? language)
-        {
-            if (language is null)
-            {
-                graphObject.Locale =
-                    graphObject.Locale.IsNullOrEmpty() ?
-                    $"{LocaleMode.ALL}" :
-                    $",{LocaleMode.ALL}";
-            }
-            else
-            {
-                graphObject.Locale += graphObject.Locale.IsNullOrEmpty() ?
-                    $"{language.Name.Replace("-", "_")}" :
-                    $",{language.Name.Replace("-", "_")}";
-            }
             return this;
         }
         public TypeQueryBuilder<T> Locale(LocaleMode locale)
@@ -517,60 +496,64 @@ namespace EPiServer.ContentGraph.Api.Querying
         /// <returns></returns>
         public override GraphQueryBuilder ToQuery()
         {
-            if (graphObject.SelectItems.IsNullOrEmpty() && graphObject.Total.IsNullOrEmpty() && graphObject.Facets.IsNullOrEmpty() && graphObject.Autocomplete.IsNullOrEmpty())
+            if (!_compiled)
             {
-                throw new ArgumentNullException("You must select at least one of the values [Field(s), Facet(s), Total, Autocomplete(s)]");
-            }
-            graphObject.TypeName = typeof(T).Name;
-            if (!graphObject.Skip.IsNullOrEmpty())
-            {
-                graphObject.Filter = graphObject.Filter.IsNullOrEmpty() ? graphObject.Skip : $"{graphObject.Filter},{graphObject.Skip}";
-            }
-            if (!graphObject.Limit.IsNullOrEmpty())
-            {
-                graphObject.Filter = graphObject.Filter.IsNullOrEmpty() ? graphObject.Limit : $"{graphObject.Filter},{graphObject.Limit}";
-            }
-            if (!graphObject.Ids.IsNullOrEmpty())
-            {
-                graphObject.Filter = graphObject.Filter.IsNullOrEmpty() ? graphObject.Ids : $"{graphObject.Filter},{graphObject.Ids}";
-            }
-            if (!graphObject.SelectItems.IsNullOrEmpty())
-            {
-                graphObject.SelectItems = $"items{{{graphObject.SelectItems}}}";
-            }
+                if (graphObject.SelectItems.IsNullOrEmpty() && graphObject.Total.IsNullOrEmpty() && graphObject.Facets.IsNullOrEmpty() && graphObject.Autocomplete.IsNullOrEmpty())
+                {
+                    throw new ArgumentNullException("You must select at least one of the values [Field(s), Facet(s), Total, Autocomplete(s)]");
+                }
+                graphObject.TypeName = typeof(T).Name;
+                if (!graphObject.Skip.IsNullOrEmpty())
+                {
+                    graphObject.Filter = graphObject.Filter.IsNullOrEmpty() ? graphObject.Skip : $"{graphObject.Filter},{graphObject.Skip}";
+                }
+                if (!graphObject.Limit.IsNullOrEmpty())
+                {
+                    graphObject.Filter = graphObject.Filter.IsNullOrEmpty() ? graphObject.Limit : $"{graphObject.Filter},{graphObject.Limit}";
+                }
+                if (!graphObject.Ids.IsNullOrEmpty())
+                {
+                    graphObject.Filter = graphObject.Filter.IsNullOrEmpty() ? graphObject.Ids : $"{graphObject.Filter},{graphObject.Ids}";
+                }
+                if (!graphObject.SelectItems.IsNullOrEmpty())
+                {
+                    graphObject.SelectItems = $"items{{{graphObject.SelectItems}}}";
+                }
 
-            if (!graphObject.WhereClause.IsNullOrEmpty())
-            {
-                if (graphObject.Filter.IsNullOrEmpty())
+                if (!graphObject.WhereClause.IsNullOrEmpty())
                 {
-                    graphObject.WhereClause = $"where:{{{graphObject.WhereClause}}}";
+                    if (graphObject.Filter.IsNullOrEmpty())
+                    {
+                        graphObject.WhereClause = $"where:{{{graphObject.WhereClause}}}";
+                    }
+                    else
+                    {
+                        graphObject.WhereClause = $",where:{{{graphObject.WhereClause}}}";
+                    }
                 }
-                else
+                if (!graphObject.Locale.IsNullOrEmpty())
                 {
-                    graphObject.WhereClause = $",where:{{{graphObject.WhereClause}}}";
+                    graphObject.Locale = $"locale:[{graphObject.Locale}]";
                 }
-            }
-            if (!graphObject.Locale.IsNullOrEmpty())
-            {
-                graphObject.Locale = $"locale:[{graphObject.Locale}]";
-            }
-            if (!graphObject.OrderBy.IsNullOrEmpty())
-            {
-                graphObject.OrderBy = $"orderBy:{{{graphObject.OrderBy}}}";
-            }
-            if (!graphObject.Locale.IsNullOrEmpty() || !graphObject.Filter.IsNullOrEmpty() || !graphObject.WhereClause.IsNullOrEmpty() || !graphObject.OrderBy.IsNullOrEmpty())
-            {
-                graphObject.Filter = $"({graphObject.Locale}{graphObject.Filter}{graphObject.WhereClause}{graphObject.OrderBy})";
-            }
-            if (!graphObject.Facets.IsNullOrEmpty())
-            {
-                graphObject.Facets = $"facets{{{graphObject.Facets}}}";
-            }
-            if (!graphObject.Autocomplete.IsNullOrEmpty())
-            {
-                graphObject.Autocomplete = $"autocomplete{{{graphObject.Autocomplete}}}";
+                if (!graphObject.OrderBy.IsNullOrEmpty())
+                {
+                    graphObject.OrderBy = $"orderBy:{{{graphObject.OrderBy}}}";
+                }
+                if (!graphObject.Locale.IsNullOrEmpty() || !graphObject.Filter.IsNullOrEmpty() || !graphObject.WhereClause.IsNullOrEmpty() || !graphObject.OrderBy.IsNullOrEmpty())
+                {
+                    graphObject.Filter = $"({graphObject.Locale}{graphObject.Filter}{graphObject.WhereClause}{graphObject.OrderBy})";
+                }
+                if (!graphObject.Facets.IsNullOrEmpty())
+                {
+                    graphObject.Facets = $"facets{{{graphObject.Facets}}}";
+                }
+                if (!graphObject.Autocomplete.IsNullOrEmpty())
+                {
+                    graphObject.Autocomplete = $"autocomplete{{{graphObject.Autocomplete}}}";
+                }
             }
             _query.Query += graphObject.ToString();
+            _compiled = true;
             return new GraphQueryBuilder(_query, this);
         }
     }

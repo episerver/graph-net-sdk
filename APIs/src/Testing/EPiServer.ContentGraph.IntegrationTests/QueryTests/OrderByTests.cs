@@ -31,8 +31,8 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries()
                 .GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(result.Content["HomePage"].Hits.First().Name.Equals("Beatles"));
-            Assert.IsTrue(result.Content["HomePage"].Hits.Last().Name.Equals("Rolling Stones"));
+            Assert.IsTrue(result.Content.Hits.First().Name.Equals("Beatles"));
+            Assert.IsTrue(result.Content.Hits.Last().Name.Equals("Rolling Stones"));
         }
 
         [TestMethod]
@@ -45,7 +45,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries()
                 .GetResultAsync<HomePage>().Result;
-            var resultArray = result.Content["HomePage"].Hits.ToArray();
+            var resultArray = result.Content.Hits.ToArray();
             var dates = new DateTime[4];
             for (int i = 0; i < 4; i++)
             {
@@ -68,7 +68,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .BuildQueries()
                 .GetResultAsync<HomePage>().Result;
             var ints = new int?[4];
-            var resultArray = result.Content["HomePage"].Hits.ToArray();
+            var resultArray = result.Content.Hits.ToArray();
             for (int i = 0; i < 4; i++)
             {
                 ints[i] = resultArray[i].Priority;
