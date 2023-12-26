@@ -1,6 +1,8 @@
 ﻿using EPiServer.ContentGraph.Api.Autocomplete;
 using EPiServer.ContentGraph.Api.Facets;
 using EPiServer.ContentGraph.Api.Filters;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace EPiServer.ContentGraph.Helpers
 {

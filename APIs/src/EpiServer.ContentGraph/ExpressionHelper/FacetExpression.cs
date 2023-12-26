@@ -1,4 +1,5 @@
 ﻿using EPiServer.ContentGraph.Api.Facets;
+using System;
 using System.Linq.Expressions;
 
 namespace EPiServer.ContentGraph.ExpressionHelper

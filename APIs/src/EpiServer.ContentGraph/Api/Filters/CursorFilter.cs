@@ -1,4 +1,6 @@
-﻿namespace EPiServer.ContentGraph.Api.Filters
+﻿using System.Collections.Generic;
+
+namespace EPiServer.ContentGraph.Api.Filters
 {
     public class CursorFilter : IFilter
     {

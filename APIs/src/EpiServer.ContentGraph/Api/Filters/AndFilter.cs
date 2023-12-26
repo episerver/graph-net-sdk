@@ -1,6 +1,8 @@
 ﻿using EPiServer.ContentGraph.ExpressionHelper;
 using EPiServer.ContentGraph.Helpers;
 using EPiServer.ContentGraph.Helpers.Reflection;
+using System;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace EPiServer.ContentGraph.Api.Filters

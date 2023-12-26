@@ -1,12 +1,13 @@
-﻿using EPiServer.ContentGraph.Api.Filters;
-using EPiServer.ContentGraph.Api.Querying;
+﻿using EPiServer.ContentGraph.Api.Querying;
 using EPiServer.ContentGraph.Configuration;
 using EPiServer.ContentGraph.Connection;
 using EPiServer.Web;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using System;
 using System.Net;
+using System.Net.Http;
 
 namespace EPiServer.ContentGraph.Extensions
 {

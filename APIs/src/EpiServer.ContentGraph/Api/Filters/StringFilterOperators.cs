@@ -1,4 +1,5 @@
 ﻿using EPiServer.ContentGraph.Helpers;
+using System.Linq;
 
 namespace EPiServer.ContentGraph.Api.Filters
 {

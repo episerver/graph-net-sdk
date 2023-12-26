@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using EPiServer.ContentGraph.Api.Querying;
 using ProxyModels = EPiServer.ContentGraph.DataModels;
 using EPiServer.ContentGraph.Extensions;
-using System.Collections.Generic;
-using EPiServer.ContentGraph.Api;
 
 namespace AlloyMvcTemplates.Controllers
 {

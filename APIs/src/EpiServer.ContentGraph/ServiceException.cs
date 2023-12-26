@@ -1,4 +1,6 @@
-﻿namespace EPiServer.ContentGraph
+﻿using System;
+
+namespace EPiServer.ContentGraph
 {
     [Serializable]
     public class ServiceException : ApplicationException

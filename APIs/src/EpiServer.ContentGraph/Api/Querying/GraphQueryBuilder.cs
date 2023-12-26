@@ -9,6 +9,11 @@ using EPiServer.Turnstile.Contracts.Hmac;
 using Microsoft.Extensions.Options;
 using System.Text.RegularExpressions;
 using EPiServer.ServiceLocation;
+using System.Net.Http;
+using System;
+using System.Threading.Tasks;
+using System.Linq;
+using System.IO;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {

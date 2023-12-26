@@ -1,4 +1,5 @@
 ﻿using EPiServer.ContentGraph.Api.Result;
+using System.Threading.Tasks;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {

@@ -1,4 +1,6 @@
 ﻿using EPiServer.ContentGraph.Helpers;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace EPiServer.ContentGraph.Api.Facets
 {

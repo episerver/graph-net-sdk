@@ -1,4 +1,6 @@
-﻿namespace EPiServer.ContentGraph.Api.Facets
+﻿using System.Collections.Generic;
+
+namespace EPiServer.ContentGraph.Api.Facets
 {
     public interface IFacetOperator
     {

@@ -1,6 +1,7 @@
 using EPiServer.ContentGraph.Tracing;
 using System;
-using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace EPiServer.ContentGraph.Connection
 {

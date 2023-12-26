@@ -8,6 +8,9 @@ using EPiServer.ContentGraph.Api.Autocomplete;
 using EPiServer.ContentGraph.Api.Facets;
 using EPiServer.ServiceLocation;
 using EPiServer.ContentGraph.ExpressionHelper;
+using System;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {

@@ -1,5 +1,9 @@
-﻿using System.Reflection;
+﻿using System;
+using System.IO;
+using System.Net.Http;
+using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using EPiServer.ContentGraph.Tracing;
 
 namespace EPiServer.ContentGraph.Connection

@@ -1,4 +1,7 @@
-﻿namespace EPiServer.ContentGraph.Api.Facets
+﻿using System;
+using System.Collections.Generic;
+
+namespace EPiServer.ContentGraph.Api.Facets
 {
     public class DelegateFacetFilterBuilder : FacetFilter
     {

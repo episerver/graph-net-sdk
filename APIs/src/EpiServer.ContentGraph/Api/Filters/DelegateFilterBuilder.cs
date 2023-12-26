@@ -1,4 +1,6 @@
-﻿namespace EPiServer.ContentGraph.Api.Filters
+﻿using System;
+
+namespace EPiServer.ContentGraph.Api.Filters
 {
     public class DelegateFilterBuilder : Filter
     {

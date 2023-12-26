@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Primitives;
+using System;
 
 namespace EPiServer.ContentGraph.Connection
 {

@@ -1,4 +1,6 @@
-﻿namespace EPiServer.ContentGraph.Tracing
+﻿using System;
+
+namespace EPiServer.ContentGraph.Tracing
 {
     public interface ITraceEvent
     {
