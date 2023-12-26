@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Optimizely.ContentGraph.Client</id>
+    <version>$version$</version>
+    <title>Content Graph Client API</title>
+    <authors>Optimizely</authors>
+    <owners>Optimizely</owners>
+    <license type="file">license.txt</license>
+    <projectUrl>http://find.episerver.com/</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>.NET client API for the Optimizely Content Graph</description>
+    <copyright>Copyright Optimizely $Year$</copyright>
+    <tags>Optimizely Content Graph Client</tags>
+    <dependencies>
+      <group>
+        <dependency id="Newtonsoft.Json" version="13.0.1" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="EpiServer.ContentGraph\license.txt" target="" />
+    <file src="EpiServer.ContentGraph\bin\$Configuration$\net6.0\EpiServer.ContentGraph.dll" target="lib\net6.0" />
+  </files>
+</package>

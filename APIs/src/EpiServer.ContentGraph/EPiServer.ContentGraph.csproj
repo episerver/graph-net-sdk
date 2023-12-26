@@ -1,11 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\..\MSBuild\SignEpiserver.props" />
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <TargetFrameworks>net6.0</TargetFrameworks>
+    <OutputType>Library</OutputType>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+    <RootNamespace>EPiServer.Find</RootNamespace>
+    <NuspecFile>Optimizely.ContentGraph.Client.nuspec</NuspecFile>
+    <PackageVersion Condition=" '$(PackageVersion)' == '' ">$(VersionPrefix)$(VersionSuffix)</PackageVersion>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Remove="ClientConventions\**" />
     <EmbeddedResource Remove="ClientConventions\**" />

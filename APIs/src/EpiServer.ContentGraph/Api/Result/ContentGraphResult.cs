@@ -63,7 +63,7 @@ namespace EPiServer.ContentGraph.Api.Result
             {
                 string typeName = typeof(TResult).Name;
                 JObject keyValues;
-                if (RawData.TryGetValue(typeName, out keyValues) && keyValues != null)
+                if (RawData != null && RawData.TryGetValue(typeName, out keyValues) && keyValues != null)
                 {
                     return keyValues.ToObject<ContentGraphHits<TResult>>();
                 }
