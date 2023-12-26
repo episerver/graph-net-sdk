@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\..\MSBuild\SignEpiserver.props" />
+  <Import Project="..\..\..\msbuild\SignEpiserver.props" />
+  <Import Project="..\..\..\msbuild\nuspec.props" />
   <PropertyGroup>
     <TargetFrameworks>net6.0</TargetFrameworks>
     <OutputType>Library</OutputType>

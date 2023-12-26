@@ -20,10 +20,8 @@ function Get-ReferenceVersion {
 #just for testing, will remove it later
 New-Item -Path ".\artifacts" -Name "packages" -ItemType "directory" -Force
 [xml] $versionFile = Get-Content ".\msbuild\DependencyVersions.props"
-$uiVersion = Get-ReferenceVersion "CMSUICoreVersion"
-$coreVersion = Get-ReferenceVersion "CMSCoreVersion"
 $newtonsoftVersion = Get-ReferenceVersion "NewtonsoftJsonVersion"
 
-exec "dotnet" "msbuild msbuild/createzip.proj /t:CreateZipFile /p:findVersion=$findVersion /p:uiVersion=$uiVersion /p:coreVersion=$coreVersion /p:newtonsoftVersion=$newtonsoftVersion"
+exec "dotnet" "msbuild msbuild/createzip.proj /t:CreateZipFile /p:findVersion=$findVersion /p:newtonsoftVersion=$newtonsoftVersion"
 
 Pop-Location

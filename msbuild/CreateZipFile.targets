@@ -32,9 +32,7 @@
         <TransformXml Source="$(InputFile)" Transform="@(XdtFiles)" Destination="$(OutputFile)" />
     </Target>
     <Target Name="ReplaceFile" AfterTargets="Transform">
-        <WriteLinesToFile File="$(OutputFile)" Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('CMSVersion','$(uiVersion)'))" Overwrite="true"/>
         <WriteLinesToFile File="$(OutputFile)" Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('FINDVersion','$(findVersion)'))" Overwrite="true"/>
-        <WriteLinesToFile File="$(OutputFile)" Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('CoreVersion','$(coreVersion)'))" Overwrite="true"/>
         <WriteLinesToFile File="$(OutputFile)" Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('NewtonsoftVersion','$(newtonsoftVersion)'))" Overwrite="true"/>
     </Target>
     <Target Name="CreateZipFile" AfterTargets="Transform">
