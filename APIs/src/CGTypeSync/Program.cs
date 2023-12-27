@@ -1,48 +1,51 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 using System.Text;
-using System.Text.Json;
 
-namespace CGTypeSync
+namespace Optimizely.ContentGraph.Client.Tools
 {
     internal class Program
     {
+        private static string USER_AGENT => $"Optimizely-Graph-Tools/{typeof(Program).Assembly.GetName().Version}";
         static void Main(string[] args)
         {
-            new Program().Run();
+            IConfigurationRoot config = new ConfigurationBuilder()
+                                        .AddJsonFile("appsettings.json")
+                                        .AddEnvironmentVariables()
+                                        .Build();
+            Console.WriteLine("************************************Optimizely Content Graph Client Tools************************************");
+            Console.WriteLine("This tool will generate C# classes from Optimizely Graph schema. Ensure you config correct account");
+            Console.WriteLine("Enter your output directory:");
+            var directory = Console.ReadLine();
+            Console.WriteLine("Enter your source name:");
+            var source = Console.ReadLine();
+            new Program().Run(config, directory, source);
         }
-
-        private readonly JsonSerializerOptions _options = new()
-        {
-            PropertyNameCaseInsensitive = true
-        };
-
-        public void Run()
+        public void Run(IConfiguration configuration, string output, string source)
         {
             //parse the CGTypes.json file
             var schemaTypes = new Dictionary<string, List<Tuple<string, string>>>();
-            string path = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            var directory = System.IO.Path.GetDirectoryName(path);
-            var schemaFile = Path.Combine(directory, "CGTypes.json");
-            JObject json = null;
-            using (StreamReader r = new StreamReader(schemaFile))
+            const string fileName = "ProxyClasses.cs";
+            JObject json = GetSchemaDataTypes(configuration, source);
+            if (json == null)
             {
-                var jsonText = r.ReadToEnd();
-                json = JObject.Parse(jsonText);
-
+                Console.WriteLine("Error! schema is null");
+                return;
             }
-
             var propertyTypes = json["propertyTypes"];
             var contentTypes = json["contentTypes"];
 
-            
+            Console.WriteLine("Writing files...");
             var sb = new StringBuilder();
+            sb.AppendLine("using System;");
+            sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine("using EPiServer.Core;");
             sb.AppendLine("using EPiServer.Framework.Blobs;");
             sb.AppendLine("using EPiServer.SpecializedProperties;");
             sb.AppendLine("using EPiServer.DataAnnotations;");
             sb.AppendLine("using System.Globalization;");
             sb.AppendLine();
-            sb.AppendLine("namespace EPiServer.ContentGraph.DataModels");
+            sb.AppendLine("namespace Optimizely.ContentGraph.DataModels");
             sb.AppendLine("{");
 
             foreach (JProperty propertyType in propertyTypes)
@@ -104,16 +107,21 @@ namespace CGTypeSync
 
             sb.AppendLine("}");
             var classes = sb.ToString();
-
-            var outFile = Path.Combine(directory, @"..\..\..\..\Templates\EPiServer.ContentGraph.DataModels\ProxyClasses.cs");
+            if (string.IsNullOrEmpty(output))
+            {
+                output = Directory.GetCurrentDirectory();
+            }
+            if (!Directory.Exists(output)){
+                Directory.CreateDirectory(output);
+            }
+            var outFile = Path.Combine(output, fileName);
             using (var writer = new StreamWriter(outFile, false))
             {
                 writer.Write(sb.ToString());
             }
-
-
+            Console.WriteLine($"Classes had been generated to {output}/{fileName}.");
+            Console.WriteLine($"Press enter to exit.");
         }
-
 
         private string ConvertType(string propType)
         {
@@ -155,5 +163,66 @@ namespace CGTypeSync
             return propType;
 
         }
+
+        private JObject GetSchemaDataTypes(IConfiguration configuration, string source)
+        {
+            Console.WriteLine("Getting data types...");
+            if (string.IsNullOrEmpty(source) || string.IsNullOrWhiteSpace(source))
+            {
+                source = "default";
+            }
+            try
+            {
+                HttpClient client = CreateHttpClient(configuration);
+                var httpResponse = client.GetAsync($"api/content/v3/types?id={source}").GetAwaiter().GetResult();
+                if (httpResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    return JObject.Parse(httpResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult());
+                }
+                else
+                {
+                    Console.WriteLine($"Can not get data types. Status code: {httpResponse.StatusCode}; Reason:{httpResponse.ReasonPhrase}");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Errors: {e.Message}");
+            }
+            return null;
+        }
+        private HttpClient CreateHttpClient(IConfiguration configuration)
+        {
+            var config = ReadConfig(configuration);
+            var authenticationString = $"{config.AppKey}:{config.SecretKey}";
+
+            var base64AuthString = Convert.ToBase64String(Encoding.UTF8.GetBytes(authenticationString));
+            return new HttpClient()
+            {
+                BaseAddress = new Uri(config.GatewayAddress),
+                DefaultRequestHeaders = {
+                    { "User-Agent", USER_AGENT },
+                    { "Authorization", $"Basic {base64AuthString}"},
+                    { "ContentType", "application/json" }
+                }
+            };
+        }
+
+        private Config ReadConfig(IConfiguration configuration)
+        {
+            Console.WriteLine("Reading appsettings.json...");
+            var myconfigs = configuration.GetSection("Optimizely");
+            return new Config()
+            {
+                GatewayAddress = myconfigs.GetSection("ContentGraph:GatewayAddress").Value,
+                AppKey = myconfigs.GetSection("ContentGraph:AppKey").Value,
+                SecretKey = myconfigs.GetSection("ContentGraph:Secret").Value
+            };
+        }
+    }
+    internal class Config
+    {
+        public string GatewayAddress { get; set; }
+        public string AppKey { get; set; }
+        public string SecretKey { get; set; }
     }
 }

@@ -27,8 +27,8 @@
     <None Remove="app_data\**\*.*" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\CGTypeSync\Optimizely.ContentGraph.Client.Tools.csproj" />
     <ProjectReference Include="..\..\EpiServer.ContentGraph\EPiServer.ContentGraph.csproj" />
-    <ProjectReference Include="..\EPiServer.ContentGraph.DataModels\EPiServer.ContentGraph.DataModels.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="wwwroot\ClientResources\**\*.*">

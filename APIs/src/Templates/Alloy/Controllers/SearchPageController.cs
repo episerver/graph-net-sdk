@@ -4,7 +4,7 @@ using AlloyTemplates.Models.Pages;
 using AlloyTemplates.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using EPiServer.ContentGraph.Api.Querying;
-using ProxyModels = EPiServer.ContentGraph.DataModels;
+using ProxyModels = Optimizely.ContentGraph.DataModels;
 using EPiServer.ContentGraph.Extensions;
 
 namespace AlloyMvcTemplates.Controllers

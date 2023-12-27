@@ -20,6 +20,7 @@
   </metadata>
   <files>
     <file src="CGTypeSync\license.txt" target="" />
-    <file src="CGTypeSync\bin\$Configuration$\net6.0\CGTypeSync.dll" target="lib\net6.0" />
+    <file src="CGTypeSync\bin\$Configuration$\net6.0\Optimizely.ContentGraph.Client.Tools.dll" target="lib\net6.0" />
+    <file src="CGTypeSync\bin\$Configuration$\net6.0\Optimizely.ContentGraph.Client.Tools.dll" target="lib\net6.0" />
   </files>
 </package>
