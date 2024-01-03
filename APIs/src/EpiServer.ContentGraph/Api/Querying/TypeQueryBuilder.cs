@@ -16,7 +16,6 @@ namespace EPiServer.ContentGraph.Api.Querying
 {
     public partial class TypeQueryBuilder<T> : TypeQueryBuilder
     {
-        private bool _compiled = false;
         private static IEnumerable<IFilterForVisitor>? _filters;
         public TypeQueryBuilder(GraphQLRequest request) : base(request)
         {
@@ -26,57 +25,39 @@ namespace EPiServer.ContentGraph.Api.Querying
         }
         public override GraphQLRequest GetQuery()
         {
+            ToQuery();
             return _query;
         }
 
         #region Queries
         public TypeQueryBuilder<T> Link<TLink>(TypeQueryBuilder<TLink> link)
         {
-            link.ValidateNotNullArgument("link");
-            string linkItems = link.ToQuery()?.GetQuery()?.Query ?? string.Empty;
-            if (!linkItems.IsNullOrEmpty())
-            {
-                graphObject.SelectItems += graphObject.SelectItems.IsNullOrEmpty() ?
-                    $"_link{{{linkItems}}}" :
-                    $" _link{{{linkItems}}}";
-            }
+            base.Link(link);
             return this;
         }
         public TypeQueryBuilder<T> Children<TChildren>(TypeQueryBuilder<TChildren> children)
         {
-            children.ValidateNotNullArgument("children");
-            string childrenItems = children.ToQuery()?.GetQuery()?.Query ?? string.Empty;
-            if (!childrenItems.IsNullOrEmpty())
-            {
-                graphObject.SelectItems += graphObject.SelectItems.IsNullOrEmpty() ?
-                    $"_children{{{childrenItems}}}" :
-                    $" _children{{{childrenItems}}}";
-            }
-           
+            base.Children(children);
             return this;
         }
-        public TypeQueryBuilder<T> Field(string propertyName)
+        public override TypeQueryBuilder<T> Fragments(params FragmentBuilder[] fragments)
         {
-            if (!propertyName.IsNullOrEmpty())
-            {
-                string clonedPropName = ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName);
-                if (graphObject.SelectItems.IsNullOrEmpty())
-                {
-                    graphObject.SelectItems = $"{clonedPropName}";
-                }
-                else
-                {
-                    graphObject.SelectItems += $" {clonedPropName}";
-                }
-            }
-
+            base.Fragments(fragments);
+            return this;
+        }
+        public override TypeQueryBuilder<T> Fragment(FragmentBuilder fragment)
+        {
+            base.Fragment(fragment);
+            return this;
+        }
+        public override TypeQueryBuilder<T> Field(string propertyName)
+        {
+            base.Field(propertyName);
             return this;
         }
         public TypeQueryBuilder<T> Field(Expression<Func<T, object>> fieldSelector)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
-            var x = fieldSelector.Compile();
-
             var propertyName = fieldSelector.GetFieldPath();
             Field(propertyName);
             return this;
@@ -141,8 +122,8 @@ namespace EPiServer.ContentGraph.Api.Querying
             subTypeQuery.Parent = this.Parent;
             string subTypeName = typeof(TSub).Name;
             graphObject.SelectItems = graphObject.SelectItems.IsNullOrEmpty() ?
-                $"... on {subTypeName}{{{subTypeQuery.Query}}}" :
-                $"{graphObject.SelectItems} ... on {subTypeName}{{{subTypeQuery.Query}}}";
+                $"... on {subTypeName}{subTypeQuery.GetQuery().Query}" :
+                $"{graphObject.SelectItems} ... on {subTypeName}{subTypeQuery.GetQuery().Query}";
             return this;
         }
 

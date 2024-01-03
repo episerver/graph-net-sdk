@@ -11,7 +11,7 @@ namespace EPiServer.ContentGraph.Api.Filters
         public void FilterForVisitor<T>(TypeQueryBuilder<T> typeQueryBuilder)
         {
             typeQueryBuilder.ValidateNotNullArgument("typeQueryBuilder");
-            typeQueryBuilder.Where("Status", new StringFilterOperators().NotEq("Deleted"));
+            typeQueryBuilder.Where("Status", new StringFilterOperators().Eq("Published"));
         }
     }
 }

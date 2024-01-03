@@ -1,35 +1,30 @@
 ﻿using EPiServer.ContentGraph.Helpers;
 using EPiServer.ContentGraph.Helpers.Reflection;
+using GraphQL.Transport;
 using System;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {
     public class SubTypeQueryBuilder<T> : BaseTypeQueryBuilder
     {
-        private StringBuilder builder;
-        public SubTypeQueryBuilder()
+        public SubTypeQueryBuilder():base()
         {
-            builder = new StringBuilder();
         }
-        public string Query { get { return builder.ToString(); } }
-
-        public override GraphQueryBuilder ToQuery()
+        public override GraphQLRequest GetQuery()
         {
-            _query.Query = builder.ToString();
-            return new GraphQueryBuilder(_query, this);
+            return base.GetQuery();
         }
-
+        public override SubTypeQueryBuilder<T> Field(string fieldName)
+        {
+            fieldName.ValidateNotNullArgument("fieldName");
+            base.Field(fieldName);
+            return this;
+        }
         public SubTypeQueryBuilder<T> Field(Expression<Func<T, object>> fieldSelector)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
-            var propertyName = fieldSelector.GetFieldPath();
-            if (builder.Length > 0)
-            {
-                builder.Append(' ');
-            }
-            builder.Append(ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName));
+            base.Field(fieldSelector.GetFieldPath());
             return this;
         }
         public SubTypeQueryBuilder<T> Fields(params Expression<Func<T, object>>[] fieldSelectors)
@@ -37,13 +32,28 @@ namespace EPiServer.ContentGraph.Api.Querying
             fieldSelectors.ValidateNotNullArgument("fieldSelectors");
             foreach (var fieldSelector in fieldSelectors)
             {
-                var propertyName = fieldSelector.GetFieldPath();
-                if (builder.Length > 0)
-                {
-                    builder.Append(' ');
-                }
-                builder.Append(ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName));
+                Field(fieldSelector);
             }
+            return this;
+        }
+        public SubTypeQueryBuilder<T> Link<TLink>(TypeQueryBuilder<TLink> link)
+        {
+            base.Link(link);
+            return this;
+        }
+        public SubTypeQueryBuilder<T> Children<TChildren>(TypeQueryBuilder<TChildren> children)
+        {
+            base.Children(children);
+            return this;
+        }
+        public override SubTypeQueryBuilder<T> Fragments(params FragmentBuilder[] fragments)
+        {
+            base.Fragments(fragments);
+            return this;
+        }
+        public override SubTypeQueryBuilder<T> Fragment(FragmentBuilder fragment)
+        {
+            base.Fragment(fragment);
             return this;
         }
     }

@@ -22,7 +22,7 @@ namespace EPiServer.ContentGraph.Api.Facets
         }
         public StringFacetFilterOperator Filters(params string[] values)
         {
-            string combineValues = string.Join(',',values.Select(value => $"\"{value}\""));
+            string combineValues = string.Join(',',values.Select(value => $"\"{value?.Trim()}\""));
             _query = _query.IsNullOrEmpty() ? $"filters: [{combineValues}]" : $"{_query},filters: [{combineValues}]";
             return this;
         }

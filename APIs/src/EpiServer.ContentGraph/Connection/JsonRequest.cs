@@ -55,7 +55,7 @@ namespace EPiServer.ContentGraph.Connection
             Trace.Instance.Add(new TraceEvent(this, string.Format("Executing {0} request to {1}.", request.Method, RequestUri)));
 
             request.Content = new StringContent(body, Encoding.UTF8, "application/json");
-            var response = await _httpClient.SendAsync(request);
+            var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
             string errorResponse;
             try
             {

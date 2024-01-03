@@ -14,6 +14,7 @@ using System;
 using System.Threading.Tasks;
 using System.Linq;
 using System.IO;
+using System.Collections.Generic;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {
@@ -25,6 +26,12 @@ namespace EPiServer.ContentGraph.Api.Querying
         private readonly OptiGraphOptions _optiGraphOptions;
         private const string RequestMethod = "POST";
         private const string UnCachedPath = "?cache=false";
+        private Dictionary<string, FragmentBuilder> _fragmentBuilders;
+        public GraphQueryBuilder()
+        {
+            _optiGraphOptions = new OptiGraphOptions();
+            _query = new GraphQLRequest();
+        }
         public static GraphQueryBuilder CreateFromConfig()
         {
             try
@@ -63,21 +70,36 @@ namespace EPiServer.ContentGraph.Api.Querying
             {
                 _optiGraphOptions ??= ((GraphQueryBuilder)typeQueryBuilder.Parent)._optiGraphOptions;
                 _httpClientFactory ??= ((GraphQueryBuilder)typeQueryBuilder.Parent)._httpClientFactory;
-                _httpClient ??= _httpClientFactory.CreateClient("HttpClientWithAutoDecompression");
+                _fragmentBuilders ??= ((GraphQueryBuilder)typeQueryBuilder.Parent)._fragmentBuilders;
+                _httpClient ??= ((GraphQueryBuilder)typeQueryBuilder.Parent)._httpClient;
             }
             _query = request;
         }
-
         public TypeQueryBuilder<T> ForType<T>()
         {
             var typeQueryBuilder = new TypeQueryBuilder<T>(_query);
             typeQueryBuilder.Parent = this;
-            return (TypeQueryBuilder<T>)typeQueryBuilder;
+            return typeQueryBuilder;
         }
         public TypeQueryBuilder<T> ForType<T>(TypeQueryBuilder<T> typeQueryBuilder)
         {
             typeQueryBuilder.Parent = this;
             return typeQueryBuilder;
+        }
+        public void AddFragment(FragmentBuilder fragmentBuilder)
+        {
+            if (_fragmentBuilders == null)
+            {
+                _fragmentBuilders = new Dictionary<string, FragmentBuilder>();
+            }
+            if (!_fragmentBuilders.TryAdd(fragmentBuilder.GetName(), fragmentBuilder))
+            {
+                throw new ArgumentException($"Fragment [{fragmentBuilder.GetName()}] had added already.");
+            }
+        }
+        public IEnumerable<FragmentBuilder> GetFragments()
+        {
+            return _fragmentBuilders?.Values;
         }
         /// <summary>
         /// Optional name for operation. Name should not start with number (only underscores and letters) and can't have any space.
@@ -251,7 +273,15 @@ namespace EPiServer.ContentGraph.Api.Querying
         /// <returns></returns>
         public GraphQueryBuilder BuildQueries()
         {
-            _query.Query = $"query {_query.OperationName} {{{_query.Query}}}";
+            StringBuilder stringBuilder = new StringBuilder($"query {_query.OperationName} {{{_query.Query}}}");
+            if (_fragmentBuilders != null)
+            {
+                foreach (var fragment in _fragmentBuilders.Values)
+                {
+                    stringBuilder.Append($"\n{fragment.GetQuery().Query}");
+                }
+            }
+            _query.Query = stringBuilder.ToString();
             return this;
         }
         public GraphQLRequest GetQuery()

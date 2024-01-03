@@ -7,6 +7,7 @@ namespace EPiServer.ContentGraph.Api.Querying
     {
         protected readonly ContentGraphQuery graphObject;
         protected readonly GraphQLRequest _query;
+        protected bool _compiled = false;
         private IQuery _parent = null;
         public virtual IQuery Parent
         {
@@ -33,13 +34,78 @@ namespace EPiServer.ContentGraph.Api.Querying
 
         public virtual GraphQueryBuilder ToQuery()
         {
-            _query.Query = graphObject.ToString();
+            if (!_compiled)
+            {
+                _compiled = true;
+                _query.Query = graphObject.ToString();
+            }
             return new GraphQueryBuilder(_query, this);
         }
 
         public virtual GraphQLRequest GetQuery()
         {
+            ToQuery();
             return _query;
+        }
+
+        public virtual BaseTypeQueryBuilder Field(string propertyName)
+        {
+            propertyName.ValidateNotNullArgument("propertyName");
+            if (!propertyName.IsNullOrEmpty())
+            {
+                string clonedPropName = ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName);
+                if (graphObject.SelectItems.IsNullOrEmpty())
+                {
+                    graphObject.SelectItems = $"{clonedPropName}";
+                }
+                else
+                {
+                    graphObject.SelectItems += $" {clonedPropName}";
+                }
+            }
+
+            return this;
+        }
+        public virtual BaseTypeQueryBuilder Link(BaseTypeQueryBuilder link)
+        {
+            link.ValidateNotNullArgument("link");
+            string linkItems = link.GetQuery()?.Query ?? string.Empty;
+            if (!linkItems.IsNullOrEmpty())
+            {
+                graphObject.SelectItems += graphObject.SelectItems.IsNullOrEmpty() ?
+                    $"_link{{{linkItems}}}" :
+                    $" _link{{{linkItems}}}";
+            }
+            return this;
+        }
+        public virtual BaseTypeQueryBuilder Children(BaseTypeQueryBuilder children)
+        {
+            children.ValidateNotNullArgument("children");
+            string childrenItems = children.GetQuery()?.Query ?? string.Empty;
+            if (!childrenItems.IsNullOrEmpty())
+            {
+                graphObject.SelectItems += graphObject.SelectItems.IsNullOrEmpty() ?
+                    $"_children{{{childrenItems}}}" :
+                    $" _children{{{childrenItems}}}";
+            }
+
+            return this;
+        }
+        public virtual BaseTypeQueryBuilder Fragments(params FragmentBuilder[] fragments)
+        {
+            fragments.ValidateNotNullArgument("fragments");
+            foreach (var fragment in fragments)
+            {
+                Fragment(fragment);
+            }
+            return this;
+        }
+        public virtual BaseTypeQueryBuilder Fragment(FragmentBuilder fragment)
+        {
+            fragment.ValidateNotNullArgument("fragment");
+            graphObject.SelectItems += graphObject.SelectItems.IsNullOrEmpty() ? $"...{fragment.GetName()}" : $" ...{fragment.GetName()}";
+            Parent?.AddFragment(fragment);
+            return this;
         }
     }
 }

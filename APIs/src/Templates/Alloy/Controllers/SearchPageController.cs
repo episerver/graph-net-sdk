@@ -28,6 +28,7 @@ namespace AlloyMvcTemplates.Controllers
                     .Total()
                         .AsType<ProxyModels.ArticlePage>(x=>x.MetaDescription, x=> x.MetaTitle)
                     .Search(q)
+                    .FilterForVisitor()
                     .Facet(x=>x.ContentType.FacetFilters(t))
                     .ToQuery()
                 .BuildQueries();
@@ -51,7 +52,7 @@ namespace AlloyMvcTemplates.Controllers
                 NumberOfHits = content.Total,
                 SearchServiceDisabled = false,
                 SearchedQuery = q,
-                FacetName = content.Facets.Keys.First()
+                FacetName = "Types"
             };
 
             return View(model);
