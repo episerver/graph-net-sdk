@@ -4,12 +4,10 @@
     <ItemGroup>
         <ProjectReference xdt:Transform="RemoveAll" />
         <PackageReference xdt:Transform="Remove" xdt:Locator="Match(Include)" Include="EPiServer.CMS" />
-        <PackageReference xdt:Transform="Remove" xdt:Locator="Match(Include)" Include="EPiServer.CMS.Core" />
         <PackageReference xdt:Transform="Remove" xdt:Locator="Match(Include)" Include="Newtonsoft.Json" />
         <PackageReference xdt:Transform="Remove" xdt:Locator="Match(Include)" Include="Optimizely.ContentGraph.Cms" />
         <PackageReference xdt:Transform="Remove" xdt:Locator="Match(Include)" Include="EPiServer.ContentDeliveryApi.Cms" />
         <PackageReference xdt:Transform="Insert" Include="EPiServer.CMS" Version="CMSVersion" />
-        <PackageReference xdt:Transform="Insert" Include="EPiServer.CMS.Core" Version="CoreVersion" />
         <PackageReference xdt:Transform="Insert" Include="Optimizely.ContentGraph.Cms" Version="CGVersion" />
         <PackageReference xdt:Transform="Insert" Include="EPiServer.ContentDeliveryApi.Cms" Version="CDVersion" />
         <PackageReference xdt:Transform="Insert" Include="Newtonsoft.Json" Version="NewtonsoftVersion" />
