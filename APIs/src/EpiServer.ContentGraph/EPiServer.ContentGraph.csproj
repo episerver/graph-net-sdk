@@ -10,8 +10,11 @@
     <PackageVersion Condition=" '$(PackageVersion)' == '' ">$(VersionPrefix)$(VersionSuffix)</PackageVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Api\Inputs\**" />
     <Compile Remove="ClientConventions\**" />
+    <EmbeddedResource Remove="Api\Inputs\**" />
     <EmbeddedResource Remove="ClientConventions\**" />
+    <None Remove="Api\Inputs\**" />
     <None Remove="ClientConventions\**" />
   </ItemGroup>
 
@@ -27,11 +30,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Api\Inputs\" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
 </Project>

@@ -14,7 +14,7 @@
     <tags>Optimizely Content Graph Client</tags>
     <dependencies>
       <group>
-        <dependency id="Newtonsoft.Json" version="13.0.3" />
+        <dependency id="Newtonsoft.Json" version="13.0.1" />
         <dependency id="GraphQL" version="7.6.1" />
       </group>
     </dependencies>
