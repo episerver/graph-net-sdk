@@ -3,7 +3,7 @@
     <DependencyVersions_props>true</DependencyVersions_props>
     <TurnstileVersion>4.5.2</TurnstileVersion>
     <NewtonsoftJsonVersion>13.0.1</NewtonsoftJsonVersion>
-    <CMSCoreVersion>12.23.0</CMSCoreVersion>
+    <CMSCoreVersion>12.20.0</CMSCoreVersion>
     <CMSUICoreVersion>12.23.0</CMSUICoreVersion>
     <ContentGraphVersion>3.4.1</ContentGraphVersion>
     <ContentDeliveryVersion>3.9.1</ContentDeliveryVersion>
