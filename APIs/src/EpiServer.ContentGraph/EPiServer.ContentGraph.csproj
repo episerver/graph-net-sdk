@@ -5,7 +5,7 @@
     <TargetFrameworks>net6.0</TargetFrameworks>
     <OutputType>Library</OutputType>
     <NoWarn>$(NoWarn);1591</NoWarn>
-    <RootNamespace>EPiServer.Find</RootNamespace>
+    <RootNamespace>EPiServer.ContentGraph</RootNamespace>
     <NuspecFile>Optimizely.ContentGraph.Client.nuspec</NuspecFile>
     <PackageVersion Condition=" '$(PackageVersion)' == '' ">$(VersionPrefix)$(VersionSuffix)</PackageVersion>
   </PropertyGroup>
