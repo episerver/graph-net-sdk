@@ -6,7 +6,7 @@ using EPiServer.ServiceLocation;
 namespace EPiServer.ContentGraph.Api.Filters
 {
     [ServiceConfiguration(typeof(IFilterForVisitor))]
-    public class FilterDeletedForVisitor : IFilterForVisitor
+    public class FilterPublishedForVisitor : IFilterForVisitor
     {
         public void FilterForVisitor<T>(TypeQueryBuilder<T> typeQueryBuilder)
         {

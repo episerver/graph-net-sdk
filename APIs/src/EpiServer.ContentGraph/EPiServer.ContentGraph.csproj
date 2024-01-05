@@ -5,13 +5,16 @@
     <TargetFrameworks>net6.0</TargetFrameworks>
     <OutputType>Library</OutputType>
     <NoWarn>$(NoWarn);1591</NoWarn>
-    <RootNamespace>EPiServer.Find</RootNamespace>
+    <RootNamespace>EPiServer.ContentGraph</RootNamespace>
     <NuspecFile>Optimizely.ContentGraph.Client.nuspec</NuspecFile>
     <PackageVersion Condition=" '$(PackageVersion)' == '' ">$(VersionPrefix)$(VersionSuffix)</PackageVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Api\Inputs\**" />
     <Compile Remove="ClientConventions\**" />
+    <EmbeddedResource Remove="Api\Inputs\**" />
     <EmbeddedResource Remove="ClientConventions\**" />
+    <None Remove="Api\Inputs\**" />
     <None Remove="ClientConventions\**" />
   </ItemGroup>
 
@@ -24,14 +27,10 @@
     <PackageReference Include="EPiServer.Turnstile.Contracts.Hmac" Version="4.5.2" />
     <PackageReference Include="GraphQL" Version="7.6.1" />
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Api\Inputs\" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
 </Project>

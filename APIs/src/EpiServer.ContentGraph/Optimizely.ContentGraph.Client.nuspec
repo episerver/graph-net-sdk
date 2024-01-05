@@ -7,7 +7,7 @@
     <authors>Optimizely</authors>
     <owners>Optimizely</owners>
     <license type="file">license.txt</license>
-    <projectUrl>http://find.episerver.com/</projectUrl>
+    <projectUrl>https://github.com/episerver/opti-graph-netclient</projectUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>.NET client API for the Optimizely Content Graph</description>
     <copyright>Copyright Optimizely $Year$</copyright>
@@ -15,6 +15,7 @@
     <dependencies>
       <group>
         <dependency id="Newtonsoft.Json" version="13.0.1" />
+        <dependency id="GraphQL" version="7.6.1" />
       </group>
     </dependencies>
   </metadata>

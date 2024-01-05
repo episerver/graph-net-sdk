@@ -103,7 +103,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
             services.AddContentGraphQuery();
             services.AddContentGraph();
             services.AddScoped<IFilterForVisitor, CustomForVisitor>();
-            services.AddScoped<IFilterForVisitor, FilterDeletedForVisitor>();
+            services.AddScoped<IFilterForVisitor, FilterPublishedForVisitor>();
         }
         private static HttpClient CreateHttpClient()
         {

@@ -1,4 +1,5 @@
-﻿using EPiServer.ContentGraph.Api.Querying;
+﻿using EPiServer.ContentGraph.Api.Filters;
+using EPiServer.ContentGraph.Api.Querying;
 using EPiServer.ContentGraph.Configuration;
 using EPiServer.ContentGraph.Connection;
 using EPiServer.Web;
@@ -13,7 +14,7 @@ namespace EPiServer.ContentGraph.Extensions
 {
     public static class OptiGraphServiceExtension
     {
-        public static IServiceCollection AddContentGraphQuery(this IServiceCollection services, Action<OptiGraphOptions>? transformAction = null)
+        public static IServiceCollection AddContentGraphQuery(this IServiceCollection services, Action<OptiGraphOptions> transformAction = null)
         {
             var optionsBuilder = services
                 .AddOptions<OptiGraphOptions>()
@@ -37,6 +38,7 @@ namespace EPiServer.ContentGraph.Extensions
                 services.TryAddSingleton<ICache>(cache);
                 CacheAccessor.Cache = cache;
             }
+            services.TryAddSingleton<FilterPublishedForVisitor>();
             services.AddScoped<GraphQueryBuilder>();
             services.AddHttpClient("HttpClientWithAutoDecompression", c => { })
                 .ConfigurePrimaryHttpMessageHandler(() => {
