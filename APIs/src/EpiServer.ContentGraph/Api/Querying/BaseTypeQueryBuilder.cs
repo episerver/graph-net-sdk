@@ -100,7 +100,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             }
             return this;
         }
-        public virtual BaseTypeQueryBuilder Fragment(FragmentBuilder fragment)
+        protected virtual BaseTypeQueryBuilder Fragment(FragmentBuilder fragment)
         {
             fragment.ValidateNotNullArgument("fragment");
             graphObject.SelectItems += graphObject.SelectItems.IsNullOrEmpty() ? $"...{fragment.GetName()}" : $" ...{fragment.GetName()}";

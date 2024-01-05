@@ -33,6 +33,10 @@
     </Target>
     <Target Name="ReplaceFile" AfterTargets="Transform">
         <WriteLinesToFile File="$(OutputFile)" Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('FINDVersion','$(findVersion)'))" Overwrite="true"/>
+        <WriteLinesToFile File="$(OutputFile)" Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('CoreVersion','$(cmsCoreVersion)'))" Overwrite="true"/>
+        <WriteLinesToFile File="$(OutputFile)" Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('CMSVersion','$(cmsUIVersion)'))" Overwrite="true"/>
+        <WriteLinesToFile File="$(OutputFile)" Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('CGVersion','$(cgVersion)'))" Overwrite="true"/>
+        <WriteLinesToFile File="$(OutputFile)" Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('CDVersion','$(cdVersion)'))" Overwrite="true"/>
         <WriteLinesToFile File="$(OutputFile)" Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('NewtonsoftVersion','$(newtonsoftVersion)'))" Overwrite="true"/>
     </Target>
     <Target Name="CreateZipFile" AfterTargets="Transform">

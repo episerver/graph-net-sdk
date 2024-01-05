@@ -32,12 +32,16 @@ namespace EPiServer.ContentGraph.Api.Querying
             _optiGraphOptions = new OptiGraphOptions();
             _query = new GraphQLRequest();
         }
-        public static GraphQueryBuilder CreateFromConfig()
+        public static GraphQueryBuilder CreateFromConfig(Action<OptiGraphOptions> transformAction = null)
         {
             try
             {
                 var options = ServiceLocator.Current.GetService(typeof(OptiGraphOptions)) as OptiGraphOptions;
                 var httpClientFactory = ServiceLocator.Current.GetService(typeof(IHttpClientFactory)) as IHttpClientFactory;
+                if (transformAction != null)
+                {
+                    transformAction(options);
+                }
                 if (options != null)
                 {
                     return new GraphQueryBuilder(options, httpClientFactory);

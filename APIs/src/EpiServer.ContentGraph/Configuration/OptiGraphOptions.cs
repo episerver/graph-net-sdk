@@ -16,7 +16,6 @@ namespace EPiServer.ContentGraph.Configuration
             Secret = secretKey;
             SingleKey = key;
             AppKey = appKey;
-            QueryPath = string.Empty;
         }
         public OptiGraphOptions()
         {
@@ -25,7 +24,6 @@ namespace EPiServer.ContentGraph.Configuration
             Secret = string.Empty;
             SingleKey = string.Empty;
             AppKey = string.Empty;
-            QueryPath = string.Empty;
         }
         /// <summary>
         /// Flag to mark that request should uese HMAC key. Default to true.

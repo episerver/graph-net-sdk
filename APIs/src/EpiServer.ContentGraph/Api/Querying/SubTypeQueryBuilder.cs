@@ -51,7 +51,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             base.Fragments(fragments);
             return this;
         }
-        public override SubTypeQueryBuilder<T> Fragment(FragmentBuilder fragment)
+        protected override SubTypeQueryBuilder<T> Fragment(FragmentBuilder fragment)
         {
             base.Fragment(fragment);
             return this;

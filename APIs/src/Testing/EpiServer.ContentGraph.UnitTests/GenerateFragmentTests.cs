@@ -42,7 +42,7 @@ namespace EpiServer.ContentGraph.UnitTests
             graphQueryBuilder
                     .ForType<RequestTypeObject>()
                         .Field(x=>x.Property1)
-                        .Fragment(fragmentBuilder)
+                        .Fragments(fragmentBuilder)
                     .ToQuery()
                 .BuildQueries();
 
