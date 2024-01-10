@@ -17,13 +17,14 @@
     <ItemGroup>
         <SourceFiles Include="$(AlloyFolder)\**\*.*" Exclude="$(AlloyFolder)\**\bin\**\*.*;$(AlloyFolder)\**\obj\**\*.*;$(AlloyFolder)\**\*.suo;
         $(AlloyFolder)\**\tmp\**\*.*;$(AlloyFolder)\ProvisionDatabase_MVC.cs;$(AlloyFolder)\EPiServer.Templates.Alloy.nuspec" />
-        <ZipFileName Include="$(ProjectDirectory)..\artifacts\packages\$(FileName)-$(findVersion).zip"/>
+        <ZipFileName Include="$(ProjectDirectory)..\artifacts\packages\$(FileName).zip"/>
         <XdtFiles Include="xdt\$(ProjectName).xdt"/>
     </ItemGroup>
 
     <Target Name="CopyFile" BeforeTargets ="CreateZipFile">
         <Copy SourceFiles="@(SourceFiles)" DestinationFolder="$(TmpFolder)\%(RecursiveDir)" />
         <Copy SourceFiles="$(MSBuildProjectDirectory)\..\APIs\src\NuGet.config" DestinationFolder="$(TmpFolder)" />
+        <Copy SourceFiles="$(MSBuildProjectDirectory)\..\msbuild\TemplateFiles\appsettings.json" DestinationFiles="$(TmpFolder)\appsettings.json" />
     </Target>
     <Target Name="DeleteOldFile" AfterTargets="CopyFile">
         <Delete Files="@(ZipFileName)" />

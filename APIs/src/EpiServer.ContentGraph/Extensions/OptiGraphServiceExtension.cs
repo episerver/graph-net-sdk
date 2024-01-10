@@ -14,7 +14,7 @@ namespace EPiServer.ContentGraph.Extensions
 {
     public static class OptiGraphServiceExtension
     {
-        public static IServiceCollection AddContentGraphQuery(this IServiceCollection services, Action<OptiGraphOptions> transformAction = null)
+        public static IServiceCollection AddContentGraphClient(this IServiceCollection services, Action<OptiGraphOptions> transformAction = null)
         {
             var optionsBuilder = services
                 .AddOptions<OptiGraphOptions>()

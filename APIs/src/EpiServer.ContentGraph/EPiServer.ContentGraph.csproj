@@ -6,7 +6,7 @@
     <OutputType>Library</OutputType>
     <NoWarn>$(NoWarn);1591</NoWarn>
     <RootNamespace>EPiServer.ContentGraph</RootNamespace>
-    <NuspecFile>Optimizely.ContentGraph.Client.nuspec</NuspecFile>
+    <NuspecFile>Optimizely.Graph.Client.nuspec</NuspecFile>
     <PackageVersion Condition=" '$(PackageVersion)' == '' ">$(VersionPrefix)$(VersionSuffix)</PackageVersion>
   </PropertyGroup>
   <ItemGroup>

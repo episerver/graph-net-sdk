@@ -97,14 +97,11 @@ namespace EPiServer.Templates.Alloy.Mvc
                 o.IncludeSiteHosts = true;
                 //o.EnablePreviewFeatures = true;// optional
             });
-            services.AddContentDeliveryApi(); // required, for further configurations, see https://docs.developers.optimizely.com/content-cloud/v1.5.0-content-delivery-api/docs/configuration
-            
+
+            services.AddContentDeliveryApi();
             services.AddContentGraph();
-            services.AddContentGraphQuery(options=>
-            {
-                //options.UseHmacKey = false;
-                //options.QueryPath = "content/v2?cache=false";
-            });
+            services.AddContentGraphClient();
+
             //the following is obsolete and is kept for compatibility for now
             //services.AddContentGraph(_configuration);
             services.AddCmsTagHelpers();

@@ -118,7 +118,7 @@ jobs:
         if: success() && env.publishPackages == 'true'
         uses: actions/upload-artifact@v3
         with:
-          name: Optimizely.ContentGraph.Client-${{ env.packageVersion }}
+          name: Optimizely.Graph.Client-${{ env.packageVersion }}
           path: ${{ github.workspace}}/artifacts/
           # retention-days: 90
 
@@ -177,7 +177,7 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v3
         with:
-          name: Optimizely.ContentGraph.Client-${{env.packageVersion}}
+          name: Optimizely.Graph.Client-${{env.packageVersion}}
           path: artifacts
 
       - name: Publish Nuget Packages
@@ -185,7 +185,7 @@ jobs:
         run: |
           $branch = "${{github.ref_name}}"
           $regexList = @(
-              'Optimizely.ContentGraph.Client.[0-9]+.[0-9]+.[0-9]+'
+              'Optimizely.Graph.Client.[0-9]+.[0-9]+.[0-9]+'
             )
 
           $sourceDirectory = '${{github.workspace}}\artifacts'
@@ -244,14 +244,14 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v3
         with:
-          name: Optimizely.ContentGraph.Client-${{ env.packageVersion }}
+          name: Optimizely.Graph.Client-${{ env.packageVersion }}
           path: artifacts
 
       - name: Archive artifacts Release
         uses: thedoctor0/zip-release@master
         with:
           type: 'zip'
-          filename: 'Optimizely.ContentGraph.Client-${{ env.packageVersion }}.zip'
+          filename: 'Optimizely.Graph.Client-${{ env.packageVersion }}.zip'
           path: ./artifacts/*
 
       - name: Upload Release Asset
@@ -261,8 +261,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_github_release.outputs.upload_url }}
-          asset_path: ./Optimizely.ContentGraph.Client-${{ env.packageVersion }}.zip
-          asset_name: Optimizely.ContentGraph.Client-${{ env.packageVersion }}.zip
+          asset_path: ./Optimizely.Graph.Client-${{ env.packageVersion }}.zip
+          asset_name: Optimizely.Graph.Client-${{ env.packageVersion }}.zip
           asset_content_type: application/zip
 
       - name: Create Jira release
@@ -341,14 +341,14 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v3
         with:
-          name: EPiServer.ContentGraph-${{ env.packageVersion }}
+          name: Optimizely.Graph.Client-${{ env.packageVersion }}
           path: artifacts
 
       - name: Archive artifacts Release
         uses: thedoctor0/zip-release@master
         with:
           type: 'zip'
-          filename: 'EPiServer.ContentGraph-${{ env.packageVersion }}.zip'
+          filename: 'Optimizely.Graph.Client-${{ env.packageVersion }}.zip'
           path: ./artifacts/*
 
       - name: Upload Release Asset
@@ -358,6 +358,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_github_release.outputs.upload_url }}
-          asset_path: ./EPiServer.ContentGraph-${{ env.packageVersion }}.zip
-          asset_name: EPiServer.ContentGraph-${{ env.packageVersion }}.zip
+          asset_path: ./Optimizely.Graph.Client-${{ env.packageVersion }}.zip
+          asset_name: Optimizely.Graph.Client-${{ env.packageVersion }}.zip
           asset_content_type: application/zip
