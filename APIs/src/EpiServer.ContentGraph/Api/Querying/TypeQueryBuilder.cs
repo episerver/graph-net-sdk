@@ -35,6 +35,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             base.Link(link);
             return this;
         }
+        [Obsolete("Use Link method instead")]
         public TypeQueryBuilder<T> Children<TChildren>(TypeQueryBuilder<TChildren> children)
         {
             base.Children(children);

@@ -1,5 +1,6 @@
 ﻿using EPiServer.ContentGraph.Helpers;
 using GraphQL.Transport;
+using System;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {
@@ -78,6 +79,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             }
             return this;
         }
+        [Obsolete("Use Link method instead")]
         public virtual BaseTypeQueryBuilder Children(BaseTypeQueryBuilder children)
         {
             children.ValidateNotNullArgument("children");

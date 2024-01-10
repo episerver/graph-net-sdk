@@ -3,15 +3,15 @@
   <metadata>
     <id>Optimizely.ContentGraph.Client.Tools</id>
     <version>1.0.0</version>
-    <title>Content Graph Client tool</title>
+    <title>Optimizely Graph Client tool</title>
     <authors>Optimizely</authors>
     <owners>Optimizely</owners>
     <license type="file">license.txt</license>
-    <projectUrl>http://find.episerver.com/</projectUrl>
+    <projectUrl>https://github.com/episerver/opti-graph-netclient</projectUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>Content Graph Client tool for generating models from schema</description>
-    <copyright>Copyright Optimizely $Year$</copyright>
-    <tags>Optimizely Content Graph Client</tags>
+    <description>Optimizely Graph Client tool for generating models from schema</description>
+    <copyright>Copyright(c) Optimizely $Year$</copyright>
+    <tags>Optimizely Graph Client</tags>
     <dependencies>
       <group>
         <dependency id="Newtonsoft.Json" version="13.0.1" />
@@ -20,7 +20,7 @@
   </metadata>
   <files>
     <file src="CGTypeSync\license.txt" target="" />
-    <file src="CGTypeSync\bin\$Configuration$\net6.0\Optimizely.ContentGraph.Client.Tools.dll" target="lib\net6.0" />
-    <file src="CGTypeSync\bin\$Configuration$\net6.0\Optimizely.ContentGraph.Client.Tools.exe" target="lib\net6.0" />
+    <file src="CGTypeSync\bin\$Configuration$\net6.0\Optimizely.Graph.Client.Tools.dll" target="lib\net6.0" />
+    <file src="CGTypeSync\bin\$Configuration$\net6.0\Optimizely.Graph.Client.Tools.exe" target="lib\net6.0" />
   </files>
 </package>

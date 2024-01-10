@@ -150,7 +150,6 @@ namespace EPiServer.ContentGraph.UnitTests
             Assert.Contains(expectedFields, query.GetQuery().Query);
             Assert.Equal($"RequestTypeObject{{{expectedFields} {expectedFacets}}}", query.GetQuery().Query);
         }
-
         [Fact]
         public void LinkQueryTests()
         {
@@ -174,7 +173,8 @@ namespace EPiServer.ContentGraph.UnitTests
             Assert.Contains(expectedFields, query.GetQuery().Query);
             Assert.Equal($"RequestTypeObject{{{expectedFields} {expectedFacets}}}", query.GetQuery().Query);
         }
-        [Fact]
+        [Obsolete]
+        [Fact(Skip = "This functionality is no longer maintain")]
         public void ChildrenQueryTests()
         {
             string childQuery = "SubTypeObject(where:{SubProperty:{match: \"test\"}}){items{SubProperty} facets{Property3{name count}}}";
