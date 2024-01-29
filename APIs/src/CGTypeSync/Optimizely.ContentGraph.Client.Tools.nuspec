@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>Optimizely.ContentGraph.Client.Tools</id>
-    <version>1.0.0</version>
+    <version>$version$</version>
     <title>Optimizely Graph Client tool</title>
     <authors>Optimizely</authors>
     <owners>Optimizely</owners>

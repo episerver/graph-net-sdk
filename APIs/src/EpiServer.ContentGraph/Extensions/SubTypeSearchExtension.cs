@@ -1,32 +1,14 @@
 ﻿using EPiServer.ContentGraph.Api.Querying;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace EPiServer.ContentGraph.Extensions
 {
-    public static class SearchExtension
+    public static class SubTypeSearchExtension
     {
-        #region TypeQueryBuilder
-        public static TypeQueryBuilder<T> GetDeleted<T>(this TypeQueryBuilder<T> typeQueryBuilder)
-        {
-            return typeQueryBuilder.Field("_deleted");
-        }
-        public static TypeQueryBuilder<T> GetId<T>(this TypeQueryBuilder<T> typeQueryBuilder)
-        {
-            return typeQueryBuilder.Field("_id");
-        }
-        public static TypeQueryBuilder<T> GetModified<T>(this TypeQueryBuilder<T> typeQueryBuilder)
-        {
-            return typeQueryBuilder.Field("_modified");
-        }
-        public static TypeQueryBuilder<T> GetScore<T>(this TypeQueryBuilder<T> typeQueryBuilder)
-        {
-            return typeQueryBuilder.Field("_score");
-        }
-        public static TypeQueryBuilder<T> GetTypeName<T>(this TypeQueryBuilder<T> typeQueryBuilder)
-        {
-            return typeQueryBuilder.Field("__typename");
-        }
-        #endregion
-
         #region SubTypeQueryBuilder
         public static SubTypeQueryBuilder<T> GetDeleted<T>(this SubTypeQueryBuilder<T> typeQueryBuilder)
         {
