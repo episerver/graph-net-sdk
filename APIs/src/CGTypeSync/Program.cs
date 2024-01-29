@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Optimizely.ContentGraph.Client.Tools
 {
-    internal class Program
+    public class Program
     {
         private static string USER_AGENT => $"Optimizely-Graph-Tools/{typeof(Program).Assembly.GetName().Version}";
         static void Main(string[] args)
