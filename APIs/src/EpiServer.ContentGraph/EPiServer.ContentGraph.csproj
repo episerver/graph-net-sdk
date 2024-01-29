@@ -3,6 +3,7 @@
   <Import Project="..\..\..\msbuild\nuspec.props" />
   <PropertyGroup>
     <TargetFrameworks>net6.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
     <OutputType>Library</OutputType>
     <NoWarn>$(NoWarn);1591</NoWarn>
     <RootNamespace>EPiServer.ContentGraph</RootNamespace>
