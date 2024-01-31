@@ -1,4 +1,5 @@
 ﻿using EPiServer.ContentGraph.Helpers;
+using EPiServer.ContentGraph.Json;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -16,7 +17,7 @@ namespace EPiServer.ContentGraph.Api.Result
             try
             {
                 string typeName = typeof(TResult).Name;
-                return RawData[typeName].ToObject<ContentGraphHits<TResult>>();
+                return RawData[typeName].ToObject<ContentGraphHits<TResult>>(JsonSerializerHelper.CreateSerializerIgnoreNullValue());
             }
             catch (Exception e)
             {
@@ -28,7 +29,7 @@ namespace EPiServer.ContentGraph.Api.Result
             try
             {
                 string typeName = typeof(TOriginal).Name;
-                return RawData[typeName].ToObject<ContentGraphHits<TOtherType>>();
+                return RawData[typeName].ToObject<ContentGraphHits<TOtherType>>(JsonSerializerHelper.CreateSerializerIgnoreNullValue());
             }
             catch (Exception e)
             {
@@ -68,7 +69,7 @@ namespace EPiServer.ContentGraph.Api.Result
                 JObject keyValues;
                 if (RawData != null && RawData.TryGetValue(typeName, out keyValues) && keyValues != null)
                 {
-                    return keyValues.ToObject<ContentGraphHits<TResult>>();
+                    return keyValues.ToObject<ContentGraphHits<TResult>>(JsonSerializerHelper.CreateSerializerIgnoreNullValue());
                 }
                 return null;
             }
