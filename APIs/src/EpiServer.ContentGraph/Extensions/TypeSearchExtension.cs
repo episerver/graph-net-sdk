@@ -1,6 +1,8 @@
-﻿using EPiServer.ContentGraph.Api.Filters;
+﻿using EPiServer.ContentGraph.Api;
+using EPiServer.ContentGraph.Api.Filters;
 using EPiServer.ContentGraph.Api.Querying;
 using EPiServer.ContentGraph.Helpers;
+using EPiServer.ContentGraph.Helpers.Reflection;
 using System.Linq.Expressions;
 
 namespace EPiServer.ContentGraph.Extensions
@@ -28,17 +30,25 @@ namespace EPiServer.ContentGraph.Extensions
         {
             return typeQueryBuilder.Field("__typename");
         }
-        public static TypeQueryBuilder<T> UsingSynonym<T>(this TypeQueryBuilder<T> typeQueryBuilder, params Api.Synonyms[] synonyms)
-        {
-            if (synonyms != null)
-            {
-                return typeQueryBuilder.Where("_fulltext", new StringFilterOperators().Synonym(synonyms));
-            }
-            return typeQueryBuilder.Where("_fulltext", new StringFilterOperators().Synonym(Api.Synonyms.ONE, Api.Synonyms.TWO));
-        }
         #endregion
 
         #region Find adaptation
+        /// <summary>
+        /// Using synonym for your filter.
+        /// </summary>
+        /// <param name="synonyms">The slot of synonym you was config on the Graph server. It can be ONE or TWO or both.</param>
+        public static TypeQueryBuilder<T> UsingSynonym<T>(this TypeQueryBuilder<T> typeQueryBuilder, params Synonyms[] synonyms)
+        {
+            if (synonyms != null && synonyms.Length > 0)
+            {
+                return typeQueryBuilder.Where("_fulltext", new StringFilterOperators().Synonym(synonyms));
+            }
+            return typeQueryBuilder.Where("_fulltext", new StringFilterOperators().Synonym(Synonyms.ONE, Synonyms.TWO));
+        }
+        public static TypeQueryBuilder<T> Take<T>(this TypeQueryBuilder<T> typeQueryBuilder, int take)
+        {
+            return typeQueryBuilder.Limit(take);
+        }
         public static TypeQueryBuilder<T> Filter<T>(this TypeQueryBuilder<T> typeQueryBuilder, string fieldName, IFilterOperator filterOperator)
         {
             filterOperator.ValidateNotNullArgument("filterOperator");
@@ -76,7 +86,7 @@ namespace EPiServer.ContentGraph.Extensions
         }
         public static TypeQueryBuilder<T> Filter<T>(this TypeQueryBuilder<T> typeQueryBuilder, IFilter filter)
         {
-            filter.ValidateNotNullArgument("booleanFilter");
+            filter.ValidateNotNullArgument("filter");
             return typeQueryBuilder.Where(filter);
         }
         public static GraphQueryBuilder EndType<T>(this TypeQueryBuilder<T> typeQueryBuilder)
