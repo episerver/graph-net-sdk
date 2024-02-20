@@ -1,7 +1,7 @@
 # Optimizely Graph Client SDKs
 
 Welcome to the Optimizely Graph Client SDK repository! This project is dedicated to building GraphQL queries with just a few lines of C# code, aimed at supporting Optimizely's customers in constructing search queries for [Optimizely Graph](https://docs.developers.optimizely.com/platform-optimizely/v1.4.0-optimizely-graph/docs/project-graphql), similar to [Search & Navigation](https://docs.developers.optimizely.com/digital-experience-platform/v1.1.0-search-and-navigation/docs/net-client-api).
-
+There are other alternatives that can be utilized to use the Optimizely Graph like [.Net GraphQL](https://github.com/graphql-dotnet/graphql-dotnet) and [Strawberry Shake](https://chillicream.com/docs/strawberryshake/)
 ## Getting Started
 
 ### Prerequisites
