@@ -1,39 +1,37 @@
 # Optimizely Graph Client SDKs
 
-This repository contains the source code for the Optimizely Graph Client. This project is tent to build GraphQL queries by several lines of lambda expression in C#.
-The main purpose of this project is support Optimizely's customers to build the search query to [Optimizely Graph](https://docs.developers.optimizely.com/platform-optimizely/v1.4.0-optimizely-graph/docs/project-graphql) that similar to [Search & Navigation](https://docs.developers.optimizely.com/digital-experience-platform/v1.1.0-search-and-navigation/docs/net-client-api).
+Welcome to the Optimizely Graph Client SDK repository! This project is dedicated to building GraphQL queries with just a few lines of C# code, aimed at supporting Optimizely's customers in constructing search queries for [Optimizely Graph](https://docs.developers.optimizely.com/platform-optimizely/v1.4.0-optimizely-graph/docs/project-graphql), similar to [Search & Navigation](https://docs.developers.optimizely.com/digital-experience-platform/v1.1.0-search-and-navigation/docs/net-client-api).
 
-## Optimizely Graph
+## Getting Started
 
-* [Documentation](https://docs.developers.optimizely.com/platform-optimizely/v1.4.0-optimizely-graph/docs/project-graphql)
+### Prerequisites
 
-## Optimizely Graph Client
+Before you contribute to this project, ensure you have the following installed:
+- .NET SDK 6+
+- SQL Server 2016 Express LocalDB ([download here](https://www.microsoft.com/en-us/sql-server/sql-server-downloads))
 
-* [Documentation](https://docs.developers.optimizely.com/platform-optimizely/v1.4.0-optimizely-graph/docs/introduction)
+### Contributing
 
-## Prerequisites for building and testing the SDKs, sample site
+We welcome contributions from the community! Here's how you can contribute:
 
-This project uses:
-* .NET SDK 6+
-* SQL Server 2016 Express LocalDB ([download here](https://www.microsoft.com/en-us/sql-server/sql-server-downloads))
+- **Fork the repository**: Start by forking the repository to your GitHub account.
+- **Build and Test Locally**: Ensure you can build the project and run tests successfully on your local environment. It's crucial that you run all tests locally and achieve full test coverage before submitting a pull request, as external contributors won't have access to run tests using our GitHub actions without prior approval.
+- **Pull Requests**: When you're ready, submit a pull request with your changes. Make sure your pull request description clearly describes the changes and the purpose, including if it fixes a bug or adds a new feature. Include the relevant issue number if applicable.
+- **Running Tests**: Please ensure you have run all tests successfully locally and achieved full test coverage before submitting a pull request.
 
-## Create a pre-release
+#### Did You Find a Bug?
+- If the bug is a security vulnerability, please contact support@optimizely.com directly instead of opening up a GitHub issue.
+- Check if the bug has already been reported by searching under [Issues](https://github.com/episerver/graph-net-sdk/issues) on GitHub.
+- If you're unable to find an open issue addressing the problem, feel free to [open a new one](https://github.com/episerver/graph-net-sdk/issues/new). Please include a title and clear description, as much relevant information as possible, and a code sample or executable test case demonstrating the expected behavior that is not occurring.
 
- 1. Create a new branch with name `release/$version_release`.
- 2. Update version for package in `msbuild/version.props` file under `PropertyGroup` tag.
- 3. Commit, push, and create PR to `release/$version_release` branch.
- 4. Goto GitHub Actions then click `Build & Release` flow under `Use workflow from`.
- 5. Choose `Build` under `Build Options` and `PRE-RELEASE(release/**)` option under `Release Options`.
- 6. Hit `Run workflow` to build and create a pre-release package.
+#### Proposing a New Feature or Change
+- We appreciate your suggestions for new features or changes to existing ones! To ensure alignment with the project's direction, please start by filing an issue and initiating a discussion before submitting a large pull request.
 
-## Create a release
+#### Questions About the Source Code
+- If you have any questions about how to use the SDK or about the source code itself, join the conversation on the [Optimizely World forum](https://world.optimizely.com/forum/).
 
- 1. Update version for package in `msbuild/version.props` file under `PropertyGroup` tag.
- 2. Commit, push, and create PR to `master` branch.
- 3. Goto GitHub Actions then click `Build & Release` flow under `Use workflow from`.
- 4. Choose `Build + Upload T3` under `Build Options` and `RELEASE(master branch)` option under `Release Options`.
- 5. Hit `Run workflow` to build and create a release package. This package then will be uploaded to `Release this week` on T3.
+## Documentation
+- [Optimizely Graph](https://docs.developers.optimizely.com/platform-optimizely/v1.4.0-optimizely-graph/docs/project-graphql)
+- [Optimizely Graph Client](https://docs.developers.optimizely.com/platform-optimizely/v1.4.0-optimizely-graph/docs/introduction)
 
-## Contributing
-
-The easiest way to contribute is to join in with the discussions on Github issues or create new issues with questions, suggestions or any other feedback. If you want to contribute code or documentation, you are more than welcome to create pull-requests, but make sure that you read the contribution page first.
+Thank you for contributing to the Optimizely Graph Client SDK!
