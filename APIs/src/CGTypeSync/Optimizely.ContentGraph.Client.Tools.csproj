@@ -6,6 +6,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>ogschema</ToolCommandName>
   </PropertyGroup>
 
   <ItemGroup>
