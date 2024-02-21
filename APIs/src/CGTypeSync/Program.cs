@@ -9,23 +9,40 @@ namespace Optimizely.ContentGraph.Client.Tools
         private static string USER_AGENT => $"Optimizely-Graph-Tools/{typeof(Program).Assembly.GetName().Version}";
         static void Main(string[] args)
         {
+            Console.WriteLine("************************************ Optimizely Content Graph Client Tools ************************************");
+            Console.WriteLine("This tool will generate C# classes from Optimizely Graph schema. Ensure you config correct account");
+
+            string configPath = "appsettings.json", directory = ".", source = "default";
+            if (args.Length > 0)
+            {
+                configPath = args[0];
+            }
+            
             IConfigurationRoot config = new ConfigurationBuilder()
-                                        .AddJsonFile("appsettings.json")
+                                        .AddJsonFile(configPath)
                                         .AddEnvironmentVariables()
                                         .Build();
-            Console.WriteLine("************************************Optimizely Content Graph Client Tools************************************");
-            Console.WriteLine("This tool will generate C# classes from Optimizely Graph schema. Ensure you config correct account");
-            Console.WriteLine("Enter your output directory:");
-            var directory = Console.ReadLine();
-            Console.WriteLine("Enter your source name:");
-            var source = Console.ReadLine();
-            new Program().Run(config, directory, source);
+            
+            if (config != null)
+            {
+                if (args.Length > 1)
+                {
+                    directory = args[1];
+                }
+
+                if (args.Length > 2)
+                {
+                    source = args[2];
+                }
+
+                Run(config, directory, source);
+            }
         }
-        public void Run(IConfiguration configuration, string output, string source)
+        public static void Run(IConfiguration configuration, string output, string source)
         {
             //parse the CGTypes.json file
             var schemaTypes = new Dictionary<string, List<Tuple<string, string>>>();
-            const string fileName = "ProxyClasses.cs";
+            const string fileName = "GraphModels.cs";
             JObject json = GetSchemaDataTypes(configuration, source);
             if (json == null)
             {
@@ -120,10 +137,9 @@ namespace Optimizely.ContentGraph.Client.Tools
                 writer.Write(sb.ToString());
             }
             Console.WriteLine($"Classes had been generated to {output}/{fileName}.");
-            Console.WriteLine($"Press enter to exit.");
         }
 
-        private string ConvertType(string propType)
+        private static string ConvertType(string propType)
         {
             bool isIEnumerable = false;
             if (propType.StartsWith("[") && propType.EndsWith("]"))//Is IEnumerable
@@ -164,15 +180,16 @@ namespace Optimizely.ContentGraph.Client.Tools
 
         }
 
-        private JObject GetSchemaDataTypes(IConfiguration configuration, string source)
+        private static JObject GetSchemaDataTypes(IConfiguration configuration, string source)
         {
-            Console.WriteLine("Getting data types...");
-            if (string.IsNullOrEmpty(source) || string.IsNullOrWhiteSpace(source))
-            {
-                source = "default";
-            }
+            Console.WriteLine("Getting data types from schema...");
             try
             {
+                if (string.IsNullOrEmpty(source) || string.IsNullOrWhiteSpace(source))
+                {
+                    source = "default";
+                }
+
                 HttpClient client = CreateHttpClient(configuration);
                 var httpResponse = client.GetAsync($"api/content/v3/types?id={source}").GetAwaiter().GetResult();
                 if (httpResponse.StatusCode == System.Net.HttpStatusCode.OK)
@@ -190,7 +207,7 @@ namespace Optimizely.ContentGraph.Client.Tools
             }
             return null;
         }
-        private HttpClient CreateHttpClient(IConfiguration configuration)
+        private static HttpClient CreateHttpClient(IConfiguration configuration)
         {
             var config = ReadConfig(configuration);
             var authenticationString = $"{config.AppKey}:{config.SecretKey}";
@@ -207,7 +224,7 @@ namespace Optimizely.ContentGraph.Client.Tools
             };
         }
 
-        private Config ReadConfig(IConfiguration configuration)
+        private static Config ReadConfig(IConfiguration configuration)
         {
             Console.WriteLine("Reading appsettings.json...");
             var myconfigs = configuration.GetSection("Optimizely");
