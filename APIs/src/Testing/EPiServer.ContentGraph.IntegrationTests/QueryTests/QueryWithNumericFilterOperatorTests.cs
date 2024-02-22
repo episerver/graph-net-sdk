@@ -29,7 +29,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Hits.ToList().TrueForAll(x=>x.Priority.Equals(100)));
+            Assert.IsTrue(rs.Content.Hits.ToList().TrueForAll(x=>x.Priority.Equals(100)), $"Expected all items to have priority 100, but found priorities: {string.Join(", ", rs.Content.Hits.Select(x => x.Priority))}.");
         }
         [TestMethod]
         public void search_priority_notEQ_100_should_return_2_items()
@@ -41,7 +41,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Hits.ToList().TrueForAll(x => !x.Priority.Equals(100)));
+            Assert.IsTrue(rs.Content.Hits.ToList().TrueForAll(x => !x.Priority.Equals(100)), $"Expected all items to not have priority 100, but some items do.");
         }
         [TestMethod]
         public void search_priority_NotEq_filter()
@@ -53,7 +53,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Hits.ToList().TrueForAll(x=> !x.Name.Equals("Home 3")));
+            Assert.IsTrue(rs.Content.Hits.ToList().TrueForAll(x=> !x.Name.Equals("Home 3")), $"Expected no items to be named 'Home 3', but found some.");
         }
         [TestMethod]
         public void search_priority_Exists_false_should_return_1_item()
@@ -65,7 +65,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Hits.First().Name.Equals("Not exists priority"));
+            Assert.IsTrue(rs.Content.Hits.First().Name.Equals("Not exists priority"), $"Expected item with no priority to be 'Not exists priority', but found '{rs.Content.Hits.First().Name}'.");
         }
         [TestMethod]
         public void search_priority_GreaterThan_100_should_return_1_item_value_300()
@@ -77,7 +77,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Hits.First().Priority.Equals(300));
+            Assert.IsTrue(rs.Content.Hits.First().Priority.Equals(300), $"Expected one item with priority greater than 100 to have priority 300, but found {rs.Content.Hits.First().Priority}.");
         }
         [TestMethod]
         public void search_priority_Gte_100_should_return_3_items()
@@ -89,7 +89,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Hits.Count().Equals(3));
+            Assert.IsTrue(rs.Content.Hits.Count().Equals(3), $"Expected 3 items with priority >= 100, but found {rs.Content.Hits.Count()}.");
         }
         [TestMethod]
         public void search_priority_in_100_and_300_should_return_3_items()
@@ -101,7 +101,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Hits.Count().Equals(3));
+            Assert.IsTrue(rs.Content.Hits.Count().Equals(3), $"Expected 3 items with priority in [100, 300], but found {rs.Content.Hits.Count()}.");
         }
         [TestMethod]
         public void search_priority_notIn_100_and_300_should_return_1_item()
@@ -113,7 +113,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Hits.Count().Equals(1));
+            Assert.IsTrue(rs.Content.Hits.Count().Equals(1), $"Expected 1 item with priority not in [100, 300], but found {rs.Content.Hits.Count()}.");
         }
         [TestMethod]
         public void search_priority_LessThan_100_should_return_0_item()
@@ -125,7 +125,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Hits.Count().Equals(0));
+            Assert.IsTrue(rs.Content.Hits.Count().Equals(0), $"Expected 0 items with priority < 100, but found {rs.Content.Hits.Count()}.");
         }
         [TestMethod]
         public void search_priority_Lte_200_should_return_2_items()
@@ -137,7 +137,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Hits.Count().Equals(2));
+            Assert.IsTrue(rs.Content.Hits.Count().Equals(2), $"Expected 2 items with priority <= 200, but found {rs.Content.Hits.Count()}.");
         }
         [TestMethod]
         public void search_priority_in_range_100_to_300_should_return_3_items()
@@ -149,7 +149,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Hits.Count().Equals(3));
+            Assert.IsTrue(rs.Content.Hits.Count().Equals(3), $"Expected 3 items with priority in the range 100 to 300, but found {rs.Content.Hits.Count()}.");
         }
     }
 }

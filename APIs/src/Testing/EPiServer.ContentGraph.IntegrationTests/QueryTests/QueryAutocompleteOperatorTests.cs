@@ -28,7 +28,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.AutoComplete["Id"].Count().Equals(3));
+            Assert.IsTrue(rs.Content.AutoComplete["Id"].Count().Equals(3), $"Expected 3 phrases for autocomplete on 'Id' containing 'myid', but found {rs.Content.AutoComplete["Id"].Count()}.");
         }
         [TestMethod]
         public void autocomplete_id_contains_myid_and_limit_1_should_result_1_phrase()
@@ -42,7 +42,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.AutoComplete["Id"].Count().Equals(1));
+            Assert.IsTrue(rs.Content.AutoComplete["Id"].Count().Equals(1), $"Expected 1 phrase for autocomplete on 'Id' containing 'myid' with limit 1, but found {rs.Content.AutoComplete["Id"].Count()}.");
         }
         [TestMethod]
         public void autocomplete_has_value_more_than_10_characters_will_be_ignore()
@@ -55,7 +55,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.AutoComplete["Id"].Count().Equals(0));
+            Assert.IsTrue(rs.Content.AutoComplete["Id"].Count().Equals(0), $"Expected 0 phrases for autocomplete on 'Id' with value more than 10 characters, but found {rs.Content.AutoComplete["Id"].Count()}.");
         }
     }
 }

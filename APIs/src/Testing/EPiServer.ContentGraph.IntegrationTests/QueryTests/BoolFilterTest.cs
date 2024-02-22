@@ -34,7 +34,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Hits.Count().Equals(2));
+            Assert.IsTrue(rs.Content.Hits.Count().Equals(2), "Expected 2 items for single AND filter with priority 100, but found " + rs.Content.Hits.Count() + ".");
         }
         [TestMethod]
         public void search_2_conditions_in_and_filter_should_return_1_item()
@@ -69,7 +69,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Hits.Count().Equals(2));
+            Assert.IsTrue(rs.Content.Hits.Count().Equals(2), "Expected 2 items for single OR filter with priority 100, but found " + rs.Content.Hits.Count() + ".");
         }
         [TestMethod]
         public void search_2_conditions_in_or_filter_should_return_3_items()
@@ -85,7 +85,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Hits.Count().Equals(3));
+            Assert.IsTrue(rs.Content.Hits.Count().Equals(3), "Expected 3 items for OR filter with 2 conditions, but found " + rs.Content.Hits.Count() + ".");
         }
         #endregion
         #region Not filter
@@ -102,7 +102,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Hits.Count().Equals(2));
+            Assert.IsTrue(rs.Content.Hits.Count().Equals(2), "Expected 2 items for single NOT filter with priority 100, but found " + rs.Content.Hits.Count() + ".");
         }
         [TestMethod]
         public void search_2_conditions_in_not_filter_should_return_2_items()
@@ -118,7 +118,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Hits.First().Name.Equals("Home 4"));
+            Assert.IsTrue(rs.Content.Hits.First().Name.Equals("Home 4"), "Expected 'Home 4' to match NOT filter with 2 conditions, but found '" + rs.Content.Hits.First().Name + "'.");
         }
         #endregion
 
@@ -147,7 +147,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Hits.Count().Equals(3));
+            Assert.IsTrue(rs.Content.Hits.Count().Equals(3), "Expected 3 items when combining 3 boolean filters, but found " + rs.Content.Hits.Count() + ".");
         }
         #endregion
     }

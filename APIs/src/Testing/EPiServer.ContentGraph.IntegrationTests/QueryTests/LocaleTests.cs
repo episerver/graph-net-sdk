@@ -27,8 +27,8 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync().Result;
-            Assert.IsTrue(rs.GetContent<HomePage>().Hits.Count() == 2);
-            Assert.IsTrue(rs.GetContent<HomePage>().Hits.ToList().TrueForAll(x => !x.Id.Equals("content1")));
+            Assert.IsTrue(rs.GetContent<HomePage>().Hits.Count() == 2, $"Expected 2 items, but found {rs.GetContent<HomePage>().Hits.Count()}.");
+            Assert.IsTrue(rs.GetContent<HomePage>().Hits.ToList().TrueForAll(x => !x.Id.Equals("content1")), "Expected no item with Id 'content1', but one or more were found.");
         }
     }
 }

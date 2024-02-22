@@ -41,7 +41,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync().Result;
-            Assert.IsTrue(rs.GetContent<Content, HomePage>().Hits.Count().Equals(3));
+            Assert.IsTrue(rs.GetContent<Content, HomePage>().Hits.Count().Equals(3), $"Expected 3 total hits, but found {rs.GetContent<Content, HomePage>().Hits.Count()}.");
         }
 
         [TestCategory("Subtype test")]
@@ -56,7 +56,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .BuildQueries();
             var rs = query.GetResultAsync().Result;
             var homepages = rs.GetContent<Content, HomePage>().Hits.Where(x => x.MainBody?.Length > 0);
-            Assert.IsTrue(homepages.Count().Equals(2));
+            Assert.IsTrue(homepages.Count().Equals(2), $"Expected 2 children items, but found {homepages.Count()}.");
         }
     }
 }

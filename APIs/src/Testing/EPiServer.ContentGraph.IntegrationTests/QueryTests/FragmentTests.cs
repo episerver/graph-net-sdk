@@ -35,8 +35,8 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
             var names = response.Content.Hits.Select(x => x.Name);
             var types = response.Content.Hits.Select(x => x.ContentType);
             var emptyName = names.FirstOrDefault(name => string.IsNullOrEmpty(name));
-            Assert.IsNull(names.FirstOrDefault(n => string.IsNullOrEmpty(n)));
-            Assert.IsNull(types.FirstOrDefault(t => t is null));
+            Assert.IsNull(names.FirstOrDefault(n => string.IsNullOrEmpty(n)), "Expected no empty names in the result, but found at least one.");
+            Assert.IsNull(types.FirstOrDefault(t => t is null), "Expected no null content types in the result, but found at least one.");
         }
     }
 }

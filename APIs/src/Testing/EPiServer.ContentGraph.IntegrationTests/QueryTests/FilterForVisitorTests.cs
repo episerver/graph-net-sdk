@@ -32,8 +32,8 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<Content>().Result;
-            Assert.IsTrue(rs.Content.Hits.Count() == 3);
-            Assert.IsTrue(rs.Content.Hits.Where(x=>x.Status == TestDataCreator.STATUS_PUBLISHED).Count().Equals(2));
+            Assert.IsTrue(rs.Content.Hits.Count() == 3, $"Expected 3 items without filter for visitors, but found {rs.Content.Hits.Count()}.");
+            Assert.IsTrue(rs.Content.Hits.Where(x=>x.Status == TestDataCreator.STATUS_PUBLISHED).Count().Equals(2), $"Expected 2 items with status published without filter for visitors, but found {rs.Content.Hits.Where(x=>x.Status == TestDataCreator.STATUS_PUBLISHED).Count()}.");
         }
         [TestMethod]
         public void search_with_filter_for_visitors_should_result_1_item()
@@ -46,8 +46,8 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<Content>().Result;
-            Assert.IsTrue(rs.Content.Hits.Count() == 1);
-            Assert.IsTrue(rs.Content.Hits.First().Status.Equals(TestDataCreator.STATUS_PUBLISHED));
+            Assert.IsTrue(rs.Content.Hits.Count() == 1, $"Expected 1 item with filter for visitors, but found {rs.Content.Hits.Count()}.");
+            Assert.IsTrue(rs.Content.Hits.First().Status.Equals(TestDataCreator.STATUS_PUBLISHED), $"Expected the status of the first item with filter for visitors to be published, but found {rs.Content.Hits.First().Status}.");
         }
     }
 }

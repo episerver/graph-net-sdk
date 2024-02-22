@@ -34,10 +34,10 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Facets["IsSecret"].First().Count.Equals(2));
-            Assert.IsTrue(rs.Content.Facets["IsSecret"].First().Name.Equals("true"));
-            Assert.IsTrue(rs.Content.Facets["IsSecret"].Last().Count.Equals(2));
-            Assert.IsTrue(rs.Content.Facets["IsSecret"].Last().Name.Equals("false"));
+            Assert.IsTrue(rs.Content.Facets["IsSecret"].First().Count.Equals(2), "Expected 2 facets for 'IsSecret' with value 'true', but found " + rs.Content.Facets["IsSecret"].First().Count + ".");
+            Assert.IsTrue(rs.Content.Facets["IsSecret"].First().Name.Equals("true"), "Expected first facet name to be 'true', but found '" + rs.Content.Facets["IsSecret"].First().Name + "'.");
+            Assert.IsTrue(rs.Content.Facets["IsSecret"].Last().Count.Equals(2), "Expected 2 facets for 'IsSecret' with value 'false', but found " + rs.Content.Facets["IsSecret"].Last().Count + ".");
+            Assert.IsTrue(rs.Content.Facets["IsSecret"].Last().Name.Equals("false"), "Expected last facet name to be 'false', but found '" + rs.Content.Facets["IsSecret"].Last().Name + "'.");
         }
 
         [TestMethod]
@@ -51,11 +51,11 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Facets["Priority"].Count().Equals(2));
-            Assert.IsTrue(rs.Content.Facets["Priority"].First().Name.Equals("[100,200)"));
-            Assert.IsTrue(rs.Content.Facets["Priority"].First().Count.Equals(2));
-            Assert.IsTrue(rs.Content.Facets["Priority"].Last().Name.Equals("[200,300)"));
-            Assert.IsTrue(rs.Content.Facets["Priority"].Last().Count.Equals(0));
+            Assert.IsTrue(rs.Content.Facets["Priority"].Count().Equals(2), "Expected 2 facets for 'Priority', but found " + rs.Content.Facets["Priority"].Count() + ".");
+            Assert.IsTrue(rs.Content.Facets["Priority"].First().Name.Equals("[100,200)"), "Expected first priority facet to be in range [100,200), but found '" + rs.Content.Facets["Priority"].First().Name + "'.");
+            Assert.IsTrue(rs.Content.Facets["Priority"].First().Count.Equals(2), "Expected 2 items in the first priority range, but found " + rs.Content.Facets["Priority"].First().Count + ".");
+            Assert.IsTrue(rs.Content.Facets["Priority"].Last().Name.Equals("[200,300)"), "Expected last priority facet to be in range [200,300), but found '" + rs.Content.Facets["Priority"].Last().Name + "'.");
+            Assert.IsTrue(rs.Content.Facets["Priority"].Last().Count.Equals(0), "Expected 0 items in the last priority range, but found " + rs.Content.Facets["Priority"].Last().Count + ".");
         }
         [TestMethod]
         public void search_with_facet_filters_should_return_correct_items()
@@ -67,8 +67,8 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                     .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Facets["IsSecret"].Count().Equals(2));
-            Assert.IsTrue(rs.Content.Hits.Count().Equals(2));
+            Assert.IsTrue(rs.Content.Facets["IsSecret"].Count().Equals(2), "Expected 2 facets for 'IsSecret', but found " + rs.Content.Facets["IsSecret"].Count() + ".");
+            Assert.IsTrue(rs.Content.Hits.Count().Equals(2), "Expected 2 items when filtering by 'IsSecret'='true', but found " + rs.Content.Hits.Count() + ".");
             Assert.IsTrue(rs.Content.Hits.Select(x=>x.IsSecret).ToList().TrueForAll(x => x));
         }
         [TestMethod]
@@ -82,9 +82,9 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                     .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Facets.Count.Equals(2));
-            Assert.IsNotNull(rs.Content.Facets["IsSecret"]);
-            Assert.IsNotNull(rs.Content.Facets["Status"]);
+            Assert.IsTrue(rs.Content.Facets.Count.Equals(2), "Expected 2 facets, but found " + rs.Content.Facets.Count + ".");
+            Assert.IsNotNull(rs.Content.Facets["IsSecret"], "Expected 'IsSecret' facet to be present, but it was not found.");
+            Assert.IsNotNull(rs.Content.Facets["Status"], "Expected 'Status' facet to be present, but it was not found.");
         }
         [TestMethod]
         public void search_with_facet_limit_1_should_return_facet_count_equals_1()

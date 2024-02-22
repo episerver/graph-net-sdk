@@ -35,8 +35,8 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Hits.Count().Equals(1));
-            Assert.IsTrue(rs.Content.Hits.First().Name.Equals("Home 1"));
+            Assert.IsTrue(rs.Content.Hits.Count().Equals(1), $"Expected 1 item, but found {rs.Content.Hits.Count()}.");
+            Assert.IsTrue(rs.Content.Hits.First().Name.Equals("Home 1"), $"Expected the item's name to be 'Home 1', but found '{rs.Content.Hits.First().Name}'.");
         }
         [TestMethod]
         public void search_startpublish_notEq_datetime_should_return_2_item()
@@ -48,7 +48,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Hits.Count().Equals(2));
+            Assert.IsTrue(rs.Content.Hits.Count().Equals(2), $"Expected 2 items, but found {rs.Content.Hits.Count()}.");
         }
         [TestMethod]
         public void search_startpublish_Gt_datetime_should_return_1_item()
@@ -60,7 +60,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Hits.Count().Equals(1));
+            Assert.IsTrue(rs.Content.Hits.Count().Equals(1), $"Expected 1 item, but found {rs.Content.Hits.Count()}.");
         }
         [TestMethod]
         public void search_startpublish_Gte_datetime_should_return_2_items()
@@ -72,7 +72,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Hits.Count().Equals(2));
+            Assert.IsTrue(rs.Content.Hits.Count().Equals(2), $"Expected 2 items, but found {rs.Content.Hits.Count()}.");
         }
         [TestMethod]
         public void search_startpublish_Lt_datetime_should_return_1_item()
@@ -84,7 +84,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Hits.Count().Equals(1));
+            Assert.IsTrue(rs.Content.Hits.Count().Equals(1), $"Expected 1 item, but found {rs.Content.Hits.Count()}.");
         }
         [TestMethod]
         public void search_startpublish_Lte_datetime_should_return_2_items()
@@ -96,7 +96,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Hits.Count().Equals(2));
+            Assert.IsTrue(rs.Content.Hits.Count().Equals(2), $"Expected 2 items, but found {rs.Content.Hits.Count()}.");
         }
         [TestMethod]
         public void search_startpublish_in_range_should_return_2_items()
@@ -108,7 +108,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(rs.Content.Hits.Count().Equals(2));
+            Assert.IsTrue(rs.Content.Hits.Count().Equals(2), $"Expected 2 items in range, but found {rs.Content.Hits.Count()}.");
         }
     }
 }

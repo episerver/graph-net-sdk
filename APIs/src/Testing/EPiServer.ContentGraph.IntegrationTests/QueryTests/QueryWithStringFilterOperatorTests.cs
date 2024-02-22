@@ -31,7 +31,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<Content>().Result;
-            Assert.IsTrue(rs.Content.Hits.First().Name.Equals("Steve Jobs"));
+            Assert.IsTrue(rs.Content.Hits.First().Name.Equals("Steve Jobs"), $"Expected to find 'Steve Jobs', but found '{rs.Content.Hits.First().Name}'.");
         }
         [TestMethod]
         public void search_Exists_operator_should_result_2_item()
@@ -43,7 +43,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<Content>().Result;
-            Assert.IsTrue(rs.Content.Hits.Count() == 2);
+            Assert.IsTrue(rs.Content.Hits.Count() == 2, $"Expected 2 items, but found {rs.Content.Hits.Count()}.");
         }
         [TestMethod]
         public void search_startWith_endsWith_operator_should_result_1_item()
@@ -55,8 +55,8 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<Content>().Result;
-            Assert.IsTrue(rs.Content.Hits.Count() == 1);
-            Assert.IsTrue(rs.Content.Hits.First().Author.Equals("Steve Howey"));
+            Assert.IsTrue(rs.Content.Hits.Count() == 1, $"Expected 1 item, but found {rs.Content.Hits.Count()}.");
+            Assert.IsTrue(rs.Content.Hits.First().Author.Equals("Steve Howey"), $"Expected author 'Steve Howey', but found '{rs.Content.Hits.First().Author}'.");
         }
 
         [TestMethod]
@@ -70,8 +70,8 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<Content>().Result;
-            Assert.IsTrue(rs.Content.Hits.Count() == 1);
-            Assert.IsTrue(rs.Content.Hits.First().Author.Equals("Steve Jobs"));
+            Assert.IsTrue(rs.Content.Hits.Count() == 1, $"Expected 1 item, but found {rs.Content.Hits.Count()}.");
+            Assert.IsTrue(rs.Content.Hits.First().Author.Equals("Steve Jobs"), $"Expected author 'Steve Jobs', but found '{rs.Content.Hits.First().Author}'.");
         }       
         [TestMethod]
         public void search_with_Like_operator_should_result_2_items()
@@ -83,7 +83,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<Content>().Result;
-            Assert.IsTrue(rs.Content.Hits.Count() == 2);
+            Assert.IsTrue(rs.Content.Hits.Count() == 2, $"Expected 2 items, but found {rs.Content.Hits.Count()}.");
         }
         [TestMethod]
         public void search_with_In_operator_should_result_2_items()
@@ -95,7 +95,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<Content>().Result;
-            Assert.IsTrue(rs.Content.Hits.Count() == 2);
+            Assert.IsTrue(rs.Content.Hits.Count() == 2, $"Expected 2 items, but found {rs.Content.Hits.Count()}.");
         }
         #endregion
 
@@ -110,7 +110,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<Content>().Result;
-            Assert.IsTrue(rs.Content.Hits.Count() == 2);
+            Assert.IsTrue(rs.Content.Hits.Count() == 2, $"Expected 2 items containing 'Steve', but found {rs.Content.Hits.Count()}.");
         }
         [TestMethod]
         public void search_Match_operator_should_result_2_items()
@@ -122,7 +122,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<Content>().Result;
-            Assert.IsTrue(rs.Content.Hits.Count() == 2);
+            Assert.IsTrue(rs.Content.Hits.Count() == 2, $"Expected 2 items matching 'Steve' with fuzzy search, but found {rs.Content.Hits.Count()}.");
         }
         #endregion
     }

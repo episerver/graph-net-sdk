@@ -29,7 +29,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries()
                 .GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(result.Content.Hits.Count().Equals(1));
+            Assert.IsTrue(result.Content.Hits.Count().Equals(1), $"Expected 1 hit with limit 1, but found {result.Content.Hits.Count()}.");
         }
 
         [TestMethod]
@@ -42,7 +42,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries()
                 .GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(result.Content.Hits.Count().Equals(4));
+            Assert.IsTrue(result.Content.Hits.Count().Equals(4), $"Expected 4 hits with limit 100, but found {result.Content.Hits.Count()}.");
         }
 
         [TestMethod]
@@ -58,7 +58,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .BuildQueries();
 
             result = query.GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(result.Errors.Length > 0);
+            Assert.IsTrue(result.Errors.Length > 0, "Expected errors with limit 101, but no errors were found.");
         }
     }
 }

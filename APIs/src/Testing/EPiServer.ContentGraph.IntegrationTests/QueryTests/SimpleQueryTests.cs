@@ -28,7 +28,8 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<Content>().Result;
-            Assert.IsTrue(rs.Content.Hits.Count() == 3);
+            int actualItemCount = rs.Content.Hits.Count();
+            Assert.IsTrue(actualItemCount == 3, $"Expected 3 items, but got {actualItemCount}.");
         }
         [TestMethod]
         public void search_paging_with_2_should_result_2_items()
@@ -41,7 +42,8 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<Content>().Result;
-            Assert.IsTrue(rs.Content.Hits.Count() == 2);
+            int actualItemCount = rs.Content.Hits.Count();
+            Assert.IsTrue(actualItemCount == 2, $"Expected 2 items with paging, but got {actualItemCount}.");
         }
         [TestMethod]
         public void search_order_desc_should_get_correct_order()
@@ -53,7 +55,8 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<Content>().Result;
-            Assert.IsTrue(rs.Content.Hits.First().Name.Equals("Tim Cook"));
+            string firstItemName = rs.Content.Hits.First().Name;
+            Assert.IsTrue(firstItemName.Equals("Tim Cook"), $"Expected 'Tim Cook' as the first item in descending order, but got '{firstItemName}'.");
         }
         [TestMethod]
         public void full_text_search_should_result_correct_data()
@@ -65,7 +68,8 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<Content>().Result;
-            Assert.IsTrue(rs.Content.Hits.First().Name.Equals("Alan Turing"));
+            string firstItemName = rs.Content.Hits.First().Name;
+            Assert.IsTrue(firstItemName.Equals("Alan Turing"), $"Expected 'Alan Turing' as the result of the full-text search, but got '{firstItemName}'.");
         }
     }
 }

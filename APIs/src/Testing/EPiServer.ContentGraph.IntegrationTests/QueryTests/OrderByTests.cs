@@ -31,8 +31,8 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries()
                 .GetResultAsync<HomePage>().Result;
-            Assert.IsTrue(result.Content.Hits.First().Name.Equals("Beatles"));
-            Assert.IsTrue(result.Content.Hits.Last().Name.Equals("Rolling Stones"));
+            Assert.IsTrue(result.Content.Hits.First().Name.Equals("Beatles"), "Expected 'Beatles' to be the first item when ordered by name, but found '" + result.Content.Hits.First().Name + "'.");
+            Assert.IsTrue(result.Content.Hits.Last().Name.Equals("Rolling Stones"), "Expected 'Rolling Stones' to be the last item when ordered by name, but found '" + result.Content.Hits.Last().Name + "'.");
         }
 
         [TestMethod]
@@ -52,9 +52,9 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 dates[i] = resultArray[i].StartPublish.Value;
             }
 
-            Assert.IsTrue(dates[0] < dates[1]);
-            Assert.IsTrue(dates[1] < dates[2]);
-            Assert.IsTrue(dates[2] < dates[3]);
+            Assert.IsTrue(dates[0] < dates[1], $"Expected date at index 0 to be earlier than date at index 1, but found '{dates[0]}' and '{dates[1]}'.");
+            Assert.IsTrue(dates[1] < dates[2], $"Expected date at index 1 to be earlier than date at index 2, but found '{dates[1]}' and '{dates[2]}'.");
+            Assert.IsTrue(dates[2] < dates[3], $"Expected date at index 2 to be earlier than date at index 3, but found '{dates[2]}' and '{dates[3]}'.");
         }
 
         [TestMethod]
@@ -74,9 +74,9 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 ints[i] = resultArray[i].Priority;
             }
 
-            Assert.IsTrue(ints[0] < ints[1]);
-            Assert.IsTrue(ints[1] < ints[2]);
-            Assert.IsTrue(ints[3].IsNull());
+            Assert.IsTrue(ints[0] < ints[1], $"Expected int at index 0 to be less than int at index 1, but found '{ints[0]}' and '{ints[1]}'.");
+            Assert.IsTrue(ints[1] < ints[2], $"Expected int at index 1 to be less than int at index 2, but found '{ints[1]}' and '{ints[2]}'.");
+            Assert.IsTrue(ints[3].IsNull(), "Expected int at index 3 to be null.");
         }
     }
 }
