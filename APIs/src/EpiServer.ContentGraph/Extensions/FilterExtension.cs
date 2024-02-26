@@ -6,11 +6,15 @@ namespace EPiServer.ContentGraph.Extensions
 {
     public static partial class FilterExtension
     {
-        public static DelegateFilterBuilder Boost(this object field, int value)
+        #region String operator
+        public static DelegateFilterBuilder Boost(this string field, int value)
         {
             return new DelegateFilterBuilder(field => new TermFilter(field, new StringFilterOperators().Boost(value)));
         }
-        #region String operator
+        public static DelegateFilterBuilder FieldExists(this string field, bool value = true)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new StringFilterOperators().Exists(value)));
+        }
         /// <summary>
         /// Full text search. Only use for <typeparamref name="Searchable"/> field.
         /// </summary>
@@ -63,10 +67,6 @@ namespace EPiServer.ContentGraph.Extensions
         {
             return new DelegateFilterBuilder(field => new TermFilter(field, new StringFilterOperators().Fuzzy(value)));
         }
-        public static DelegateFilterBuilder FieldExists(this string field, bool value = true)
-        {
-            return new DelegateFilterBuilder(field => new TermFilter(field, new StringFilterOperators().Exists(value)));
-        }
         public static DelegateFilterBuilder Synonyms(this string field, params Synonyms[] values)
         {
             return new DelegateFilterBuilder(field => new TermFilter(field, new StringFilterOperators().Synonym(values)));
@@ -74,6 +74,10 @@ namespace EPiServer.ContentGraph.Extensions
         #endregion
 
         #region Date operator
+        public static DelegateFilterBuilder Boost(this DateTime field, int value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new DateFilterOperators().Boost(value)));
+        }
         /// <summary>
         /// Range for datetime filter. The range is between greater than or equals [From] and less than [To].
         /// </summary>
@@ -109,10 +113,38 @@ namespace EPiServer.ContentGraph.Extensions
         {
             return new DelegateFilterBuilder(field => new TermFilter(field, new DateFilterOperators().Lte(value.ToString("s") + "Z")));
         }
+        /// <summary>
+        /// Filter your pages that have been modified in a period of time.
+        /// </summary>
+        /// <param name="field"></param>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
+        public static DelegateFilterBuilder ModifiedIn(this object field, DateTime? from, DateTime? to)
+        {
+            return new DelegateFilterBuilder(field =>
+            {
+                var dateOperator = new DateFilterOperators();
+                if (from.HasValue)
+                {
+                    dateOperator.Gte(from.Value.ToString("s") + "Z");
+                }
+                if (to.HasValue)
+                {
+                    dateOperator.Lte(to.Value.ToString("s") + "Z");
+                }
+                return new TermFilter("_modified", dateOperator);
+            });
+        }
         #endregion
 
         #region Numberic operator
-        //Integer type
+
+        #region Integer type
+        public static DelegateFilterBuilder Boost(this int field, int value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Boost(value)));
+        }
         public static DelegateFilterBuilder FieldExists(this int field, bool value = true)
         {
             return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Exists(value)));
@@ -166,7 +198,69 @@ namespace EPiServer.ContentGraph.Extensions
         {
             return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().InRanges(ranges)));
         }
-        //Float type
+        #endregion
+
+        #region Long type
+        public static DelegateFilterBuilder Boost(this long field, int value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Boost(value)));
+        }
+        public static DelegateFilterBuilder FieldExists(this long field, bool value = true)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Exists(value)));
+        }
+        public static DelegateFilterBuilder Eq(this long field, int value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Eq(value)));
+        }
+        public static DelegateFilterBuilder NotEq(this long field, int value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().NotEq(value)));
+        }
+        public static DelegateFilterBuilder Gt(this long field, int value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Gt(value)));
+        }
+        public static DelegateFilterBuilder Gte(this long field, int value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Gte(value)));
+        }
+        public static DelegateFilterBuilder Lt(this long field, int value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Lt(value)));
+        }
+        public static DelegateFilterBuilder Lte(this long field, int value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Lte(value)));
+        }
+        public static DelegateFilterBuilder In(this long field, params int[] values)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().In(values)));
+        }
+        public static DelegateFilterBuilder NotIn(this long field, params int[] values)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().NotIn(values)));
+        }
+        /// <summary>
+        /// Range filter for a field. The range is between greater than or equals [From] and less than or equals [To]
+        /// </summary>
+        public static DelegateFilterBuilder InRange(this long field, int from, int to)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().InRange(from, to)));
+        }
+        /// <summary>
+        /// Multiple ranges for InRange filter. 
+        /// </summary>
+        /// <param name="field"></param>
+        /// <param name="ranges">Array of tuples (from,to)</param>
+        /// <returns></returns>
+        public static DelegateFilterBuilder InRanges(this long field, params (int? from, int? to)[] ranges)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().InRanges(ranges)));
+        }
+        #endregion
+
+        #region Float type
         public static DelegateFilterBuilder FieldExists(this float field, bool value = true)
         {
             return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Exists(value)));
@@ -224,7 +318,87 @@ namespace EPiServer.ContentGraph.Extensions
         {
             return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().InRanges(ranges)));
         }
+        #endregion
 
+        #region Double type
+        public static DelegateFilterBuilder FieldExists(this double field, bool value = true)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Exists(value)));
+        }
+        public static DelegateFilterBuilder Boost(this double field, int value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Boost(value)));
+        }
+        public static DelegateFilterBuilder Eq(this double field, float value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Eq(value)));
+        }
+        public static DelegateFilterBuilder NotEq(this double field, float value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().NotEq(value)));
+        }
+        public static DelegateFilterBuilder Gt(this double field, float value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Gt(value)));
+        }
+        public static DelegateFilterBuilder Gte(this double field, float value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Gte(value)));
+        }
+        public static DelegateFilterBuilder Lt(this double field, float value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Lt(value)));
+        }
+        public static DelegateFilterBuilder Lte(this double field, float value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Lte(value)));
+        }
+        public static DelegateFilterBuilder In(this double field, params float[] values)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().In(values)));
+        }
+        public static DelegateFilterBuilder NotIn(this double field, params float[] values)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().NotIn(values)));
+        }
+        /// <summary>
+        /// Range filter for a field. The range is between greater than or equals [From] and less than or equals [To]
+        /// </summary>
+        public static DelegateFilterBuilder InRange(this double field, int from, int to)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().InRange(from, to)));
+        }
+        /// <summary>
+        /// Multiple ranges for InRange filter. 
+        /// </summary>
+        /// <param name="field"></param>
+        /// <param name="ranges">Array of tuples (from,to)</param>
+        /// <returns></returns>
+        public static DelegateFilterBuilder InRanges(this double field, params (float? from, float? to)[] ranges)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().InRanges(ranges)));
+        }
+        #endregion
+
+        #endregion
+
+        #region Boolean operator
+        public static DelegateFilterBuilder Boost(this bool field, int value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new BooleanFilterOperators().Boost(value)));
+        }
+        public static DelegateFilterBuilder FieldExists(this bool field, bool value = true)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new BooleanFilterOperators().Exists(value)));
+        }
+        public static DelegateFilterBuilder Eq(this bool field, bool value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new BooleanFilterOperators().Eq(value)));
+        }
+        public static DelegateFilterBuilder NotEq(this bool field, bool value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new BooleanFilterOperators().NotEq(value)));
+        }
         #endregion
     }
 }

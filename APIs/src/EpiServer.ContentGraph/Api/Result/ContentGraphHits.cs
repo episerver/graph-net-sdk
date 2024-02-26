@@ -7,13 +7,13 @@ namespace EPiServer.ContentGraph.Api.Result
     public class ContentGraphHits<T>
     {
         [JsonIgnore]
-        Dictionary<string, IEnumerable<ContentGraphFacet>> facets = null;
+        Dictionary<string, IEnumerable<Facet>> facets = null;
         [JsonIgnore]
         Dictionary<string, IEnumerable<string>> autocompletes = null;
         [JsonProperty("items")]
         public IEnumerable<T> Hits { get; set; }
         [JsonIgnore]
-        public Dictionary<string, IEnumerable<ContentGraphFacet>> Facets
+        public Dictionary<string, IEnumerable<Facet>> Facets
         {
             get
             {
@@ -24,10 +24,10 @@ namespace EPiServer.ContentGraph.Api.Result
                 if (RawFacets != null)
                 {
                     var keys = RawFacets.Keys;
-                    facets = new Dictionary<string, IEnumerable<ContentGraphFacet>>();
+                    facets = new Dictionary<string, IEnumerable<Facet>>();
                     foreach (var key in keys)
                     {
-                        facets.Add(key, RawFacets[key].ToObject<IEnumerable<ContentGraphFacet>>());
+                        facets.Add(key, RawFacets[key].ToObject<IEnumerable<Facet>>());
                     }
                 }
                 return facets;

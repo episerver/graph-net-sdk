@@ -27,7 +27,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ForType<HomePage>()
                     .Field(x => x.IsSecret)
                     .Facet(x => x.IsSecret, 
-                        new StringFacetFilterOperator()
+                        new StringFacetFilterOperators()
                         .Filters("true","false")
                         .OrderBy(OrderMode.DESC)
                         .OrderType(OrderType.VALUE))
@@ -45,7 +45,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         {
             IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
-                .Facet(x=>x.Priority, new NumericFacetFilterOperator()
+                .Facet(x=>x.Priority, new NumericFacetFilterOperators()
                     .Ranges((100,200),(200,300))
                     .Projection(FacetProperty.name, FacetProperty.count))
                 .ToQuery()
@@ -63,7 +63,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
             IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
                     .Field(x=>x.IsSecret)
-                    .Facet(x => x.IsSecret, new StringFacetFilterOperator().Filters("true"))
+                    .Facet(x => x.IsSecret, new StringFacetFilterOperators().Filters("true"))
                     .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
@@ -77,8 +77,8 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
             IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
                     .Field(x => x.IsSecret)
-                    .Facet(x => x.IsSecret, new StringFacetFilterOperator().Filters("true"))
-                    .Facet(x => x.Status, new StringFacetFilterOperator().Filters(TestDataCreator.STATUS_PUBLISHED))
+                    .Facet(x => x.IsSecret, new StringFacetFilterOperators().Filters("true"))
+                    .Facet(x => x.Status, new StringFacetFilterOperators().Filters(TestDataCreator.STATUS_PUBLISHED))
                     .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;
@@ -91,8 +91,8 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
         {
             IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
-                    .Facet(x => x.IsSecret, new StringFacetFilterOperator().Filters("true").Limit(1))
-                    .Facet(x => x.Status, new StringFacetFilterOperator().Filters(TestDataCreator.STATUS_PUBLISHED))
+                    .Facet(x => x.IsSecret, new StringFacetFilterOperators().Filters("true").Limit(1))
+                    .Facet(x => x.Status, new StringFacetFilterOperators().Filters(TestDataCreator.STATUS_PUBLISHED))
                     .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<HomePage>().Result;

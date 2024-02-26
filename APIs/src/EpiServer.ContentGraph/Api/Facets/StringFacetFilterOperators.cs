@@ -4,34 +4,34 @@ using System.Linq;
 
 namespace EPiServer.ContentGraph.Api.Facets
 {
-    public class StringFacetFilterOperator : IFacetOperator
+    public class StringFacetFilterOperators : IFacetOperator
     {
         string _query = string.Empty;
         IEnumerable<FacetProperty> _projections;
         public string FilterClause { get { return _query; } }
-        public StringFacetFilterOperator()
+        public StringFacetFilterOperators()
         {
             _projections = new List<FacetProperty> { FacetProperty.name, FacetProperty.count };
         }
         public IEnumerable<FacetProperty> FacetProjections { get { return _projections; } }
 
-        public StringFacetFilterOperator OrderBy(OrderMode orderMode = OrderMode.DESC)
+        public StringFacetFilterOperators OrderBy(OrderMode orderMode = OrderMode.DESC)
         {
             _query = _query.IsNullOrEmpty() ? $"orderBy: {orderMode}" : $"{_query},orderBy: {orderMode}";
             return this;
         }
-        public StringFacetFilterOperator Filters(params string[] values)
+        public StringFacetFilterOperators Filters(params string[] values)
         {
             string combineValues = string.Join(',',values.Select(value => $"\"{value?.Trim()}\""));
             _query = _query.IsNullOrEmpty() ? $"filters: [{combineValues}]" : $"{_query},filters: [{combineValues}]";
             return this;
         }
-        public StringFacetFilterOperator Limit(int limit=5)
+        public StringFacetFilterOperators Limit(int limit=5)
         {
             _query = _query.IsNullOrEmpty() ? $"limit: {limit}" : $"{_query},limit: {limit}";
             return this;
         }
-        public StringFacetFilterOperator OrderType(OrderType orderType=Api.OrderType.COUNT)
+        public StringFacetFilterOperators OrderType(OrderType orderType=Api.OrderType.COUNT)
         {
             _query = _query.IsNullOrEmpty() ? $"orderType: {orderType}" : $"{_query},orderType: {orderType}";
             return this;

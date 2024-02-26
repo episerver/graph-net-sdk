@@ -110,6 +110,26 @@ namespace EPiServer.ContentGraph.Api.Filters
             _query += _query.IsNullOrEmpty() ? $"lte: {value}" : $",lte: {value}";
             return this;
         }
+        public NumericFilterOperators Gt(double value)
+        {
+            _query += _query.IsNullOrEmpty() ? $"gt: {value}" : $",gt: {value}";
+            return this;
+        }
+        public NumericFilterOperators Gte(double value)
+        {
+            _query += _query.IsNullOrEmpty() ? $"gte: {value}" : $",gte: {value}";
+            return this;
+        }
+        public NumericFilterOperators Lt(double value)
+        {
+            _query += _query.IsNullOrEmpty() ? $"lt: {value}" : $",lt: {value}";
+            return this;
+        }
+        public NumericFilterOperators Lte(double value)
+        {
+            _query += _query.IsNullOrEmpty() ? $"lte: {value}" : $",lte: {value}";
+            return this;
+        }
         public NumericFilterOperators In(params float[] values)
         {
             _query += _query.IsNullOrEmpty() ? $"in: [{string.Join(',', values)}]" : $",in: [{string.Join(',', values)}]";
@@ -132,7 +152,27 @@ namespace EPiServer.ContentGraph.Api.Filters
             }
             return this;
         }
+        public NumericFilterOperators InRange(double? from, double? to)
+        {
+            if (from.HasValue)
+            {
+                Gte(from.Value);
+            }
+            if (to.HasValue)
+            {
+                Lte(to.Value);
+            }
+            return this;
+        }
         public NumericFilterOperators InRanges(params (float? from, float? to)[] ranges)
+        {
+            foreach (var range in ranges)
+            {
+                InRange(range.from, range.to);
+            }
+            return this;
+        }
+        public NumericFilterOperators InRanges(params (double? from, double? to)[] ranges)
         {
             foreach (var range in ranges)
             {

@@ -26,7 +26,7 @@ namespace EPiServer.ContentGraph.Configuration
             AppKey = string.Empty;
         }
         /// <summary>
-        /// Flag to mark that request should uese HMAC key. Default to true.
+        /// Flag to mark that request should use HMAC key. Default to true.
         /// </summary>
         public bool UseHmacKey { get; set; }
         /// <summary>

@@ -4,12 +4,12 @@ using System;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {
-    public class BaseTypeQueryBuilder : ITypeQueryBuilder
+    public abstract class BaseTypeQueryBuilder : ITypeQueryBuilder
     {
         protected readonly ContentGraphQuery graphObject;
         protected readonly GraphQLRequest _query;
         protected bool _compiled = false;
-        private IQuery _parent = null;
+        protected IQuery _parent = null;
         public virtual IQuery Parent
         {
             get => _parent; 

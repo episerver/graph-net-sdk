@@ -83,7 +83,15 @@ namespace EPiServer.ContentGraph.Api.Filters
         }
         public StringFilterOperators Synonym(params Synonyms[] values)
         {
-            string synonymValues = string.Join(',', values);
+            string synonymValues;
+            if (values != null && values.Length > 0)
+            {
+                synonymValues = string.Join(',', values);
+            }
+            else
+            {
+                synonymValues = "ONE,TWO";
+            }
             _query += _query.IsNullOrEmpty() ? $"synonyms: [{synonymValues}]" : $",synonyms: [{synonymValues}]";
             return this;
         }

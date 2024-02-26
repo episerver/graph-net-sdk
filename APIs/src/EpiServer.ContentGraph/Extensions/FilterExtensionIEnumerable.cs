@@ -7,6 +7,10 @@ namespace EPiServer.ContentGraph.Extensions
     public static partial class FilterExtension
     {
         #region String operators
+        public static DelegateFilterBuilder Boost(this IEnumerable<string> field, int value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new StringFilterOperators().Boost(value)));
+        }
         public static DelegateFilterBuilder Eq(this IEnumerable<string> field, string value)
         {
             return new DelegateFilterBuilder(field => new TermFilter(field, new StringFilterOperators().Eq(value)));
@@ -50,6 +54,10 @@ namespace EPiServer.ContentGraph.Extensions
         #endregion
 
         #region Date operators
+        public static DelegateFilterBuilder Boost(this IEnumerable<DateTime> field, int value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new DateFilterOperators().Boost(value)));
+        }
         public static DelegateFilterBuilder InRange(this IEnumerable<DateTime> field, DateTime from, DateTime to)
         {
             return new DelegateFilterBuilder(field =>
@@ -85,7 +93,12 @@ namespace EPiServer.ContentGraph.Extensions
         #endregion
 
         #region Numberic operator
-        //Integer type
+
+        #region Integer type
+        public static DelegateFilterBuilder Boost(this IEnumerable<int> field, int value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Boost(value)));
+        }
         public static DelegateFilterBuilder FieldExists(this IEnumerable<int> field, bool value = true)
         {
             return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Exists(value)));
@@ -139,7 +152,69 @@ namespace EPiServer.ContentGraph.Extensions
         {
             return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().InRanges(ranges)));
         }
-        //Float type
+        #endregion
+
+        #region Long type
+        public static DelegateFilterBuilder Boost(this IEnumerable<long> field, int value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Boost(value)));
+        }
+        public static DelegateFilterBuilder FieldExists(this IEnumerable<long> field, bool value = true)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Exists(value)));
+        }
+        public static DelegateFilterBuilder Eq(this IEnumerable<long> field, int value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Eq(value)));
+        }
+        public static DelegateFilterBuilder NotEq(this IEnumerable<long> field, int value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().NotEq(value)));
+        }
+        public static DelegateFilterBuilder Gt(this IEnumerable<long> field, int value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Gt(value)));
+        }
+        public static DelegateFilterBuilder Gte(this IEnumerable<long> field, int value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Gte(value)));
+        }
+        public static DelegateFilterBuilder Lt(this IEnumerable<long> field, int value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Lt(value)));
+        }
+        public static DelegateFilterBuilder Lte(this IEnumerable<long> field, int value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Lte(value)));
+        }
+        public static DelegateFilterBuilder In(this IEnumerable<long> field, params int[] values)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().In(values)));
+        }
+        public static DelegateFilterBuilder NotIn(this IEnumerable<long> field, int[] values)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().NotIn(values)));
+        }
+        /// <summary>
+        /// Range filter for a field. The range is between greater than or equals [From] and less than or equals [To]
+        /// </summary>
+        public static DelegateFilterBuilder InRange(this IEnumerable<long> field, int from, int to)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().InRange(from, to)));
+        }
+        /// <summary>
+        /// Multiple ranges for InRange filter. 
+        /// </summary>
+        /// <param name="field"></param>
+        /// <param name="ranges">Array of tuples (from,to)</param>
+        /// <returns></returns>
+        public static DelegateFilterBuilder InRanges(this IEnumerable<long> field, params (int? from, int? to)[] ranges)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().InRanges(ranges)));
+        }
+        #endregion
+
+        #region Float type
         public static DelegateFilterBuilder FieldExists(this IEnumerable<float> field, bool value = true)
         {
             return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Exists(value)));
@@ -197,7 +272,87 @@ namespace EPiServer.ContentGraph.Extensions
         {
             return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().InRanges(ranges)));
         }
+        #endregion
 
+        #region Double type
+        public static DelegateFilterBuilder Boost(this IEnumerable<double> field, int value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Boost(value)));
+        }
+        public static DelegateFilterBuilder FieldExists(this IEnumerable<double> field, bool value = true)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Exists(value)));
+        }
+        public static DelegateFilterBuilder Eq(this IEnumerable<double> field, float value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Eq(value)));
+        }
+        public static DelegateFilterBuilder NotEq(this IEnumerable<double> field, float value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().NotEq(value)));
+        }
+        public static DelegateFilterBuilder Gt(this IEnumerable<double> field, float value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Gt(value)));
+        }
+        public static DelegateFilterBuilder Gte(this IEnumerable<double> field, float value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Gte(value)));
+        }
+        public static DelegateFilterBuilder Lt(this IEnumerable<double> field, float value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Lt(value)));
+        }
+        public static DelegateFilterBuilder Lte(this IEnumerable<double> field, float value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().Lte(value)));
+        }
+        public static DelegateFilterBuilder In(this IEnumerable<double> field, params float[] values)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().In(values)));
+        }
+        public static DelegateFilterBuilder NotIn(this IEnumerable<double> field, float[] values)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().NotIn(values)));
+        }
+        /// <summary>
+        /// Range filter for a field. The range is between greater than or equals [From] and less than or equals [To]
+        /// </summary>
+        public static DelegateFilterBuilder InRange(this IEnumerable<double> field, int from, int to)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().InRange(from, to)));
+        }
+        /// <summary>
+        /// Multiple ranges for InRange filter. 
+        /// </summary>
+        /// <param name="field"></param>
+        /// <param name="ranges">Array of tuples (from,to)</param>
+        /// <returns></returns>
+        public static DelegateFilterBuilder InRanges(this IEnumerable<double> field, params (float? from, float? to)[] ranges)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().InRanges(ranges)));
+        }
+        #endregion
+        
+        #endregion
+
+        #region Boolean operators
+        public static DelegateFilterBuilder Boost(this IEnumerable<bool> field, int value)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new BooleanFilterOperators().Boost(value)));
+        }
+        public static DelegateFilterBuilder FieldExists(this IEnumerable<bool> field, bool value = true)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new BooleanFilterOperators().Exists(value)));
+        }
+        public static DelegateFilterBuilder Eq(this IEnumerable<bool> field, bool value = true)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new BooleanFilterOperators().Eq(value)));
+        }
+        public static DelegateFilterBuilder NotEq(this IEnumerable<bool> field, bool value = true)
+        {
+            return new DelegateFilterBuilder(field => new TermFilter(field, new BooleanFilterOperators().NotEq(value)));
+        }
         #endregion
     }
 }

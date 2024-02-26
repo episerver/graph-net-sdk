@@ -11,7 +11,6 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestModels
         public string Author { get; set; }
         public string Status { get; set; }
         public Language Language { get; set; }
-        public HomePage HomePage { get; set; }
         [JsonProperty("__typename")]
         public string TypeName { get; set; }
         [JsonProperty("ContentType")]

@@ -8,9 +8,7 @@ using EPiServer.ContentGraph.Api.Autocomplete;
 using EPiServer.ContentGraph.Api.Facets;
 using EPiServer.ServiceLocation;
 using EPiServer.ContentGraph.ExpressionHelper;
-using System;
-using System.Linq;
-using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {
@@ -299,14 +297,14 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             return this;
         }
-        public TypeQueryBuilder<T> Limit(long limit=20)
+        public TypeQueryBuilder<T> Limit(int limit = 20)
         {
             graphObject.Limit = $"limit:{limit}";
             return this;
         }
-        public TypeQueryBuilder<T> FullTextSearch(IFilterOperator filterOperator)
+        public TypeQueryBuilder<T> Search(IFilterOperator filterOperator)
         {
-            Where("_fulltext", filterOperator);
+            Where(FIELDS.FULLTEXT, filterOperator);
             return this;
         }
         /// <summary>
@@ -316,13 +314,41 @@ namespace EPiServer.ContentGraph.Api.Querying
         /// <returns></returns>
         public TypeQueryBuilder<T> Search(string q)
         {
-            Where("_fulltext", new StringFilterOperators().Match(q));
+            Where(FIELDS.FULLTEXT, new StringFilterOperators().Match(q));
             return this;
+        }
+        private Dictionary<string, string> FullTextFilters = new Dictionary<string, string>();
+        private string MergeFilters(string exsting, string additional)
+        {
+            Regex reg = new Regex(@"\{.*\}");
+            var originalFilter = reg.Match(exsting).Value;
+            var newFilter = reg.Match(additional).Value;
+            if (originalFilter != newFilter)
+            {
+                return $"{originalFilter.Replace("{","").Replace("}","")},{newFilter.Replace("{", "").Replace("}", "")}";
+            }
+            return exsting;
         }
         public TypeQueryBuilder<T> Where(string fieldName, IFilterOperator filterOperator)
         {
             filterOperator.ValidateNotNullArgument("filterOperator");
             var combinedQuery = ConvertNestedFieldToString.ConvertNestedFieldFilter(fieldName, filterOperator);
+            if (fieldName == FIELDS.FULLTEXT)
+            {
+                if (FullTextFilters.ContainsKey(fieldName))
+                {
+                    var existingFilter = FullTextFilters[fieldName];
+                    var finalFilter = $"{fieldName}: {{{MergeFilters(existingFilter, combinedQuery)}}}";
+                    graphObject.WhereClause = graphObject.WhereClause.Replace(existingFilter, "");
+                    combinedQuery = finalFilter;
+                    FullTextFilters.Remove(fieldName);
+                    FullTextFilters.Add(fieldName, finalFilter);
+                }
+                else
+                {
+                    FullTextFilters.Add(fieldName, combinedQuery);
+                }
+            }
 
             if (graphObject.WhereClause.IsNullOrEmpty())
             {
@@ -388,7 +414,7 @@ namespace EPiServer.ContentGraph.Api.Querying
         }
         public TypeQueryBuilder<T> Where(IFilter filter)
         {
-            filter.ValidateNotNullArgument("booleanFilter");
+            filter.ValidateNotNullArgument("filter");
             if (graphObject.WhereClause.IsNullOrEmpty())
             {
                 graphObject.WhereClause = $"{filter.FilterClause}";
@@ -428,41 +454,50 @@ namespace EPiServer.ContentGraph.Api.Querying
             }
             return this;
         }
+        public TypeQueryBuilder<T> Facet(IEnumerable<FacetFilter> facetFilters)
+        {
+            facetFilters.ValidateNotNullArgument("facetFilters");
+            foreach (var facetFilter in facetFilters)
+            {
+                Facet(facetFilter);
+            }
+            return this;
+        }
         /// <summary>
         /// Get facet with filter
         /// </summary>
         /// <param name="fieldSelector"></param>
         /// <param name="facetFilter"></param>
         /// <returns></returns>
-        public TypeQueryBuilder<T> Facet(Expression<Func<T, string>> fieldSelector, StringFacetFilterOperator facetFilter)
+        public TypeQueryBuilder<T> Facet(Expression<Func<T, string>> fieldSelector, StringFacetFilterOperators facetFilter)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             facetFilter.ValidateNotNullArgument("facetFilter");
             Facet(fieldSelector.GetFieldPath(), facetFilter);
             return this;
         }
-        public TypeQueryBuilder<T> Facet(Expression<Func<T, bool>> fieldSelector, StringFacetFilterOperator facetFilter)
+        public TypeQueryBuilder<T> Facet(Expression<Func<T, bool>> fieldSelector, StringFacetFilterOperators facetFilter)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             facetFilter.ValidateNotNullArgument("facetFilter");
             Facet(fieldSelector.GetFieldPath(), facetFilter);
             return this;
         }
-        public TypeQueryBuilder<T> Facet(Expression<Func<T, object>> fieldSelector, StringFacetFilterOperator facetFilter)
+        public TypeQueryBuilder<T> Facet(Expression<Func<T, object>> fieldSelector, StringFacetFilterOperators facetFilter)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             facetFilter.ValidateNotNullArgument("facetFilter");
             Facet(fieldSelector.GetFieldPath(), facetFilter);
             return this;
         }
-        public TypeQueryBuilder<T> Facet(Expression<Func<T, int?>> fieldSelector, NumericFacetFilterOperator facetFilter)
+        public TypeQueryBuilder<T> Facet(Expression<Func<T, int?>> fieldSelector, NumericFacetFilterOperators facetFilter)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             facetFilter.ValidateNotNullArgument("facetFilter");
             Facet(fieldSelector.GetFieldPath(), facetFilter);
             return this;
         }
-        public TypeQueryBuilder<T> Facet(Expression<Func<T, DateTime?>> fieldSelector, DateFacetFilterOperator facetFilter)
+        public TypeQueryBuilder<T> Facet(Expression<Func<T, DateTime?>> fieldSelector, DateFacetFilterOperators facetFilter)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             facetFilter.ValidateNotNullArgument("facetFilter");
@@ -560,10 +595,15 @@ namespace EPiServer.ContentGraph.Api.Querying
                 {
                     graphObject.Autocomplete = $"autocomplete{{{graphObject.Autocomplete}}}";
                 }
+                _query.Query = graphObject.ToString();
+                _compiled = true;
+                if (this.Parent != null)
+                {
+                    this.Parent.AddQuery(_query.Query);
+                }
             }
-            _query.Query += graphObject.ToString();
-            _compiled = true;
-            return new GraphQueryBuilder(_query, this);
+
+            return this.Parent != null ? (GraphQueryBuilder)this.Parent : new GraphQueryBuilder(_query, this);
         }
     }
 

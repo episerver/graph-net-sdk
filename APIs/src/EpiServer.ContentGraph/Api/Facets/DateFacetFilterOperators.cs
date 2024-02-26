@@ -4,22 +4,22 @@ using System.Linq;
 
 namespace EPiServer.ContentGraph.Api.Facets
 {
-    public class DateFacetFilterOperator : IFacetOperator
+    public class DateFacetFilterOperators : IFacetOperator
     {
         string _query = string.Empty;
         IEnumerable<FacetProperty> _projections;
         public string FilterClause { get { return _query; } }
-        public DateFacetFilterOperator()
+        public DateFacetFilterOperators()
         {
             _projections = new List<FacetProperty> { FacetProperty.name, FacetProperty.count };
         }
         public IEnumerable<FacetProperty> FacetProjections { get { return _projections; } }
-        public DateFacetFilterOperator Unit(DateUnit dateUnit = DateUnit.DAY)
+        public DateFacetFilterOperators Unit(DateUnit dateUnit = DateUnit.DAY)
         {
             _query = _query.IsNullOrEmpty() ? $"unit:{dateUnit}" : $"{_query},unit:{dateUnit}";
             return this;
         }
-        public DateFacetFilterOperator Value(int value = 1)
+        public DateFacetFilterOperators Value(int value = 1)
         {
             _query = _query.IsNullOrEmpty() ? $"value:{value}" : $"{_query},value:{value}";
             return this;

@@ -19,12 +19,12 @@ namespace EPiServer.ContentGraph.Api.Filters
         }
         public BooleanFilterOperators Eq(bool value)
         {
-            _query += _query.IsNullOrEmpty() ? $"eq: {value}" : $",eq: {value}";
+            _query += _query.IsNullOrEmpty() ? $"eq: {value.ToString().ToLower()}" : $",eq: {value.ToString().ToLower()}";
             return this;
         }
         public BooleanFilterOperators NotEq(bool value)
         {
-            _query += _query.IsNullOrEmpty() ? $"notEq: {value}" : $",notEq: {value}";
+            _query += _query.IsNullOrEmpty() ? $"notEq: {value.ToString().ToLower()}" : $",notEq: {value.ToString().ToLower()}";
             return this;
         }
     }

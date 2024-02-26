@@ -91,10 +91,10 @@ namespace EPiServer.ContentGraph.UnitTests
         {
             string expectedFields = @"items{Property1 Property2}";
             string expectedFacets = @"facets{Property1(filters: [""somevalue"",""other value""]){name count} Property3{NestedProperty(ranges:[{from:1,to:2},{from:9,to:10}]){name count}}}";
-            var facetFilter1 = new StringFacetFilterOperator()
+            var facetFilter1 = new StringFacetFilterOperators()
                     .Filters("somevalue", "other value")
                     .Projection(FacetProperty.name, FacetProperty.count);
-            var facetFilter2 = new NumericFacetFilterOperator()
+            var facetFilter2 = new NumericFacetFilterOperators()
                     .Ranges((1, 2), (9, 10))
                     .Projection(FacetProperty.name, FacetProperty.count);
             typeQueryBuilder
@@ -173,6 +173,35 @@ namespace EPiServer.ContentGraph.UnitTests
             Assert.Contains(expectedFields, query.GetQuery().Query);
             Assert.Equal($"RequestTypeObject{{{expectedFields} {expectedFacets}}}", query.GetQuery().Query);
         }
+
+        [Fact]
+        public void Multiple_types_query()
+        {
+            string expectedQuery1 = "RequestTypeObject(where:{Property1:{eq: \"test\"}}){items{Property1}}";
+            string expectedQuery2 = "SubTypeObject(where:{Property2:{eq: 100}}){items{Property2}}";
+            string expectedFullQuery = $"query myquery {{{expectedQuery1} {expectedQuery2}}}";
+            GraphQueryBuilder graphQueryBuilder = new GraphQueryBuilder();
+            for (int i = 0; i < 2; i++)
+            {
+                graphQueryBuilder
+                    .OperationName("myquery")
+                    .ForType<RequestTypeObject>()
+                        .Field(x => x.Property1)
+                        .Where(x => x.Property1, new StringFilterOperators().Eq("test"))
+                    .ToQuery()
+                    .ForType<SubTypeObject>()
+                        .Field(x => x.Property2)
+                        .Where(x => x.Property2, new NumericFilterOperators().Eq(100))
+                    .ToQuery()
+                .BuildQueries();
+            }
+            
+            var query = graphQueryBuilder.GetQuery();
+            Assert.Contains(expectedQuery1, query.Query);
+            Assert.Contains(expectedQuery2, query.Query);
+            Assert.Equal(expectedFullQuery, query.Query);
+        }
+
         [Obsolete]
         [Fact(Skip = "This functionality is no longer maintain")]
         public void ChildrenQueryTests()

@@ -73,10 +73,9 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
         [JsonPropertyName("IsSecret")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public bool? IsSecret { get; set; }
-
-        
-
-
+        [JsonPropertyName("Language")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public Language Language { get; set; }
     }
     public class IndexAction
     {
@@ -90,5 +89,10 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
 
         [JsonPropertyName("language_routing")]
         public string? LanguageRouting { get; set; }
+    }
+    public class Language
+    {
+        public string Name { get; set; }
+        public string DisplayName { get; set; }
     }
 }

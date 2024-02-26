@@ -61,7 +61,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
             IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<Content>()
                 .Fields(x => x.Name)
-                .FullTextSearch(new StringFilterOperators().Contains("Alan Turing"))
+                .Search(new StringFilterOperators().Contains("Alan Turing"))
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync<Content>().Result;

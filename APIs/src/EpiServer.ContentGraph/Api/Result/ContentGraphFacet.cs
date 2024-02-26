@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 namespace EPiServer.ContentGraph.Api.Result
 {
-    public class ContentGraphFacet
+    public class Facet
     {
         [JsonProperty("name")]
         public string Name { get; set; }

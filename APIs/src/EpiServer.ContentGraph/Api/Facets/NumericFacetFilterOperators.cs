@@ -5,12 +5,12 @@ using System.Linq;
 namespace EPiServer.ContentGraph.Api.Facets
 {
 
-    public class NumericFacetFilterOperator : IFacetOperator
+    public class NumericFacetFilterOperators : IFacetOperator
     {
         string _query = string.Empty;
         IEnumerable<FacetProperty> _projections;
         public string FilterClause { get { return _query; } }
-        public NumericFacetFilterOperator()
+        public NumericFacetFilterOperators()
         {
             _projections = new List<FacetProperty> { FacetProperty.name, FacetProperty.count };
         }
@@ -20,15 +20,27 @@ namespace EPiServer.ContentGraph.Api.Facets
         /// </summary>
         /// <param name="values"></param>
         /// <returns>NumericFacetFilterOperator</returns>
-        public NumericFacetFilterOperator Ranges(params (long? from, long? to)[] values)
+        public NumericFacetFilterOperators Ranges(params (int? from, int? to)[] values)
         {
             string combineRanges = string.Join(',', values.Select(x => GetRange(x)));
             _query = _query.IsNullOrEmpty() ? $"ranges:[{combineRanges}]" : $",ranges:[{combineRanges}]";
             return this;
         }
-        public NumericFacetFilterOperator Ranges(params (float? from, float? to)[] values)
+        public NumericFacetFilterOperators Ranges(params (long? from, long? to)[] values)
         {
-            string combineRanges = string.Join(',', values.Select(x => $"{{from:{x.from},to:{x.to}}}"));
+            string combineRanges = string.Join(',', values.Select(x => GetRange(x)));
+            _query = _query.IsNullOrEmpty() ? $"ranges:[{combineRanges}]" : $",ranges:[{combineRanges}]";
+            return this;
+        }
+        public NumericFacetFilterOperators Ranges(params (float? from, float? to)[] values)
+        {
+            string combineRanges = string.Join(',', values.Select(x => GetRange(x)));
+            _query = _query.IsNullOrEmpty() ? $"ranges:[{combineRanges}]" : $",ranges:[{combineRanges}]";
+            return this;
+        }
+        public NumericFacetFilterOperators Ranges(params (double? from, double? to)[] values)
+        {
+            string combineRanges = string.Join(',', values.Select(x => GetRange(x)));
             _query = _query.IsNullOrEmpty() ? $"ranges:[{combineRanges}]" : $",ranges:[{combineRanges}]";
             return this;
         }
@@ -39,6 +51,20 @@ namespace EPiServer.ContentGraph.Api.Facets
             return this;
         }
         private string GetRange((long? from, long? to) range)
+        {
+            string query = string.Empty;
+            if (range.from.HasValue)
+            {
+                query = $"from:{range.from.Value}";
+            }
+            if (range.to.HasValue)
+            {
+                query += query.IsNullOrEmpty() ? $"to:{range.to.Value}" : $",to:{range.to.Value}";
+            }
+            query = query.IsNullOrEmpty() ? query : $"{{{query}}}";
+            return query;
+        }
+        private string GetRange((double? from, double? to) range)
         {
             string query = string.Empty;
             if (range.from.HasValue)

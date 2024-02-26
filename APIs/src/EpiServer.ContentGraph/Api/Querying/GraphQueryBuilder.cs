@@ -27,6 +27,7 @@ namespace EPiServer.ContentGraph.Api.Querying
         private const string RequestMethod = "POST";
         private const string UnCachedPath = "?cache=false";
         private Dictionary<string, FragmentBuilder> _fragmentBuilders;
+        private readonly List<string> typeQueries = new List<string>();
         public GraphQueryBuilder()
         {
             _optiGraphOptions = new OptiGraphOptions();
@@ -277,15 +278,32 @@ namespace EPiServer.ContentGraph.Api.Querying
         /// <returns></returns>
         public GraphQueryBuilder BuildQueries()
         {
-            StringBuilder stringBuilder = new StringBuilder($"query {_query.OperationName} {{{_query.Query}}}");
+            _query.Query = string.Empty;
+            StringBuilder stringBuilder = new StringBuilder();
+            if (typeQueries != null && typeQueries.Count > 0)
+            {
+                foreach (var typeQuery in typeQueries)
+                {
+                    if (stringBuilder.Length > 0)
+                    {
+                        stringBuilder.Append(" ").Append(typeQuery);
+                    }
+                    else
+                    {
+                        stringBuilder.Append(typeQuery);
+                    }
+                }
+                typeQueries.Clear();
+            }
+
+            _query.Query = $"query {_query.OperationName} {{{stringBuilder}}}";
             if (_fragmentBuilders != null)
             {
                 foreach (var fragment in _fragmentBuilders.Values)
                 {
-                    stringBuilder.Append($"\n{fragment.GetQuery().Query}");
+                    _query.Query += $"\n{fragment.GetQuery().Query}";
                 }
             }
-            _query.Query = stringBuilder.ToString();
             return this;
         }
         public GraphQLRequest GetQuery()
@@ -305,6 +323,11 @@ namespace EPiServer.ContentGraph.Api.Querying
                 Regex regex = new Regex(@"\?cache=\w*");
                 _optiGraphOptions.QueryPath = _optiGraphOptions.QueryPath.Replace(regex.Match(_optiGraphOptions.QueryPath).Value, UnCachedPath);
             }
+        }
+
+        public void AddQuery(string typeQuery)
+        {
+            typeQueries.Add(typeQuery);
         }
     }
 }
