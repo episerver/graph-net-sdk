@@ -18,7 +18,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
             var item3 = TestDataCreator.generateIndexActionJson("3", "en", new IndexActionData { ContentType = new[] { "HomePage" }, Id = "content3", NameSearchable = "Not exists priority", Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE, StartPublish = DateTime.Parse("2022-10-13T17:17:56Z", null, System.Globalization.DateTimeStyles.AdjustToUniversal) });
             var item4 = TestDataCreator.generateIndexActionJson("4", "en", new IndexActionData { ContentType = new[] { "HomePage" }, Id = "content4", NameSearchable = "Home 4", Status = TestDataCreator.STATUS_PUBLISHED, Priority = 300, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE, StartPublish = DateTime.Parse("2022-10-14T17:17:56Z", null, System.Globalization.DateTimeStyles.AdjustToUniversal) });
 
-            SetupData<HomePage>(item1 + item2 + item3 + item4);
+            SetupData<HomePage>(item1 + item2 + item3 + item4, "t1");
         }
         #region And filter
         [TestMethod]

@@ -15,7 +15,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
             var item2 = TestDataCreator.generateIndexActionJson("2", "en-GB", new IndexActionData { ContentType = new[] { "Content", "HomePage" }, Language = new TestSupport.Language { DisplayName = "English", Name = "en-GB" }, Id = "content2", NameSearchable = "Tim Cook", Author = "manv", Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
             var item3 = TestDataCreator.generateIndexActionJson("3", "en-US", new IndexActionData { ContentType = new[] { "Content", "HomePage" }, Language = new TestSupport.Language { DisplayName = "English", Name = "en-US" }, Id = "content3", NameSearchable = "Alan Turing", Author = "manv", Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
             var item4 = TestDataCreator.generateIndexActionJson("4", "en", new IndexActionData { ContentType = new[] { "Content", "HomePage" }, Language = new TestSupport.Language { DisplayName = "English", Name = "en" }, Id = "content4", NameSearchable = "Home 4", Priority = 300, IsSecret = false, Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
-            SetupData<HomePage>(item1 + item2 + item3 + item4);
+            SetupData<HomePage>(item1 + item2 + item3 + item4, "t7");
         }
         [TestMethod]
         public void search_with_fields_should_result_2_items()

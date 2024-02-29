@@ -19,7 +19,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
             var item3 = TestDataCreator.generateIndexActionJson("3", "en", new IndexActionData { ContentType = new[] { "HomePage" }, Id = "content3", NameSearchable = "Kiss", IsSecret = false, Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE, StartPublish = DateTime.Parse("2022-10-11T17:17:56Z", null, DateTimeStyles.AdjustToUniversal) });
             var item4 = TestDataCreator.generateIndexActionJson("4", "en", new IndexActionData { ContentType = new[] { "HomePage" }, Id = "content4", NameSearchable = "Beatles", Priority = 300, IsSecret = false, Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE, StartPublish = DateTime.Parse("1967-10-11T17:17:56Z", null, DateTimeStyles.AdjustToUniversal) });
 
-            SetupData<HomePage>(item1 + item2 + item3 + item4);
+            SetupData<HomePage>(item1 + item2 + item3 + item4, "t8");
         }
         [TestMethod]
         public void orderby_on_searchable_string_should_return_correct_order()

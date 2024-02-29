@@ -17,7 +17,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
             var item3 = TestDataCreator.generateIndexActionJson("3", "en", new IndexActionData { ContentType = new[] { "HomePage" }, Id = "myid3", NameSearchable = "Not exists priority", IsSecret = false, Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
             var item4 = TestDataCreator.generateIndexActionJson("4", "en", new IndexActionData { ContentType = new[] { "HomePage" }, Id = "notmyidandtheidtoolong", NameSearchable = "Home 4", Priority = 300, IsSecret = false, Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
 
-            SetupData<HomePage>(item1 + item2 + item3 + item4);
+            SetupData<HomePage>(item1 + item2 + item3 + item4, "t9");
         }
 		[TestMethod]
         public void autocomplete_id_contains_myid_should_result_3_phrases()

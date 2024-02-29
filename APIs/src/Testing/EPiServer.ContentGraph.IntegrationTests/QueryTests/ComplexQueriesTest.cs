@@ -27,7 +27,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 MainBodySearchable = "Semantic search is supported on searchable string fields, and for the full-text search operators contains and match. It is recommended to set fields that have a lot of content (such as the MainBody in the Optimizely CMS) as searchable to unlock the full-text search capabilities. Optimizely Graph uses a pre-trained model for semantic search.",
                 Priority = 0, IsSecret = false, Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
 
-            SetupData<HomePage>(item1 + item2 + item3);
+            SetupData<HomePage>(item1 + item2 + item3, "t2");
         }
 
         [TestCategory("Subtype test")]

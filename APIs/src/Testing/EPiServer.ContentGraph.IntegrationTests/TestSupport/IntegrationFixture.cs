@@ -201,15 +201,15 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
                 return false;
             }
         }
-        protected static void SetupData<T>(string indexingData)
+        protected static void SetupData<T>(string indexingData, string testId)
         {
             string path = $@"{WorkingDirectory}\TestingData\SimpleTypeMapping.json";
             using (StreamReader mappingReader = new StreamReader(path))
             {
                 string mapping = mappingReader.ReadToEnd();
-                ClearData<T>();
-                PushMapping(mapping);
-                BulkIndexing<T>(indexingData);
+                ClearData<T>(testId);
+                PushMapping(mapping, testId);
+                BulkIndexing<T>(indexingData, testId);
             }
         }
     }

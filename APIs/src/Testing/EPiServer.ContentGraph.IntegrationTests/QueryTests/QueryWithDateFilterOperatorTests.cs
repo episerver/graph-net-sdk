@@ -23,7 +23,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 StartPublish = DateTime.Parse("2022-11-11T05:17:56Z", null, DateTimeStyles.AdjustToUniversal), Status = TestDataCreator.STATUS_PUBLISHED,
                 RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
 
-            SetupData<HomePage>(item1 + item2 + item3);
+            SetupData<HomePage>(item1 + item2 + item3, "t10");
         }
         [TestMethod]
         public void search_startpublish_Equals_datetime_should_return_1_item()

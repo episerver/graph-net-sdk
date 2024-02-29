@@ -48,7 +48,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE
             });
 
-            SetupData<HomePage>(item1 + item2 + item3);
+            SetupData<HomePage>(item1 + item2 + item3, "t14");
         }
 
         [TestCategory("Subtype test")]
