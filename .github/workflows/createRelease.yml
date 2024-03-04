@@ -1,4 +1,4 @@
-name: NetCore| Build & Release
+name: Build & Release
 
 on:
   workflow_dispatch:
@@ -20,7 +20,7 @@ on:
         default: Build
         options:
           - Build
-          - Build + Upload T3
+          - Build + Upload package
 
       releaseOption:
         required: false
@@ -30,7 +30,7 @@ on:
         options:
           - None
           - PRE-RELEASE (release/** branches)
-          - RELEASE (master branch)
+          - RELEASE (main branch)
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -152,9 +152,9 @@ jobs:
     name: Publish NuGet Packages
     runs-on: [self-hosted, find]
     if: |
-      github.event.inputs.buildOptions == 'Build + Upload T3' ||
+      github.event.inputs.buildOptions == 'Build + Upload package' ||
       github.event.inputs.releaseOption == 'PRE-RELEASE (release/** branches)' ||
-      github.event.inputs.releaseOption == 'RELEASE (master branch)'
+      github.event.inputs.releaseOption == 'RELEASE (main branch)'
     needs: [manageVariable, build, unit_test, intergration_test]
     env:
       releaseVersion: ${{ needs.manageVariable.outputs.releaseVersion }}
@@ -181,7 +181,7 @@ jobs:
           path: artifacts
 
       - name: Publish Nuget Packages
-        if: github.ref == 'refs/heads/master' && github.event.inputs.releaseOption == 'RELEASE (master branch)'
+        if: github.ref == 'refs/heads/main' && github.event.inputs.releaseOption == 'RELEASE (main branch)'
         run: |
           $branch = "${{github.ref_name}}"
           $regexList = @(
@@ -281,7 +281,7 @@ jobs:
   creatGitHubRelease:
     name: Publish GitHub Release
     needs: [manageVariable, build, upload_T3]
-    if: github.ref == 'refs/heads/master' && github.event.inputs.releaseOption == 'RELEASE (master branch)'
+    if: github.ref == 'refs/heads/main' && github.event.inputs.releaseOption == 'RELEASE (main branch)'
     runs-on: windows-latest
     env:
       releaseVersion: ${{ needs.manageVariable.outputs.releaseVersion }}

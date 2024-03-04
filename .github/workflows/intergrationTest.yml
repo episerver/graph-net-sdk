@@ -1,4 +1,4 @@
-name: NetCore| _Intergration Test
+name: Intergration Test
 
 on:
   workflow_call:

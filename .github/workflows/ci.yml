@@ -1,4 +1,4 @@
-name: NetCore| Automation Test
+name: Automation Test
 
 on:
   workflow_dispatch:
@@ -16,7 +16,7 @@ on:
   pull_request:
     branches:
       - develop
-      - master
+      - main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
