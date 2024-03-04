@@ -9,6 +9,38 @@ There are other alternatives that can be utilized to use the Optimizely Graph li
 Before you contribute to this project, ensure you have the following installed:
 - .NET SDK 6+
 - SQL Server 2016 Express LocalDB ([download here](https://www.microsoft.com/en-us/sql-server/sql-server-downloads))
+### Runing Tests locally
+#### Run Unit tests
+From repository level:
+- Run `cd msbuild`
+- Run `powershell .\unitTest.ps1` if you're using Command Line or `.\unitTest.ps1` if PowerShell
+
+#### Run Integration tests
+- Configure appsettings.json file in `.\APIs\src\Testing\EPiServer.ContentGraph.IntegrationTests` to connect to GraphQL gateway.
+If appsettings.json was ready, from repository level:
+- Run `cd msbuild`
+- Run `powershell .\intergrationTest.ps1` if you're using Command Line or `.\intergrationTest.ps1` if PowerShell
+
+### Run Alloy template site
+- Configure appsettings.json file to connect to outside environments or your local environment. If you use your local environment, connect Alloy site to your local GraphQL gateway.
+- Run `dotnet run --launch-profile "Kestrel (Env: Development)"`
+- Go to [login](http://localhost:8000/Util/Login?ReturnUrl=/en/) page and login with account: `admin` and password: `Find@123` .
+- Goto [Optimizely Graph content synchronization job](http://localhost:8000/EPiServer/EPiServer.Cms.UI.Admin/default#/ScheduledJobs/detailScheduledJob/2fafdd39-cd9c-4849-8338-fcb8d1824f3e) then click `Start`.
+- After the job is completed, go to [Search page](http://localhost:8000/) and try your query.
+
+### Run Foundation template site
+- On the way...
+
+### Optimizely Graph Client Tool
+This tool supports for generating Optimizely Graph's schema to C# object models. You do not need to create models manually if install this tool.
+#### Install Optimizely Graph Client Tool
+From repository level:
+- Run `mkdir ogschema`
+- Run `cd ogschema`
+- Run `dotnet new tool-manifest`
+- Run `dotnet tool install Optimizely.ContentGraph.Client.Tools --local`
+- Run `dotnet ogschema path_to_your_appsettings.json path_to_store_your_models`
+When the last command is succeed you will see the models will be generated in file `GraphModels.cs` located in the `path_to_store_your_models` you have ran in last command.
 
 ### Contributing
 
