@@ -20,7 +20,6 @@ on:
         default: Build
         options:
           - Build
-          - Build + Upload package
 
       releaseOption:
         required: false
@@ -148,57 +147,9 @@ jobs:
     with:
       intergrationTest: ${{matrix.intergrationTest}}
 
-  upload_T3:
-    name: Publish NuGet Packages
-    runs-on: [self-hosted, find]
-    if: |
-      github.event.inputs.buildOptions == 'Build + Upload package' ||
-      github.event.inputs.releaseOption == 'PRE-RELEASE (release/** branches)' ||
-      github.event.inputs.releaseOption == 'RELEASE (main branch)'
-    needs: [manageVariable, build, unit_test, intergration_test]
-    env:
-      releaseVersion: ${{ needs.manageVariable.outputs.releaseVersion }}
-      packageVersion: ${{ needs.manageVariable.outputs.packageVersion }}
-      publishPackages: ${{ needs.manageVariable.outputs.publishPackages }}
-      release_sha: ${{ needs.manageVariable.outputs.release_sha }}
-    steps:
-      - name: Checkout without
-        uses: actions/checkout@v3
-        with:
-          clean: 'false'
-
-      - name: Create artifacts folder
-        run: |
-          if (Test-Path -Path "artifacts") {
-            Remove-Item -LiteralPath "artifacts" -Force -Recurse
-          }
-          New-Item -Path "artifacts" -ItemType Directory
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: Optimizely.Graph.Client-${{env.packageVersion}}
-          path: artifacts
-
-      - name: Publish Nuget Packages
-        if: github.ref == 'refs/heads/main' && github.event.inputs.releaseOption == 'RELEASE (main branch)'
-        run: |
-          $branch = "${{github.ref_name}}"
-          $regexList = @(
-              'Optimizely.Graph.Client.[0-9]+.[0-9]+.[0-9]+'
-            )
-
-          $sourceDirectory = '${{github.workspace}}\artifacts'
-          $destinationDirectory = '\\nuget.ep.se\Releases\thisweek'
-
-          foreach ($pattern in $regexList) {
-            $file = Get-ChildItem -Path "$sourceDirectory" -Recurse | Where-Object {$_.Name -match $pattern}
-            xcopy $file.FullName $destinationDirectory /Y
-          }
-
   creatPreRelease:
-    name: Create Jira Release
-    needs: [manageVariable, build, upload_T3]
+    name: Create Pre-Release
+    needs: [manageVariable, build]
     if: startsWith(github.ref, 'refs/heads/release') == true && github.event.inputs.releaseOption == 'PRE-RELEASE (release/** branches)'
     runs-on: windows-latest
     env:
@@ -280,7 +231,7 @@ jobs:
 
   creatGitHubRelease:
     name: Publish GitHub Release
-    needs: [manageVariable, build, upload_T3]
+    needs: [manageVariable, build]
     if: github.ref == 'refs/heads/main' && github.event.inputs.releaseOption == 'RELEASE (main branch)'
     runs-on: windows-latest
     env:

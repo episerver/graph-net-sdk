@@ -25,6 +25,7 @@ This README contains internal guidelines for managing the Optimizely Graph Clien
 For any questions or further clarifications, please contact the repository administrators.
 
 ## Releases
+
 ### Create a pre-release
 
  1. Create a new branch with name `release/$version_release`
@@ -33,10 +34,12 @@ For any questions or further clarifications, please contact the repository admin
  4. Goto GitHub Actions [Build & Release](https://github.com/episerver/graph-net-sdk/actions/workflows/createRelease.yml)
  5. Choose `Build` under `Build Options` and `PRE-RELEASE(release/**)` option under `Release Options`
  6. Hit `Run workflow` to build and create a pre-release package
+
 ### Create a release
 
  1. Update version for package in `msbuild/version.props` file under `PropertyGroup` tag
- 2. Commit, push, and create PR to `master` branch
+ 2. Commit, push, and create PR to `main` branch
  3. Goto GitHub Actions [Build & Release](https://github.com/episerver/graph-net-sdk/actions/workflows/createRelease.yml)
- 4. Choose `Build + Upload T3` under `Build Options` and `RELEASE(master branch)` option under `Release Options`
- 5. Hit `Run workflow` to build and create a release package. This package then will be uploaded to `Release this week` on T3
+ 4. Choose `Build` under `Build Options` and `RELEASE(main branch)` option under `Release Options`
+ 5. Hit `Run workflow` to build and create a release package.
+ 6. Copy the artifact manually to `Release this week` on T3.

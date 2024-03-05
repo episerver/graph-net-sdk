@@ -57,7 +57,7 @@ param(
     [switch] $Released,
 
     [Parameter(Mandatory = $false)]
-    [string] $DefaultPackage = "EPiServer.Find",
+    [string] $DefaultPackage = "Optimizely.Graph.Client",
 
     [Parameter(Mandatory = $false)]
     [string] $JiraProject = "FIND",
