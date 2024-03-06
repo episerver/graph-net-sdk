@@ -126,30 +126,21 @@ jobs:
     name: Unit test
     if: ${{ github.event.inputs.runUnitTest == 'true' }}
     uses: ./.github/workflows/unitTest.yml
-        # env:
-        #   unitTest: ${{ matrix.unitTest}}
 
   intergration_test:
     needs: [manageVariable, build]
     name: Intergrations test
     if: ${{ github.event.inputs.runIntergrationTest == 'true' }}
-    strategy:
-      matrix:
-        intergrationTest:
-          [
-            "EPiServer.ContentGraph.IntegrationTests"
-          ]
     uses: ./.github/workflows/intergrationTest.yml
     secrets:
-      EPISERVER_ACR_USR_PUSH: ${{ secrets.EPISERVER_ACR_USR_PUSH }}
-      EPISERVER_ACR_PWD_PUSH: ${{ secrets.EPISERVER_ACR_PWD_PUSH }}
-      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
-    with:
-      intergrationTest: ${{matrix.intergrationTest}}
+      GATEWAYADDRESS: ${{ secrets.GATEWAYADDRESS }}
+      APPKEY: ${{ secrets.APPKEY }}
+      SECRET: ${{ secrets.SECRET }}
+      SINGLEKEY: ${{ secrets.SINGLEKEY }}
 
   creatPreRelease:
     name: Create Pre-Release
-    needs: [manageVariable, build]
+    needs: [manageVariable, build, unit_test, intergration_test]
     if: startsWith(github.ref, 'refs/heads/release') == true && github.event.inputs.releaseOption == 'PRE-RELEASE (release/** branches)'
     runs-on: windows-latest
     env:
@@ -170,7 +161,7 @@ jobs:
         shell: powershell
         run: |
           Write-Output "Prepare release note"
-          APIs\buildscripts\github\GetReleaseNotes.ps1 | Set-Content -Path "APIs\buildscripts\github\ReleaseNotes.txt" -Force
+          msbuild\github\GetReleaseNotes.ps1 | Set-Content -Path "msbuild\github\ReleaseNotes.txt" -Force
 
       - name: Create Github Release
         id: create_github_release
@@ -181,7 +172,7 @@ jobs:
           tag_name: ${{ env.releaseVersion }}
           release_name: ${{ env.releaseVersion }}
           commitish: ${{ env.release_sha }}
-          body_path: "APIs/buildscripts/github/ReleaseNotes.txt"
+          body_path: "msbuild/github/ReleaseNotes.txt"
           draft: false
           prerelease: true
 
@@ -216,22 +207,9 @@ jobs:
           asset_name: Optimizely.Graph.Client-${{ env.packageVersion }}.zip
           asset_content_type: application/zip
 
-      - name: Create Jira release
-        shell: powershell
-        run: |
-          $jiraReleaseParams = @{
-            JiraUrl    = '${{secrets.JIRA_URL}}'
-            Username   = '${{secrets.JIRA_USERNAME}}'
-            Password   = '${{secrets.JIRA_PASSWORD}}'
-            PreVersion = "${{env.releaseVersion}}"
-          }
-
-          Write-Output "Create Jira release"
-          APIs\buildscripts\SetJiraRelease.ps1 @jiraReleaseParams
-
   creatGitHubRelease:
     name: Publish GitHub Release
-    needs: [manageVariable, build]
+    needs: [manageVariable, build, unit_test, intergration_test]
     if: github.ref == 'refs/heads/main' && github.event.inputs.releaseOption == 'RELEASE (main branch)'
     runs-on: windows-latest
     env:

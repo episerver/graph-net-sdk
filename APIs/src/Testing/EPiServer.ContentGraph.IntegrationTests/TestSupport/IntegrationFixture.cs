@@ -203,6 +203,8 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
         }
         protected static void SetupData<T>(string indexingData, string testId)
         {
+            //Hardcode this id because the query will looking data in all sources. Setup data on multiple source didn't help
+            testId = "test";
             string path = $@"{WorkingDirectory}\TestingData\SimpleTypeMapping.json";
             using (StreamReader mappingReader = new StreamReader(path))
             {

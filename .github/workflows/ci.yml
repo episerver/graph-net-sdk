@@ -62,19 +62,12 @@ jobs:
     needs: [manageVariable]
     name: Intergrations Test
     if: github.event_name == 'pull_request' || ${{ github.event.inputs.runIntergrationTest == 'true' }}
-    strategy:
-      matrix:
-        intergrationTest:
-          [
-            "EPiServer.ContentGraph.IntegrationTests"
-          ]
     uses: ./.github/workflows/intergrationTest.yml
     secrets:
-      EPISERVER_ACR_USR_PUSH: ${{ secrets.EPISERVER_ACR_USR_PUSH }}
-      EPISERVER_ACR_PWD_PUSH: ${{ secrets.EPISERVER_ACR_PWD_PUSH }}
-      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
-    with:
-      intergrationTest: ${{ matrix.intergrationTest}}
+      GATEWAYADDRESS: ${{ secrets.GATEWAYADDRESS }}
+      APPKEY: ${{ secrets.APPKEY }}
+      SECRET: ${{ secrets.SECRET }}
+      SINGLEKEY: ${{ secrets.SINGLEKEY }}
 
   label:
     name: 🏷️ label
