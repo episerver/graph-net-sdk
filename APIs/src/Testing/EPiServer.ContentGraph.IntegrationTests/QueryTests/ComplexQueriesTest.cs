@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
 {
     [TestClass]
+    [Ignore("Duplicated")]
     public class ComplexQueriesTest : IntegrationFixture
     {
         [ClassInitialize]
