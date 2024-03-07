@@ -1,0 +1,27 @@
+name: Unit Test
+
+on:
+  workflow_call:
+
+env:
+  acrName: "episerver"
+
+jobs:
+  unit_test:
+    name: Unit Test
+    runs-on: windows-latest
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v3
+
+      - name: Build and run tests
+        if: success()
+        run: msbuild\unitTest.ps1 -configuration "Release" -verbosity "normal"
+
+      - name: Show test result
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: UT-TestResult
+          path: TestResults/*.trx
+          reporter: dotnet-trx

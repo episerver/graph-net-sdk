@@ -1,0 +1,86 @@
+﻿{
+  "label": "CMS",
+  "languages": [
+    "en",
+    "en-GB",
+    "en-US"
+  ],
+  "propertyTypes": {
+    "Language": {
+      "properties": {
+        "DisplayName": {
+          "type": "String"
+        },
+        "Name": {
+          "type": "String"
+        }
+      }
+    }
+  },
+  "contentTypes": {
+    "Content": {
+      "abstract": true,
+      "contentType": [],
+      "properties": {
+        "Id": {
+          "type": "String"
+        },
+        "Author": {
+          "type": "String"
+        },
+        "Name": {
+          "type": "String",
+          "searchable": true
+        },
+        "Status": {
+          "type": "String"
+        },
+        "ContentType": {
+          "type": "[String]"
+        }
+      }
+    },
+    "HomePage": {
+      "contentType": [
+        "Content"
+      ],
+      "properties": {
+        "Id": {
+          "type": "String"
+        },
+        "Name": {
+          "type": "String",
+          "searchable": true
+        },
+        "MainBody": {
+          "type": "String",
+          "searchable": true
+        },
+        "MainContentArea": {
+          "type": "String"
+        },
+        "Language": {
+          "type": "Language"
+        },
+        "StartPublish": {
+          "type": "Date"
+        },
+        "Priority": {
+          "type": "Int"
+        },
+        "Author": {
+          "type": "String"
+        },
+        "Status": {
+          "type": "String"
+        },
+        "IsSecret": {
+          "type": "Boolean"
+        },
+        "ContentType": {
+          "type": "[String]"
+        }
+      }
+    }
+  }
+}

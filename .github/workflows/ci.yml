@@ -1,0 +1,129 @@
+name: Automation Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      runUnitTest:
+        type: boolean
+        description: Run Unit Tests
+        default: true
+
+      runIntergrationTest:
+        type: boolean
+        description: Run Intergrations Tests
+        default: true
+
+  pull_request:
+    branches:
+      - develop
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  WindowsSDKPath: 'C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools'
+
+jobs:
+  manageVariable:
+    name: Manage Variables
+    runs-on: windows-latest
+    outputs:
+      packageVersion: ${{ env.packageVersion }}
+      publishPackages: ${{ env.publishPackages }}
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Apply versioning
+        if: success()
+        uses: ./.github/actions/env
+
+      - name: Package information
+        run: |
+          Write-Host "Release version: ${{ env.releaseVersion }}"
+          Write-Host "Package version: ${{ env.packageVersion }}"
+          Write-Host "Publish package: ${{ env.publishPackages }}"
+          Write-Host "Build Suffix: ${{ env.buildSuffix }}"
+          Write-Host "DNX_BUILD_VERSION: ${{ env.DNX_BUILD_VERSION  }}"
+          Write-output "::notice title=Build branch::${{ github.ref_name }}"
+          Write-output "::notice title=Release version::${{ env.releaseVersion }}"
+          Write-output "::notice title=Packages version::${{ env.packageVersion }}"
+          Write-output "::notice title=Publish packages::${{ env.publishPackages }}"
+
+  unit_test:
+    needs: [manageVariable]
+    name: Unit test
+    if: github.event_name == 'pull_request' || ${{ github.event.inputs.runUnitTest == 'true' }}
+    uses: ./.github/workflows/unitTest.yml
+
+  intergration_test:
+    needs: [manageVariable]
+    name: Intergrations Test
+    if: github.event_name == 'pull_request' || ${{ github.event.inputs.runIntergrationTest == 'true' }}
+    uses: ./.github/workflows/intergrationTest.yml
+    secrets:
+      GATEWAYADDRESS: ${{ secrets.GATEWAYADDRESS }}
+      APPKEY: ${{ secrets.APPKEY }}
+      SECRET: ${{ secrets.SECRET }}
+      SINGLEKEY: ${{ secrets.SINGLEKEY }}
+
+  label:
+    name: 🏷️ label
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    needs: [unit_test, intergration_test] #this ensures that we only trigger the label job if ci is successful
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set Variables
+        run: |
+          if [[ $GITHUB_BASE_REF = 'develop' ]]
+          then
+            echo "prLables=develop" >> $GITHUB_ENV
+            echo ${{ env.prLables }}
+          else
+            echo "prLables=release" >> $GITHUB_ENV
+            echo ${{ env.prLables }}
+          fi
+
+      - name: Lable pull request
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.issues.addLabels({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ['${{ env.prLables }}']
+            })
+
+  comment:
+    name: ✍️ comment
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    needs: [label]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Comment on the result
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `
+              Great job **@${context.payload.sender.login}**! Your CI passed, and the PR has been automatically labelled.
+
+              Once ready, we will merge this PR to trigger the next part of the automation :rocket:
+              `
+            })

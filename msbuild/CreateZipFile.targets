@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk.Web">
+    <PropertyGroup>
+        <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\Tools\Assembly\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
+        <MSBuildCommunityTasksLib>MSBuild.Community.Tasks.dll</MSBuildCommunityTasksLib>
+    </PropertyGroup>
+    <PropertyGroup>
+        <AlloyFolder>$(MSBuildProjectDirectory)\..\APIs\src\Templates\Alloy</AlloyFolder>
+        <FileName>AlloyMvcTemplates</FileName>
+        <ProjectName>$(FileName).csproj</ProjectName>
+        <TmpFolder>$(AlloyFolder)\tmp</TmpFolder>
+        <InputFile>$(TmpFolder)\$(ProjectName)</InputFile>
+        <OutputFile>$(TmpFolder)\$(ProjectName)</OutputFile>
+        <StartUpFile>$(TmpFolder)\StartUp.cs</StartUpFile>
+        <NugetConfigFile>$(TmpFolder)\NuGet.config</NugetConfigFile>
+    </PropertyGroup>
+    <ItemGroup>
+        <SourceFiles Include="$(AlloyFolder)\**\*.*" Exclude="$(AlloyFolder)\**\bin\**\*.*;$(AlloyFolder)\**\obj\**\*.*;$(AlloyFolder)\**\*.suo;
+        $(AlloyFolder)\**\tmp\**\*.*;$(AlloyFolder)\ProvisionDatabase_MVC.cs;$(AlloyFolder)\EPiServer.Templates.Alloy.nuspec" />
+        <ZipFileName Include="$(ProjectDirectory)..\artifacts\packages\$(FileName).zip"/>
+        <XdtFiles Include="xdt\$(ProjectName).xdt"/>
+    </ItemGroup>
+
+    <Target Name="CopyFile" BeforeTargets ="CreateZipFile">
+        <Copy SourceFiles="@(SourceFiles)" DestinationFolder="$(TmpFolder)\%(RecursiveDir)" />
+        <Copy SourceFiles="$(MSBuildProjectDirectory)\..\APIs\src\NuGet.config" DestinationFolder="$(TmpFolder)" />
+        <Copy SourceFiles="$(MSBuildProjectDirectory)\..\msbuild\TemplateFiles\appsettings.json" DestinationFiles="$(TmpFolder)\appsettings.json" />
+    </Target>
+    <Target Name="DeleteOldFile" AfterTargets="CopyFile">
+        <Delete Files="@(ZipFileName)" />
+    </Target>
+    <Target Name="Transform" AfterTargets="DeleteOldFile">
+        <TransformXml Source="$(InputFile)" Transform="@(XdtFiles)" Destination="$(OutputFile)" />
+    </Target>
+    <Target Name="ReplaceFile" AfterTargets="Transform">
+        <WriteLinesToFile File="$(OutputFile)" Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('FINDVersion','$(findVersion)'))" Overwrite="true"/>
+        <WriteLinesToFile File="$(OutputFile)" Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('CoreVersion','$(cmsCoreVersion)'))" Overwrite="true"/>
+        <WriteLinesToFile File="$(OutputFile)" Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('CMSVersion','$(cmsUIVersion)'))" Overwrite="true"/>
+        <WriteLinesToFile File="$(OutputFile)" Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('CGVersion','$(cgVersion)'))" Overwrite="true"/>
+        <WriteLinesToFile File="$(OutputFile)" Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('CDVersion','$(cdVersion)'))" Overwrite="true"/>
+        <WriteLinesToFile File="$(OutputFile)" Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('NewtonsoftVersion','$(newtonsoftVersion)'))" Overwrite="true"/>
+    </Target>
+    <Target Name="CreateZipFile" AfterTargets="Transform">
+        <ItemGroup>
+            <TmpFiles Include="$(TmpFolder)"/>
+        </ItemGroup>
+        <ZipDirectory SourceDirectory="@(TmpFiles)" DestinationFile="@(ZipFileName)" Overwrite="true"/>
+    </Target>
+    <Target Name="RemoveTmpFolder" AfterTargets="CreateZipFile">
+        <RemoveDir Directories="$(TmpFolder)" />
+    </Target>
+</Project>

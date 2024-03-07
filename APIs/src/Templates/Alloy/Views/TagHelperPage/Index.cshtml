@@ -1,0 +1,24 @@
+﻿@using AlloyTemplates
+@model PageViewModel<TagHelperPage>
+
+@{ Layout = "~/Views/Shared/Layouts/_LeftNavigation.cshtml"; }
+
+<h2>Tag Helper</h2>
+<h5>@("<h3 epi-property=\"CurrentPage.PageName\" />")</h5>
+<h3 epi-property="CurrentPage.PageName" />
+<h5>@("<img epi-property=\"CurrentPage.PageImage\" />")</h5>
+<img epi-property="CurrentPage.PageImage" />
+<h5>@("<p class=\"introduction\" epi-property=\"CurrentPage.MetaDescription\" />")</h5>
+<p class="introduction" epi-property="CurrentPage.MetaDescription" />
+<h5>@("<div class=\"row span8 clearfix\" epi-property=\"CurrentPage.MainBody\"></div>")</h5>
+<div class="row">
+    <div class="span8 clearfix" epi-property="CurrentPage.MainBody" />
+</div>
+<h5>@("<div class=\"row\" epi-property=\"CurrentPage.MainContentArea\" epi-template-tag=\"@Global.ContentAreaTags.TwoThirdsWidth\"></div>")</h5>
+<div class="row" epi-property="CurrentPage.MainContentArea" epi-template-tag="@Global.ContentAreaTags.TwoThirdsWidth" />
+<h5>@("<a epi-property=\"CurrentPage.Url\" />")</h5>
+<a epi-property="CurrentPage.Url" />
+<h5>@("<div epi-property=\"CurrentPage.Link\" />")</h5>
+<div epi-property="CurrentPage.Link" />
+<h5>@("<a epi-property=\"CurrentPage.Link\" />")</h5>
+<a epi-property="CurrentPage.Link" />

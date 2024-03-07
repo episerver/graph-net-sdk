@@ -1,0 +1,122 @@
+@using EPiServer.ContentGraph.Helpers.Text
+@using EPiServer.Editor
+@using EPiServer.Security
+@model SearchContentModel
+
+@{
+    Layout = "~/Views/Shared/Layouts/_TwoPlusOne.cshtml";
+}
+
+@if (Model.Hits != null)
+{
+    <div class="row">
+        <div class="span8 grayHead">
+            <h2>@Html.Translate("/searchpagetemplate/result")</h2>
+            <p>
+                @Html.Translate("/searchpagetemplate/searchfor") <i>@Model.SearchedQuery</i>
+                @Html.Translate("/searchpagetemplate/resultedin")
+                @if (Model.SearchedQuery.IsNotNullOrEmpty() && Model.NumberOfHits > 0)
+                {
+                    @Model.NumberOfHits
+                    @Html.Raw(" ")
+                    @Html.Translate("/searchpagetemplate/hits")
+
+                    <script type="text/javascript">relatedQuery($("#q").val(), @Model.NumberOfHits)</script>
+                }
+                @if (Model.NumberOfHits <= 0)
+                {
+                    @Html.Translate("/searchpagetemplate/zero")
+                    @Html.Raw(" ")
+                    @Html.Translate("/searchpagetemplate/hits")
+
+                    <script type="text/javascript">spellcheck($("#q").val(), @Model.NumberOfHits)</script>
+                }
+                <div id="suggestion" style="margin: 1%;"></div>
+            </p>
+        </div>
+
+        @*Display search results here*@
+        <div class="span6 SearchResults">
+           @foreach (var hit in Model.Hits)
+            {
+                <div class="listResult">
+                    <h3><a href="@hit.Url">@hit.Title</a></h3>
+                    <p>@hit.Excerpt</p>
+                    <hr />
+                </div>
+            }
+        </div>
+
+        @if (Model.NumberOfHits > 0)
+        {
+            @*Sidebar in which facets/filter are shown*@
+            <div class="span2">
+                <div class="well">
+                    <h2>@Model.FacetName</h2>
+                    <ul class="nav nav-list">
+
+                        @*Link for clearing section filter*@
+                        <li @Html.Raw(string.IsNullOrWhiteSpace(@Model.FacetTerm) ? "class=\"active\" " : "")>
+                            <a href="@Model.GetFacetFilter("")"> All terms (@Model.Facets.Count())</a>
+                        </li>
+
+                        @*Display number of hits per section with link for filtering by section*@
+                        @foreach (var sectionGroup in Model.Facets)
+                        {
+                            <li @Html.Raw(@sectionGroup.Name == Model.FacetTerm ? "class=\"active\" " : "")>
+                                <a href="@Model.GetFacetFilter(sectionGroup.Name)">@sectionGroup.Name (@sectionGroup.Count)</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        }
+        @*Display paging controls*@
+        <div class="span8 pagination pagination-centered">
+            <ul>
+                @*Link to the previous paging page*@
+                @if (Model.PagingPage == 1)
+                {
+                    <li class="disabled">
+                        <a>&laquo; </a>
+                    </li>
+                }
+                else
+                {
+                    <li>
+                        <a href="@Model.GetPageUrl(@Model.PagingPage - 1)">&laquo; </a>
+                    </li>
+                }
+                @for (int pageNumber = 1; pageNumber <= @Model.TotalPages; pageNumber++)
+                    {
+                        if (@Model.PagingPage == pageNumber)
+                        {
+                            <li class="active">
+                                <a href="@Model.GetPageUrl(pageNumber)">@pageNumber</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li>
+                                <a href="@Model.GetPageUrl(pageNumber)">@pageNumber</a>
+                            </li>
+                        }
+                 }
+
+                @*Link to the next paging page*@
+                @if (Model.PagingPage == @Model.TotalPages)
+                {
+                    <li class="disabled">
+                        <a>&raquo;</a>
+                    </li>
+                }
+                else
+                {
+                    <li>
+                        <a href="@Model.GetPageUrl(@Model.PagingPage+1)">&raquo;</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+}

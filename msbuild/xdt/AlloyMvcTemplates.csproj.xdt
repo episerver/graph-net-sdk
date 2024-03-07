@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+    <Import xdt:Transform="RemoveAll" />
+    <ItemGroup>
+        <ProjectReference xdt:Transform="RemoveAll" />
+        <PackageReference xdt:Transform="Remove" xdt:Locator="Match(Include)" Include="EPiServer.CMS" />
+        <PackageReference xdt:Transform="Remove" xdt:Locator="Match(Include)" Include="Newtonsoft.Json" />
+        <PackageReference xdt:Transform="Remove" xdt:Locator="Match(Include)" Include="Optimizely.ContentGraph.Cms" />
+        <PackageReference xdt:Transform="Remove" xdt:Locator="Match(Include)" Include="EPiServer.ContentDeliveryApi.Cms" />
+        <PackageReference xdt:Transform="Insert" Include="EPiServer.CMS" Version="CMSVersion" />
+        <PackageReference xdt:Transform="Insert" Include="Optimizely.ContentGraph.Cms" Version="CGVersion" />
+        <PackageReference xdt:Transform="Insert" Include="EPiServer.ContentDeliveryApi.Cms" Version="CDVersion" />
+        <PackageReference xdt:Transform="Insert" Include="Newtonsoft.Json" Version="NewtonsoftVersion" />
+    </ItemGroup>
+</Project>
