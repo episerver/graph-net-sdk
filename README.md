@@ -35,10 +35,10 @@ If appsettings.json was ready, from repository level:
 This tool supports for generating Optimizely Graph's schema to C# object models. You do not need to create models manually if install this tool.
 #### Install Optimizely Graph Client Tool
 From repository level:
-- Run `mkdir ogschema`
-- Run `cd ogschema`
+- Run `mkdir ogtools`
+- Run `cd ogtools`
 - Run `dotnet new tool-manifest`
-- Run `dotnet tool install Optimizely.ContentGraph.Client.Tools --local`
+- Run `dotnet tool install Optimizely.Graph.Client.Tools --local`
 - Run `dotnet ogschema path_to_your_appsettings.json path_to_store_your_models`
 When the last command is succeed you will see the models will be generated in file `GraphModels.cs` located in the `path_to_store_your_models` you have ran in last command.
 
