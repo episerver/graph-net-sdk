@@ -30,6 +30,10 @@ namespace EPiServer.ContentGraph.Extensions
         {
             return typeQueryBuilder.Field(FIELDS.TYPE_NAME);
         }
+        public static TypeQueryBuilder<T> GetFullText<T>(this TypeQueryBuilder<T> typeQueryBuilder)
+        {
+            return typeQueryBuilder.Field(FIELDS.FULLTEXT);
+        }
         #endregion
 
         #region Find adaptation
@@ -37,7 +41,7 @@ namespace EPiServer.ContentGraph.Extensions
         /// Using synonym for the full text search.
         /// </summary>
         /// <param name="synonyms">The slot of synonym you was config on the Graph server. It can be ONE or TWO or both.</param>
-        public static TypeQueryBuilder<T> UsingSynonym<T>(this TypeQueryBuilder<T> typeQueryBuilder, params Synonyms[] synonyms)
+        public static TypeQueryBuilder<T> UsingSynonyms<T>(this TypeQueryBuilder<T> typeQueryBuilder, params Synonyms[] synonyms)
         {
             if (synonyms != null && synonyms.Length > 0)
             {

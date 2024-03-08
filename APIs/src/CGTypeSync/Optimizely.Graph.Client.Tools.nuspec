@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <id>Optimizely.ContentGraph.Client.Tools</id>
+    <id>Optimizely.Graph.Client.Tools</id>
     <version>$version$</version>
     <title>Optimizely Graph Client tool</title>
     <authors>Optimizely</authors>
@@ -20,7 +20,7 @@
   </metadata>
   <files>
     <file src="CGTypeSync\license.txt" target="" />
-    <file src="CGTypeSync\bin\$Configuration$\net6.0\Optimizely.Graph.Client.Tools.dll" target="lib\net6.0" />
-    <file src="CGTypeSync\bin\$Configuration$\net6.0\Optimizely.Graph.Client.Tools.exe" target="lib\net6.0" />
+    <file src="CGTypeSync\bin\$Configuration$\net6.0\Optimizely.ContentGraph.Client.Tools.dll" target="lib\net6.0" />
+    <file src="CGTypeSync\bin\$Configuration$\net6.0\Optimizely.ContentGraph.Client.Tools.exe" target="lib\net6.0" />
   </files>
 </package>
