@@ -2,7 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System.Text;
 
-namespace Optimizely.ContentGraph.Client.Tools
+namespace Optimizely.Graph.Client.Tools
 {
     public class Program
     {
