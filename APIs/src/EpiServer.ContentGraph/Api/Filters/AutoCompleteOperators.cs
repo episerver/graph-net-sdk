@@ -5,6 +5,10 @@ namespace EPiServer.ContentGraph.Api.Autocomplete
 {
     public class AutoCompleteOperators : IFilterOperator
     {
+        public static AutoCompleteOperators Create()
+        {
+            return new AutoCompleteOperators();
+        }
         string _query = string.Empty;
 
         public string Query => _query;

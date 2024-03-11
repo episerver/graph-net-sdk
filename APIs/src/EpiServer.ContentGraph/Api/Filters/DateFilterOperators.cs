@@ -6,6 +6,10 @@ namespace EPiServer.ContentGraph.Api.Filters
     {
         string _query = string.Empty;
         public string Query => _query;
+        public static DateFilterOperators Create()
+        {
+            return new DateFilterOperators();
+        }
         public DateFilterOperators Boost(int value)
         {
             _query += _query.IsNullOrEmpty() ? $"boost: {value}" : $",boost: {value}";

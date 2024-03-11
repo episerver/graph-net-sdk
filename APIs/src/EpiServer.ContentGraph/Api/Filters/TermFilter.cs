@@ -2,7 +2,7 @@
 
 namespace EPiServer.ContentGraph.Api.Filters
 {
-    internal class TermFilter: Filter
+    public class TermFilter: Filter
     {
         string _field = string.Empty;
         IFilterOperator _filterOperator;

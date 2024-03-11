@@ -55,13 +55,13 @@ namespace EPiServer.ContentGraph.Api.Querying
             if (!propertyName.IsNullOrEmpty())
             {
                 string clonedPropName = ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName);
-                if (graphObject.SelectItems.IsNullOrEmpty())
+                if (graphObject.SelectItems.Length.Equals(0))
                 {
-                    graphObject.SelectItems = $"{clonedPropName}";
+                    graphObject.SelectItems.Append($"{clonedPropName}");
                 }
                 else
                 {
-                    graphObject.SelectItems += $" {clonedPropName}";
+                    graphObject.SelectItems.Append($" {clonedPropName}");
                 }
             }
 
@@ -73,9 +73,12 @@ namespace EPiServer.ContentGraph.Api.Querying
             string linkItems = link.GetQuery()?.Query ?? string.Empty;
             if (!linkItems.IsNullOrEmpty())
             {
-                graphObject.SelectItems += graphObject.SelectItems.IsNullOrEmpty() ?
+                graphObject.SelectItems
+                .Append(
+                    graphObject.SelectItems.Length.Equals(0) ?
                     $"_link{{{linkItems}}}" :
-                    $" _link{{{linkItems}}}";
+                    $" _link{{{linkItems}}}"
+                );
             }
             return this;
         }
@@ -86,9 +89,12 @@ namespace EPiServer.ContentGraph.Api.Querying
             string childrenItems = children.GetQuery()?.Query ?? string.Empty;
             if (!childrenItems.IsNullOrEmpty())
             {
-                graphObject.SelectItems += graphObject.SelectItems.IsNullOrEmpty() ?
+                graphObject.SelectItems
+                .Append(
+                    graphObject.SelectItems.Length.Equals(0) ?
                     $"_children{{{childrenItems}}}" :
-                    $" _children{{{childrenItems}}}";
+                    $" _children{{{childrenItems}}}"
+                );
             }
 
             return this;
@@ -105,7 +111,7 @@ namespace EPiServer.ContentGraph.Api.Querying
         protected virtual BaseTypeQueryBuilder Fragment(FragmentBuilder fragment)
         {
             fragment.ValidateNotNullArgument("fragment");
-            graphObject.SelectItems += graphObject.SelectItems.IsNullOrEmpty() ? $"...{fragment.GetName()}" : $" ...{fragment.GetName()}";
+            graphObject.SelectItems.Append(graphObject.SelectItems.Length.Equals(0) ? $"...{fragment.GetName()}" : $" ...{fragment.GetName()}");
             Parent?.AddFragment(fragment);
             return this;
         }

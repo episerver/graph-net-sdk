@@ -7,6 +7,10 @@ namespace EPiServer.ContentGraph.Api.Filters
     {
         string _query = string.Empty;
         public string Query => _query;
+        public static StringFilterOperators Create()
+        {
+            return new StringFilterOperators();
+        }
         /// <summary>
         /// Only for searchable field
         /// </summary>

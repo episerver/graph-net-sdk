@@ -1,0 +1,450 @@
+2024-02-05 14:12:26.460 +07:00 [WRN] No store type was specified for the decimal property 'ConvertedTotal' on entity type 'DalKeyFinancialResult'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2024-02-05 14:12:26.503 +07:00 [WRN] No store type was specified for the decimal property 'Total' on entity type 'DalKeyFinancialResult'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2024-02-05 14:12:28.847 +07:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2024-02-05 14:12:33.638 +07:00 [WRN] The Find indexing job is unfinished. We might get unexpected exception.
+2024-02-05 14:13:26.902 +07:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2024-02-05 14:15:18.716 +07:00 [WRN] Properties with same name "Categories" are of different types: 
+2024-02-05 14:15:18.716 +07:00 [WRN] - Types: [ContentModelReference],GenericNodeCategories,BundleContentCategories,PackageContentCategories,ProductContentCategories,VariationContentCategories,NodeContentCategories,DynamicProductCategories,GenericBundleCategories,GenericVariantCategories,GenericProductCategories,GenericPackageCategories,DynamicVariantCategories
+2024-02-05 14:15:18.716 +07:00 [WRN] - Content types:
+2024-02-05 14:15:18.718 +07:00 [WRN] 		ProductSearchBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		SubOrganizationPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		QuickOrderPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		OrganizationPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		OrdersPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		BudgetingPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		SubscriptionHistoryPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		SubscriptionDetailPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		ResetPasswordMailPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		UsersPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		ResetPasswordPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		OrderHistoryPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		OrderDetailsPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		OrderConfirmationPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		GiftCardPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		CreditCardPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		BookmarksPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		AddressBookPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		ProfilePage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		CartPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		SharedCartPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		StorePage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		StandardPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		OrderPadsPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		SearchResultPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		SalesPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		PersonList (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		PersonPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		NewProductsPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		WishListPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		CheckoutPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		OrderConfirmationMailPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		BlogItemPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		BlogListPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		TagPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		LocationListPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		LocationItemPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		TwoColumnLandingPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		ThreeColumnLandingPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		LandingPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		HomePage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		CalendarEventPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		CommunityPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		CollectionPage (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		PageListBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		OrderSearchBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		NavigationBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		MembershipDisplayBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		MembershipAffiliationBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		LikeButtonBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		HeroBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		GoogleMapsBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		FeedBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		FacebookBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		ElevatedRoleBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		ContainerBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		QuickOrderBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		OrderHistoryBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		FilterActivitiesBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		FilterContinentsBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		FilterDistancesBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		FilterTemperaturesBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		CalendarBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		ProductHeroBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		YouTubeBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		VideoBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		TwitterBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		TextBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		TeaserBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		SubscriptionBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		RssReaderBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		RatingBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		VimeoBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		CommentsBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		HealthChatbotBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		CategoryBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		BreadcrumbBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		CarouselBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		ButtonBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		CallToActionBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		BootstrapCardBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		AssetsDownloadLinksBlock (type [ContentModelReference])
+2024-02-05 14:15:18.718 +07:00 [WRN] 		BundleContent (type BundleContentCategories)
+2024-02-05 14:15:18.718 +07:00 [WRN] 		DynamicProduct (type DynamicProductCategories)
+2024-02-05 14:15:18.718 +07:00 [WRN] 		DynamicVariant (type DynamicVariantCategories)
+2024-02-05 14:15:18.718 +07:00 [WRN] 		GenericBundle (type GenericBundleCategories)
+2024-02-05 14:15:18.718 +07:00 [WRN] 		GenericNode (type GenericNodeCategories)
+2024-02-05 14:15:18.718 +07:00 [WRN] 		GenericPackage (type GenericPackageCategories)
+2024-02-05 14:15:18.718 +07:00 [WRN] 		GenericProduct (type GenericProductCategories)
+2024-02-05 14:15:18.718 +07:00 [WRN] 		GenericVariant (type GenericVariantCategories)
+2024-02-05 14:15:18.718 +07:00 [WRN] 		NodeContent (type NodeContentCategories)
+2024-02-05 14:15:18.718 +07:00 [WRN] 		PackageContent (type PackageContentCategories)
+2024-02-05 14:15:18.718 +07:00 [WRN] 		ProductContent (type ProductContentCategories)
+2024-02-05 14:15:18.718 +07:00 [WRN] 		VariationContent (type VariationContentCategories)
+2024-02-05 14:15:18.719 +07:00 [WRN] Properties with same name "SortOrder" are of different types: 
+2024-02-05 14:15:18.719 +07:00 [WRN] - Types: String,Int
+2024-02-05 14:15:18.719 +07:00 [WRN] - Content types:
+2024-02-05 14:15:18.719 +07:00 [WRN] 		CustomViewConfigurationBlock (type Int)
+2024-02-05 14:15:18.719 +07:00 [WRN] 		BlogListPage (type Int)
+2024-02-05 14:15:18.719 +07:00 [WRN] 		PageListBlock (type Int)
+2024-02-05 14:15:18.719 +07:00 [WRN] 		ProductSearchBlock (type String)
+2024-02-05 14:15:18.720 +07:00 [WRN] Properties with same name "Height" are of different types: 
+2024-02-05 14:15:18.720 +07:00 [WRN] - Types: Int,Float,String
+2024-02-05 14:15:18.720 +07:00 [WRN] - Content types:
+2024-02-05 14:15:18.720 +07:00 [WRN] 		ShippingDimensions (type Float)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		GoogleMapsBlock (type Float)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		FoundationPdfFile (type Int)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		FacebookBlock (type Int)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		TeaserBlock (type String)
+2024-02-05 14:15:18.720 +07:00 [WRN] Properties with same name "SeoInformation" are of different types: 
+2024-02-05 14:15:18.720 +07:00 [WRN] - Types: GenericNodeSeoInformation,BundleContentSeoInformation,PackageContentSeoInformation,ProductContentSeoInformation,VariationContentSeoInformation,NodeContentSeoInformation,DynamicProductSeoInformation,GenericBundleSeoInformation,GenericVariantSeoInformation,GenericProductSeoInformation,GenericPackageSeoInformation,DynamicVariantSeoInformation
+2024-02-05 14:15:18.720 +07:00 [WRN] - Content types:
+2024-02-05 14:15:18.720 +07:00 [WRN] 		BundleContent (type BundleContentSeoInformation)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		DynamicProduct (type DynamicProductSeoInformation)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		DynamicVariant (type DynamicVariantSeoInformation)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		GenericBundle (type GenericBundleSeoInformation)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		GenericNode (type GenericNodeSeoInformation)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		GenericPackage (type GenericPackageSeoInformation)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		GenericProduct (type GenericProductSeoInformation)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		GenericVariant (type GenericVariantSeoInformation)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		NodeContent (type NodeContentSeoInformation)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		PackageContent (type PackageContentSeoInformation)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		ProductContent (type ProductContentSeoInformation)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		VariationContent (type VariationContentSeoInformation)
+2024-02-05 14:15:18.720 +07:00 [WRN] Properties with same name "Image" are of different types: 
+2024-02-05 14:15:18.720 +07:00 [WRN] - Types: ContentModelReference,ProductHeroBlockProductHeroBlockImage,String
+2024-02-05 14:15:18.720 +07:00 [WRN] - Content types:
+2024-02-05 14:15:18.720 +07:00 [WRN] 		PersonPage (type ContentModelReference)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		LocationItemPage (type ContentModelReference)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		CollectionPage (type ContentModelReference)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		TeaserBlock (type ContentModelReference)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		ProductHeroBlock (type ProductHeroBlockProductHeroBlockImage)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		SubmitButtonElementBlock (type String)
+2024-02-05 14:15:18.720 +07:00 [WRN] Properties with same name "FileSize" are of different types: 
+2024-02-05 14:15:18.720 +07:00 [WRN] - Types: String,Int
+2024-02-05 14:15:18.720 +07:00 [WRN] - Content types:
+2024-02-05 14:15:18.720 +07:00 [WRN] 		FileUploadElementBlock (type Int)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		ImageMediaData (type String)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		VectorImageMediaData (type String)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		StandardFile (type String)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		WebImageMediaData (type String)
+2024-02-05 14:15:18.720 +07:00 [WRN] Properties with same name "Link" are of different types: 
+2024-02-05 14:15:18.720 +07:00 [WRN] - Types: ContentModelReference,String
+2024-02-05 14:15:18.720 +07:00 [WRN] - Content types:
+2024-02-05 14:15:18.720 +07:00 [WRN] 		ImageMediaData (type ContentModelReference)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		VectorImageMediaData (type ContentModelReference)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		WebImageMediaData (type ContentModelReference)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		TeaserBlock (type ContentModelReference)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		MenuItemBlock (type String)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		HeroBlock (type String)
+2024-02-05 14:15:18.720 +07:00 [WRN] Properties with same name "ParentEntries" are of different types: 
+2024-02-05 14:15:18.720 +07:00 [WRN] - Types: BundleContentRelations,PackageContentRelations,ProductContentRelations,VariationContentRelations,DynamicProductRelations,GenericBundleRelations,GenericVariantRelations,GenericProductRelations,GenericPackageRelations,DynamicVariantRelations
+2024-02-05 14:15:18.720 +07:00 [WRN] - Content types:
+2024-02-05 14:15:18.720 +07:00 [WRN] 		BundleContent (type BundleContentRelations)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		DynamicProduct (type DynamicProductRelations)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		DynamicVariant (type DynamicVariantRelations)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		GenericBundle (type GenericBundleRelations)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		GenericPackage (type GenericPackageRelations)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		GenericProduct (type GenericProductRelations)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		GenericVariant (type GenericVariantRelations)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		PackageContent (type PackageContentRelations)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		ProductContent (type ProductContentRelations)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		VariationContent (type VariationContentRelations)
+2024-02-05 14:15:18.720 +07:00 [WRN] Properties with same name "Associations" are of different types: 
+2024-02-05 14:15:18.720 +07:00 [WRN] - Types: BundleContentAssociations,PackageContentAssociations,ProductContentAssociations,VariationContentAssociations,DynamicProductAssociations,GenericBundleAssociations,GenericVariantAssociations,GenericProductAssociations,GenericPackageAssociations,DynamicVariantAssociations
+2024-02-05 14:15:18.720 +07:00 [WRN] - Content types:
+2024-02-05 14:15:18.720 +07:00 [WRN] 		BundleContent (type BundleContentAssociations)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		DynamicProduct (type DynamicProductAssociations)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		DynamicVariant (type DynamicVariantAssociations)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		GenericBundle (type GenericBundleAssociations)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		GenericPackage (type GenericPackageAssociations)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		GenericProduct (type GenericProductAssociations)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		GenericVariant (type GenericVariantAssociations)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		PackageContent (type PackageContentAssociations)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		ProductContent (type ProductContentAssociations)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		VariationContent (type VariationContentAssociations)
+2024-02-05 14:15:18.720 +07:00 [WRN] Properties with same name "MaxQuantity" are of different types: 
+2024-02-05 14:15:18.720 +07:00 [WRN] - Types: Float,Int
+2024-02-05 14:15:18.720 +07:00 [WRN] - Content types:
+2024-02-05 14:15:18.720 +07:00 [WRN] 		PackageContent (type Float)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		VariationContent (type Float)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		GenericVariant (type Float)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		GenericPackage (type Float)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		DynamicVariant (type Float)
+2024-02-05 14:15:18.720 +07:00 [WRN] 		DiscountItems (type Int)
+2024-02-05 14:15:18.721 +07:00 [WRN] Properties with same name "ShippingDimensions" are of different types: 
+2024-02-05 14:15:18.721 +07:00 [WRN] - Types: PackageContentShippingDimensions,VariationContentShippingDimensions,GenericVariantShippingDimensions,GenericPackageShippingDimensions,DynamicVariantShippingDimensions
+2024-02-05 14:15:18.721 +07:00 [WRN] - Content types:
+2024-02-05 14:15:18.721 +07:00 [WRN] 		DynamicVariant (type DynamicVariantShippingDimensions)
+2024-02-05 14:15:18.721 +07:00 [WRN] 		GenericPackage (type GenericPackageShippingDimensions)
+2024-02-05 14:15:18.721 +07:00 [WRN] 		GenericVariant (type GenericVariantShippingDimensions)
+2024-02-05 14:15:18.721 +07:00 [WRN] 		PackageContent (type PackageContentShippingDimensions)
+2024-02-05 14:15:18.721 +07:00 [WRN] 		VariationContent (type VariationContentShippingDimensions)
+2024-02-05 14:15:18.721 +07:00 [WRN] Properties with same name "Width" are of different types: 
+2024-02-05 14:15:18.721 +07:00 [WRN] - Types: Float,Int
+2024-02-05 14:15:18.721 +07:00 [WRN] - Content types:
+2024-02-05 14:15:18.721 +07:00 [WRN] 		ShippingDimensions (type Float)
+2024-02-05 14:15:18.721 +07:00 [WRN] 		FacebookBlock (type Int)
+2024-02-05 14:15:18.721 +07:00 [WRN] Properties with same name "FieldValue" are of different types: 
+2024-02-05 14:15:18.721 +07:00 [WRN] - Types: String,Float
+2024-02-05 14:15:18.721 +07:00 [WRN] - Content types:
+2024-02-05 14:15:18.721 +07:00 [WRN] 		NumericFilterBlock (type Float)
+2024-02-05 14:15:18.721 +07:00 [WRN] 		StringFilterBlock (type String)
+2024-02-05 14:15:18.721 +07:00 [WRN] Properties with same name "Callout" are of different types: 
+2024-02-05 14:15:18.721 +07:00 [WRN] - Types: HeroBlockHeroBlockCallout,ProductHeroBlockProductHeroBlockCallout
+2024-02-05 14:15:18.721 +07:00 [WRN] - Content types:
+2024-02-05 14:15:18.721 +07:00 [WRN] 		HeroBlock (type HeroBlockHeroBlockCallout)
+2024-02-05 14:15:18.721 +07:00 [WRN] 		ProductHeroBlock (type ProductHeroBlockProductHeroBlockCallout)
+2024-02-05 14:15:18.721 +07:00 [WRN] Properties with same name "Items" are of different types: 
+2024-02-05 14:15:18.721 +07:00 [WRN] - Types: [ContentModelReference],[LinkItemNode]
+2024-02-05 14:15:18.721 +07:00 [WRN] - Content types:
+2024-02-05 14:15:18.721 +07:00 [WRN] 		DiscountItems (type [ContentModelReference])
+2024-02-05 14:15:18.721 +07:00 [WRN] 		PurchaseQuantity (type [ContentModelReference])
+2024-02-05 14:15:18.721 +07:00 [WRN] 		FixedPricePurchaseQuantity (type [ContentModelReference])
+2024-02-05 14:15:18.721 +07:00 [WRN] 		ImageChoiceElementBlock (type [LinkItemNode])
+2024-02-05 14:15:58.317 +07:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2024-02-05 14:15:59.552 +07:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2024-02-05 14:16:47.793 +07:00 [WRN] Properties with same name "Categories" are of different types: 
+2024-02-05 14:16:47.793 +07:00 [WRN] - Types: [ContentModelReference],GenericNodeCategories,BundleContentCategories,PackageContentCategories,ProductContentCategories,VariationContentCategories,NodeContentCategories,DynamicProductCategories,GenericBundleCategories,GenericVariantCategories,GenericProductCategories,GenericPackageCategories,DynamicVariantCategories
+2024-02-05 14:16:47.793 +07:00 [WRN] - Content types:
+2024-02-05 14:16:47.793 +07:00 [WRN] 		ProductSearchBlock (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		SubOrganizationPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		QuickOrderPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		OrganizationPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		OrdersPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		BudgetingPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		SubscriptionHistoryPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		SubscriptionDetailPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		ResetPasswordMailPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		UsersPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		ResetPasswordPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		OrderHistoryPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		OrderDetailsPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		OrderConfirmationPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		GiftCardPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		CreditCardPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		BookmarksPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		AddressBookPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		ProfilePage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		CartPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		SharedCartPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		StorePage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		StandardPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		OrderPadsPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		SearchResultPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		SalesPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		PersonList (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		PersonPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		NewProductsPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		WishListPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		CheckoutPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		OrderConfirmationMailPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		BlogItemPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		BlogListPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		TagPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		LocationListPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		LocationItemPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		TwoColumnLandingPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		ThreeColumnLandingPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		LandingPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		HomePage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		CalendarEventPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		CommunityPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		CollectionPage (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		PageListBlock (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		OrderSearchBlock (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		NavigationBlock (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		MembershipDisplayBlock (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		MembershipAffiliationBlock (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		LikeButtonBlock (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		HeroBlock (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		GoogleMapsBlock (type [ContentModelReference])
+2024-02-05 14:16:47.793 +07:00 [WRN] 		FeedBlock (type [ContentModelReference])
+2024-02-05 14:16:47.794 +07:00 [WRN] 		FacebookBlock (type [ContentModelReference])
+2024-02-05 14:16:47.794 +07:00 [WRN] 		ElevatedRoleBlock (type [ContentModelReference])
+2024-02-05 14:16:47.794 +07:00 [WRN] 		ContainerBlock (type [ContentModelReference])
+2024-02-05 14:16:47.794 +07:00 [WRN] 		QuickOrderBlock (type [ContentModelReference])
+2024-02-05 14:16:47.794 +07:00 [WRN] 		OrderHistoryBlock (type [ContentModelReference])
+2024-02-05 14:16:47.794 +07:00 [WRN] 		FilterActivitiesBlock (type [ContentModelReference])
+2024-02-05 14:16:47.794 +07:00 [WRN] 		FilterContinentsBlock (type [ContentModelReference])
+2024-02-05 14:16:47.794 +07:00 [WRN] 		FilterDistancesBlock (type [ContentModelReference])
+2024-02-05 14:16:47.794 +07:00 [WRN] 		FilterTemperaturesBlock (type [ContentModelReference])
+2024-02-05 14:16:47.794 +07:00 [WRN] 		CalendarBlock (type [ContentModelReference])
+2024-02-05 14:16:47.794 +07:00 [WRN] 		ProductHeroBlock (type [ContentModelReference])
+2024-02-05 14:16:47.794 +07:00 [WRN] 		YouTubeBlock (type [ContentModelReference])
+2024-02-05 14:16:47.794 +07:00 [WRN] 		VideoBlock (type [ContentModelReference])
+2024-02-05 14:16:47.794 +07:00 [WRN] 		TwitterBlock (type [ContentModelReference])
+2024-02-05 14:16:47.794 +07:00 [WRN] 		TextBlock (type [ContentModelReference])
+2024-02-05 14:16:47.794 +07:00 [WRN] 		TeaserBlock (type [ContentModelReference])
+2024-02-05 14:16:47.794 +07:00 [WRN] 		SubscriptionBlock (type [ContentModelReference])
+2024-02-05 14:16:47.794 +07:00 [WRN] 		RssReaderBlock (type [ContentModelReference])
+2024-02-05 14:16:47.794 +07:00 [WRN] 		RatingBlock (type [ContentModelReference])
+2024-02-05 14:16:47.794 +07:00 [WRN] 		VimeoBlock (type [ContentModelReference])
+2024-02-05 14:16:47.794 +07:00 [WRN] 		CommentsBlock (type [ContentModelReference])
+2024-02-05 14:16:47.794 +07:00 [WRN] 		HealthChatbotBlock (type [ContentModelReference])
+2024-02-05 14:16:47.794 +07:00 [WRN] 		CategoryBlock (type [ContentModelReference])
+2024-02-05 14:16:47.794 +07:00 [WRN] 		BreadcrumbBlock (type [ContentModelReference])
+2024-02-05 14:16:47.794 +07:00 [WRN] 		CarouselBlock (type [ContentModelReference])
+2024-02-05 14:16:47.794 +07:00 [WRN] 		ButtonBlock (type [ContentModelReference])
+2024-02-05 14:16:47.794 +07:00 [WRN] 		CallToActionBlock (type [ContentModelReference])
+2024-02-05 14:16:47.794 +07:00 [WRN] 		BootstrapCardBlock (type [ContentModelReference])
+2024-02-05 14:16:47.794 +07:00 [WRN] 		AssetsDownloadLinksBlock (type [ContentModelReference])
+2024-02-05 14:16:47.794 +07:00 [WRN] 		BundleContent (type BundleContentCategories)
+2024-02-05 14:16:47.794 +07:00 [WRN] 		DynamicProduct (type DynamicProductCategories)
+2024-02-05 14:16:47.794 +07:00 [WRN] 		DynamicVariant (type DynamicVariantCategories)
+2024-02-05 14:16:47.794 +07:00 [WRN] 		GenericBundle (type GenericBundleCategories)
+2024-02-05 14:16:47.794 +07:00 [WRN] 		GenericNode (type GenericNodeCategories)
+2024-02-05 14:16:47.794 +07:00 [WRN] 		GenericPackage (type GenericPackageCategories)
+2024-02-05 14:16:47.794 +07:00 [WRN] 		GenericProduct (type GenericProductCategories)
+2024-02-05 14:16:47.794 +07:00 [WRN] 		GenericVariant (type GenericVariantCategories)
+2024-02-05 14:16:47.794 +07:00 [WRN] 		NodeContent (type NodeContentCategories)
+2024-02-05 14:16:47.794 +07:00 [WRN] 		PackageContent (type PackageContentCategories)
+2024-02-05 14:16:47.794 +07:00 [WRN] 		ProductContent (type ProductContentCategories)
+2024-02-05 14:16:47.794 +07:00 [WRN] 		VariationContent (type VariationContentCategories)
+2024-02-05 14:16:47.794 +07:00 [WRN] Properties with same name "SortOrder" are of different types: 
+2024-02-05 14:16:47.794 +07:00 [WRN] - Types: String,Int
+2024-02-05 14:16:47.794 +07:00 [WRN] - Content types:
+2024-02-05 14:16:47.794 +07:00 [WRN] 		CustomViewConfigurationBlock (type Int)
+2024-02-05 14:16:47.794 +07:00 [WRN] 		BlogListPage (type Int)
+2024-02-05 14:16:47.794 +07:00 [WRN] 		PageListBlock (type Int)
+2024-02-05 14:16:47.794 +07:00 [WRN] 		ProductSearchBlock (type String)
+2024-02-05 14:16:47.794 +07:00 [WRN] Properties with same name "Height" are of different types: 
+2024-02-05 14:16:47.794 +07:00 [WRN] - Types: Int,Float,String
+2024-02-05 14:16:47.794 +07:00 [WRN] - Content types:
+2024-02-05 14:16:47.794 +07:00 [WRN] 		ShippingDimensions (type Float)
+2024-02-05 14:16:47.794 +07:00 [WRN] 		GoogleMapsBlock (type Float)
+2024-02-05 14:16:47.794 +07:00 [WRN] 		FoundationPdfFile (type Int)
+2024-02-05 14:16:47.794 +07:00 [WRN] 		FacebookBlock (type Int)
+2024-02-05 14:16:47.794 +07:00 [WRN] 		TeaserBlock (type String)
+2024-02-05 14:16:47.794 +07:00 [WRN] Properties with same name "SeoInformation" are of different types: 
+2024-02-05 14:16:47.794 +07:00 [WRN] - Types: GenericNodeSeoInformation,BundleContentSeoInformation,PackageContentSeoInformation,ProductContentSeoInformation,VariationContentSeoInformation,NodeContentSeoInformation,DynamicProductSeoInformation,GenericBundleSeoInformation,GenericVariantSeoInformation,GenericProductSeoInformation,GenericPackageSeoInformation,DynamicVariantSeoInformation
+2024-02-05 14:16:47.794 +07:00 [WRN] - Content types:
+2024-02-05 14:16:47.794 +07:00 [WRN] 		BundleContent (type BundleContentSeoInformation)
+2024-02-05 14:16:47.794 +07:00 [WRN] 		DynamicProduct (type DynamicProductSeoInformation)
+2024-02-05 14:16:47.794 +07:00 [WRN] 		DynamicVariant (type DynamicVariantSeoInformation)
+2024-02-05 14:16:47.794 +07:00 [WRN] 		GenericBundle (type GenericBundleSeoInformation)
+2024-02-05 14:16:47.794 +07:00 [WRN] 		GenericNode (type GenericNodeSeoInformation)
+2024-02-05 14:16:47.794 +07:00 [WRN] 		GenericPackage (type GenericPackageSeoInformation)
+2024-02-05 14:16:47.794 +07:00 [WRN] 		GenericProduct (type GenericProductSeoInformation)
+2024-02-05 14:16:47.794 +07:00 [WRN] 		GenericVariant (type GenericVariantSeoInformation)
+2024-02-05 14:16:47.794 +07:00 [WRN] 		NodeContent (type NodeContentSeoInformation)
+2024-02-05 14:16:47.794 +07:00 [WRN] 		PackageContent (type PackageContentSeoInformation)
+2024-02-05 14:16:47.794 +07:00 [WRN] 		ProductContent (type ProductContentSeoInformation)
+2024-02-05 14:16:47.794 +07:00 [WRN] 		VariationContent (type VariationContentSeoInformation)
+2024-02-05 14:16:47.794 +07:00 [WRN] Properties with same name "Image" are of different types: 
+2024-02-05 14:16:47.794 +07:00 [WRN] - Types: ContentModelReference,ProductHeroBlockProductHeroBlockImage,String
+2024-02-05 14:16:47.794 +07:00 [WRN] - Content types:
+2024-02-05 14:16:47.795 +07:00 [WRN] 		PersonPage (type ContentModelReference)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		LocationItemPage (type ContentModelReference)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		CollectionPage (type ContentModelReference)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		TeaserBlock (type ContentModelReference)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		ProductHeroBlock (type ProductHeroBlockProductHeroBlockImage)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		SubmitButtonElementBlock (type String)
+2024-02-05 14:16:47.795 +07:00 [WRN] Properties with same name "FileSize" are of different types: 
+2024-02-05 14:16:47.795 +07:00 [WRN] - Types: String,Int
+2024-02-05 14:16:47.795 +07:00 [WRN] - Content types:
+2024-02-05 14:16:47.795 +07:00 [WRN] 		FileUploadElementBlock (type Int)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		ImageMediaData (type String)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		VectorImageMediaData (type String)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		StandardFile (type String)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		WebImageMediaData (type String)
+2024-02-05 14:16:47.795 +07:00 [WRN] Properties with same name "Link" are of different types: 
+2024-02-05 14:16:47.795 +07:00 [WRN] - Types: ContentModelReference,String
+2024-02-05 14:16:47.795 +07:00 [WRN] - Content types:
+2024-02-05 14:16:47.795 +07:00 [WRN] 		ImageMediaData (type ContentModelReference)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		VectorImageMediaData (type ContentModelReference)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		WebImageMediaData (type ContentModelReference)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		TeaserBlock (type ContentModelReference)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		MenuItemBlock (type String)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		HeroBlock (type String)
+2024-02-05 14:16:47.795 +07:00 [WRN] Properties with same name "ParentEntries" are of different types: 
+2024-02-05 14:16:47.795 +07:00 [WRN] - Types: BundleContentRelations,PackageContentRelations,ProductContentRelations,VariationContentRelations,DynamicProductRelations,GenericBundleRelations,GenericVariantRelations,GenericProductRelations,GenericPackageRelations,DynamicVariantRelations
+2024-02-05 14:16:47.795 +07:00 [WRN] - Content types:
+2024-02-05 14:16:47.795 +07:00 [WRN] 		BundleContent (type BundleContentRelations)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		DynamicProduct (type DynamicProductRelations)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		DynamicVariant (type DynamicVariantRelations)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		GenericBundle (type GenericBundleRelations)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		GenericPackage (type GenericPackageRelations)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		GenericProduct (type GenericProductRelations)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		GenericVariant (type GenericVariantRelations)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		PackageContent (type PackageContentRelations)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		ProductContent (type ProductContentRelations)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		VariationContent (type VariationContentRelations)
+2024-02-05 14:16:47.795 +07:00 [WRN] Properties with same name "Associations" are of different types: 
+2024-02-05 14:16:47.795 +07:00 [WRN] - Types: BundleContentAssociations,PackageContentAssociations,ProductContentAssociations,VariationContentAssociations,DynamicProductAssociations,GenericBundleAssociations,GenericVariantAssociations,GenericProductAssociations,GenericPackageAssociations,DynamicVariantAssociations
+2024-02-05 14:16:47.795 +07:00 [WRN] - Content types:
+2024-02-05 14:16:47.795 +07:00 [WRN] 		BundleContent (type BundleContentAssociations)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		DynamicProduct (type DynamicProductAssociations)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		DynamicVariant (type DynamicVariantAssociations)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		GenericBundle (type GenericBundleAssociations)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		GenericPackage (type GenericPackageAssociations)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		GenericProduct (type GenericProductAssociations)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		GenericVariant (type GenericVariantAssociations)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		PackageContent (type PackageContentAssociations)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		ProductContent (type ProductContentAssociations)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		VariationContent (type VariationContentAssociations)
+2024-02-05 14:16:47.795 +07:00 [WRN] Properties with same name "MaxQuantity" are of different types: 
+2024-02-05 14:16:47.795 +07:00 [WRN] - Types: Float,Int
+2024-02-05 14:16:47.795 +07:00 [WRN] - Content types:
+2024-02-05 14:16:47.795 +07:00 [WRN] 		PackageContent (type Float)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		VariationContent (type Float)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		GenericVariant (type Float)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		GenericPackage (type Float)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		DynamicVariant (type Float)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		DiscountItems (type Int)
+2024-02-05 14:16:47.795 +07:00 [WRN] Properties with same name "ShippingDimensions" are of different types: 
+2024-02-05 14:16:47.795 +07:00 [WRN] - Types: PackageContentShippingDimensions,VariationContentShippingDimensions,GenericVariantShippingDimensions,GenericPackageShippingDimensions,DynamicVariantShippingDimensions
+2024-02-05 14:16:47.795 +07:00 [WRN] - Content types:
+2024-02-05 14:16:47.795 +07:00 [WRN] 		DynamicVariant (type DynamicVariantShippingDimensions)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		GenericPackage (type GenericPackageShippingDimensions)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		GenericVariant (type GenericVariantShippingDimensions)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		PackageContent (type PackageContentShippingDimensions)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		VariationContent (type VariationContentShippingDimensions)
+2024-02-05 14:16:47.795 +07:00 [WRN] Properties with same name "Width" are of different types: 
+2024-02-05 14:16:47.795 +07:00 [WRN] - Types: Float,Int
+2024-02-05 14:16:47.795 +07:00 [WRN] - Content types:
+2024-02-05 14:16:47.795 +07:00 [WRN] 		ShippingDimensions (type Float)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		FacebookBlock (type Int)
+2024-02-05 14:16:47.795 +07:00 [WRN] Properties with same name "FieldValue" are of different types: 
+2024-02-05 14:16:47.795 +07:00 [WRN] - Types: String,Float
+2024-02-05 14:16:47.795 +07:00 [WRN] - Content types:
+2024-02-05 14:16:47.795 +07:00 [WRN] 		NumericFilterBlock (type Float)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		StringFilterBlock (type String)
+2024-02-05 14:16:47.795 +07:00 [WRN] Properties with same name "Callout" are of different types: 
+2024-02-05 14:16:47.795 +07:00 [WRN] - Types: HeroBlockHeroBlockCallout,ProductHeroBlockProductHeroBlockCallout
+2024-02-05 14:16:47.795 +07:00 [WRN] - Content types:
+2024-02-05 14:16:47.795 +07:00 [WRN] 		HeroBlock (type HeroBlockHeroBlockCallout)
+2024-02-05 14:16:47.795 +07:00 [WRN] 		ProductHeroBlock (type ProductHeroBlockProductHeroBlockCallout)
+2024-02-05 14:16:47.795 +07:00 [WRN] Properties with same name "Items" are of different types: 
+2024-02-05 14:16:47.795 +07:00 [WRN] - Types: [ContentModelReference],[LinkItemNode]
+2024-02-05 14:16:47.795 +07:00 [WRN] - Content types:
+2024-02-05 14:16:47.795 +07:00 [WRN] 		DiscountItems (type [ContentModelReference])
+2024-02-05 14:16:47.795 +07:00 [WRN] 		PurchaseQuantity (type [ContentModelReference])
+2024-02-05 14:16:47.795 +07:00 [WRN] 		FixedPricePurchaseQuantity (type [ContentModelReference])
+2024-02-05 14:16:47.795 +07:00 [WRN] 		ImageChoiceElementBlock (type [LinkItemNode])
+2024-02-05 14:22:07.950 +07:00 [ERR] There were some issues during content synchronization. Failing journals: 7f787413-44aa-4807-ab8c-f2dd3e531a2b
+2024-02-05 14:22:07.951 +07:00 [ERR] Job Optimizely.ContentGraph.Cms.Job.Internal.ContentIndexingJob failed for the job 'Optimizely Graph content synchronization job' with jobId ='2781152b-fcab-43ae-bb8a-8d82c42db19f' 
+System.Exception: There were some issues during content synchronization.
+                                        Failing journals: 7f787413-44aa-4807-ab8c-f2dd3e531a2b
+                                        <a href='/EPiServer/contentgraph/journal/status?jobId=b91e8ac6-c7f7-4906-a8e4-4c3d2b42ad8d' target='_blank'>Details</a>
+   at Optimizely.ContentGraph.Cms.Job.Internal.ContentIndexingJob.Execute()
+   at EPiServer.Scheduler.Internal.DefaultScheduledJobExecutor.Execute(ScheduledJob job, ScheduledJobTrigger trigger, Nullable`1 contentCacheSlidingExpiration, Nullable`1 nextCalculatedExecutionUTC)

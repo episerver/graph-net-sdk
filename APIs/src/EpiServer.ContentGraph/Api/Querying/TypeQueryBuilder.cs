@@ -9,6 +9,10 @@ using EPiServer.ContentGraph.Api.Facets;
 using EPiServer.ServiceLocation;
 using EPiServer.ContentGraph.ExpressionHelper;
 using System.Text.RegularExpressions;
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Text;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {
@@ -79,9 +83,11 @@ namespace EPiServer.ContentGraph.Api.Querying
         public TypeQueryBuilder<T> AsType<TSub>(string propertyName) where TSub : T
         {
             string subTypeName = typeof(TSub).Name;
-            graphObject.SelectItems = graphObject.SelectItems.IsNullOrEmpty() ?
-                $"... on {subTypeName}{{{ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName)}}}" :
-                $"{graphObject.SelectItems} ... on {subTypeName}{{{ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName)}}}";
+            if (graphObject.SelectItems.Length != 0)
+            {
+                graphObject.SelectItems.Append("\n");
+            }
+            graphObject.SelectItems.Append($"... on {subTypeName}{{{ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName)}}}");
             return this;
         }
         /// <summary>
@@ -93,20 +99,26 @@ namespace EPiServer.ContentGraph.Api.Querying
         public TypeQueryBuilder<T> AsType<TSub>(params Expression<Func<TSub, object>>[] fieldSelectors) where TSub : T
         {
             fieldSelectors.ValidateNotNullArgument("fieldSelectors");
-            string propertyName = string.Empty;
+            if (fieldSelectors.Length == 0)
+            {
+                throw new MissingFieldException(typeof(TSub));
+            }
+            StringBuilder propertyBuilder = new StringBuilder();
             foreach (var fieldSelector in fieldSelectors)
             {
-                if (!propertyName.IsNullOrEmpty())
+                if (!propertyBuilder.Length.Equals(0))
                 {
-                    propertyName += " ";
+                    propertyBuilder.Append(" ");
                 }
-                propertyName += ConvertNestedFieldToString.ConvertNestedFieldForQuery(fieldSelector.GetFieldPath());
+                propertyBuilder.Append(ConvertNestedFieldToString.ConvertNestedFieldForQuery(fieldSelector.GetFieldPath()));
 
             }
             string subTypeName = typeof(TSub).Name;
-            graphObject.SelectItems = graphObject.SelectItems.IsNullOrEmpty() ?
-                $"... on {subTypeName}{{{propertyName}}}" :
-                $"{graphObject.SelectItems} ... on {subTypeName}{{{propertyName}}}";
+            if (graphObject.SelectItems.Length != 0)
+            {
+                graphObject.SelectItems.Append(" ");
+            }
+            graphObject.SelectItems.Append($"... on {subTypeName}{{{propertyBuilder}}}");
             return this;
         }
         /// <summary>
@@ -120,9 +132,11 @@ namespace EPiServer.ContentGraph.Api.Querying
             subTypeQuery.ValidateNotNullArgument("subTypeQuery");
             subTypeQuery.Parent = this.Parent;
             string subTypeName = typeof(TSub).Name;
-            graphObject.SelectItems = graphObject.SelectItems.IsNullOrEmpty() ?
-                $"... on {subTypeName}{subTypeQuery.GetQuery().Query}" :
-                $"{graphObject.SelectItems} ... on {subTypeName}{subTypeQuery.GetQuery().Query}";
+            if (graphObject.SelectItems.Length != 0)
+            {
+                graphObject.SelectItems.Append(" ");
+            }
+            graphObject.SelectItems.Append($"... on {subTypeName}{subTypeQuery.GetQuery().Query}");
             return this;
         }
 
@@ -248,7 +262,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             return this;
         }
         /// <summary>
-        /// Order for a field. Add more for order many fields.
+        /// Order for a field. Default is ASC.
         /// </summary>
         /// <param name="fieldSelector">Field for order</param>
         /// <param name="orderMode">OrderMode</param>
@@ -542,7 +556,7 @@ namespace EPiServer.ContentGraph.Api.Querying
         {
             if (!_compiled)
             {
-                if (graphObject.SelectItems.IsNullOrEmpty() && graphObject.Total.IsNullOrEmpty() && graphObject.Facets.IsNullOrEmpty() && graphObject.Autocomplete.IsNullOrEmpty())
+                if (graphObject.SelectItems.Length.Equals(0) && graphObject.Total.IsNullOrEmpty() && graphObject.Facets.IsNullOrEmpty() && graphObject.Autocomplete.IsNullOrEmpty())
                 {
                     throw new ArgumentNullException("You must select at least one of the values [Field(s), Facet(s), Total, Autocomplete(s)]");
                 }
@@ -559,9 +573,9 @@ namespace EPiServer.ContentGraph.Api.Querying
                 {
                     graphObject.Filter = graphObject.Filter.IsNullOrEmpty() ? graphObject.Ids : $"{graphObject.Filter},{graphObject.Ids}";
                 }
-                if (!graphObject.SelectItems.IsNullOrEmpty())
+                if (graphObject.SelectItems.Length != 0)
                 {
-                    graphObject.SelectItems = $"items{{{graphObject.SelectItems}}}";
+                    graphObject.SelectItems = new StringBuilder($"items{{{graphObject.SelectItems}}}");
                 }
 
                 if (!graphObject.WhereClause.IsNullOrEmpty())

@@ -15,7 +15,7 @@ namespace EPiServer.ContentGraph.Api.Querying
         public string Autocomplete { get; set; } = string.Empty;
         public string Cursor { get; set; } = string.Empty;
         public string TypeName { get; set; } = string.Empty;
-        public string SelectItems { get; set; } = string.Empty;
+        public StringBuilder SelectItems { get; set; } = new StringBuilder();
         public string Facets { get; set; } = string.Empty;
         public string Total { get; set; } = string.Empty;
         public override string ToString()
@@ -27,7 +27,7 @@ namespace EPiServer.ContentGraph.Api.Querying
                 stringBuilder.Append(Filter);
             }
             stringBuilder.Append('{');
-            stringBuilder.Append(SelectItems);//mandatory property
+            stringBuilder.Append(SelectItems);
             if (!Facets.IsNullOrEmpty())
             {
                 stringBuilder.Append(' ');

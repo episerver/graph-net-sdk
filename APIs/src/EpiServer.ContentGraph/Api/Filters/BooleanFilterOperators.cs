@@ -4,7 +4,10 @@ namespace EPiServer.ContentGraph.Api.Filters
     public class BooleanFilterOperators : IFilterOperator
     {
         string _query = string.Empty;
-
+        public static BooleanFilterOperators Create()
+        {
+            return new BooleanFilterOperators();
+        }
         public string Query => _query;
 
         public BooleanFilterOperators Boost(int value)
