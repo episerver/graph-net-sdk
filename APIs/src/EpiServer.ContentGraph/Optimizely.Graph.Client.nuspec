@@ -3,11 +3,11 @@
   <metadata>
     <id>Optimizely.Graph.Client</id>
     <version>$version$</version>
-    <title>Content Graph Client API</title>
+    <title>Optimizely Graph Client API</title>
     <authors>Optimizely</authors>
     <owners>Optimizely</owners>
     <license type="file">license.txt</license>
-    <projectUrl>https://github.com/episerver/opti-graph-netclient</projectUrl>
+    <projectUrl>https://github.com/episerver/graph-net-sdk</projectUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>.NET client API for the Optimizely Content Graph</description>
     <copyright>Copyright(c) Optimizely $Year$</copyright>
