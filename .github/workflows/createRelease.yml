@@ -84,27 +84,6 @@ jobs:
         if: success()
         run: msbuild\build.ps1 -configuration "Release" -skiptests "true" -verbosity "normal"
 
-      - name: Materialize strong name key
-        id: materialize-snk
-        uses: timheuer/base64-to-file@v1.2
-        if: success()
-        with:
-          fileName: episerver.snk
-          encodedString: ${{ secrets.EPISERVER_STRONG_NAME_KEY }}
-
-      - name: Materialize code signing sertificate
-        id: materialize-cert
-        uses: timheuer/base64-to-file@v1.2
-        if: success()
-        with:
-          fileName: episerver.pfx
-          encodedString: ${{ secrets.EPISERVER_CODE_SIGNING_CERTIFICATE }}
-
-      - name: Sign assembly
-        if: success()
-        run: |
-          msBuild\SignGH.ps1 -WindowsSDKPath "${{ env.WindowsSDKPath }}" -SNKPath "${{ steps.materialize-snk.outputs.filePath }}" -CertPath "${{ steps.materialize-cert.outputs.filePath }}" -CertPassword "${{ secrets.EPISERVER_CODE_SIGNING_CERTIFICATE_PASSWORD }}"
-
       - name: Packages
         if: success() && env.publishPackages == 'true'
         run: msbuild\packGH.ps1 -version ${{ env.packageVersion }} -configuration "Release"
