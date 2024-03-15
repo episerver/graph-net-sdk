@@ -582,10 +582,11 @@ namespace EPiServer.ContentGraph.Api.Querying
                 if (!graphObject.OrderBy.IsNullOrEmpty())
                 {
                     graphObject.OrderBy = $"orderBy:{{{graphObject.OrderBy}}}";
+                    graphObject.Filter = graphObject.Filter.IsNullOrEmpty() ? graphObject.OrderBy : $"{graphObject.Filter},{graphObject.OrderBy}";
                 }
-                if (!graphObject.Locale.IsNullOrEmpty() || !graphObject.Filter.IsNullOrEmpty() || !graphObject.WhereClause.IsNullOrEmpty() || !graphObject.OrderBy.IsNullOrEmpty())
+                if (!graphObject.Locale.IsNullOrEmpty() || !graphObject.Filter.IsNullOrEmpty() || !graphObject.WhereClause.IsNullOrEmpty())
                 {
-                    graphObject.Filter = $"({graphObject.Locale}{graphObject.Filter}{graphObject.WhereClause}{graphObject.OrderBy})";
+                    graphObject.Filter = $"({graphObject.Locale}{graphObject.Filter}{graphObject.WhereClause})";
                 }
                 if (!graphObject.Facets.IsNullOrEmpty())
                 {

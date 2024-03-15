@@ -27,7 +27,7 @@ namespace EPiServer.ContentGraph.Api.Result
                     facets = new Dictionary<string, IEnumerable<Facet>>();
                     foreach (var key in keys)
                     {
-                        facets.Add(key, RawFacets[key].ToObject<IEnumerable<Facet>>());
+                        GetJArray(RawFacets[key], key, facets);
                     }
                 }
                 return facets;
@@ -48,19 +48,47 @@ namespace EPiServer.ContentGraph.Api.Result
                     autocompletes = new Dictionary<string, IEnumerable<string>>();
                     foreach (var key in keys)
                     {
-                        autocompletes.Add(key, RawAutoComplete[key].ToObject<IEnumerable<string>>());
+                        GetJArray(RawAutoComplete[key], key, autocompletes);
                     }
                 }
                 return autocompletes;
             }
         }
         [JsonProperty("facets")]
-        private Dictionary<string, JArray> RawFacets { get; set; }
+        private Dictionary<string, object> RawFacets { get; set; }
         [JsonProperty("autocomplete")]
-        private Dictionary<string, JArray> RawAutoComplete { get; set; }
+        private Dictionary<string, object> RawAutoComplete { get; set; }
         [JsonProperty("cursor")]
         public string Cursor { get; set; }
         [JsonProperty("total")]
         public int Total { get; set; }
+        private void GetJArray<TReturn>(object jObject, string key, Dictionary<string, IEnumerable<TReturn>> keyValues)
+        {
+            switch (jObject.GetType().Name)
+            {
+                case "JObject":
+                    foreach (var token in ((JObject)jObject).Values())
+                    {
+                        string tempKey = key;
+                        if (token.GetType() == typeof(JArray))
+                        {
+                            tempKey = $"{tempKey}.{token.Path}";
+                            keyValues.Add(tempKey, ((JArray)token).ToObject<IEnumerable<TReturn>>());
+                        }
+                        else
+                        {
+                            GetJArray(token, tempKey, keyValues);
+                        }
+                    }
+                    break;
+                case "JArray":
+                    keyValues.Add(key, ((JArray)jObject).ToObject<IEnumerable<TReturn>>());
+                    break;
+                case "JProperty":
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }
