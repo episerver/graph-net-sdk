@@ -10,17 +10,20 @@ namespace EPiServer.ContentGraph.UnitTests
 {
     public class GenerateQueryTests
     {
-        TypeQueryBuilder<RequestTypeObject> typeQueryBuilder;
+        private TypeQueryBuilder<RequestTypeObject> typeQueryBuilder;
+
         public GenerateQueryTests()
         {
             typeQueryBuilder = new TypeQueryBuilder<RequestTypeObject>();
         }
+
         [Fact]
         public void SelectNoneOfFieldsShouldThrowException()
         {
             typeQueryBuilder.Limit(100).Skip(0);
             Assert.Throws<ArgumentNullException>(() => typeQueryBuilder.ToQuery());
         }
+
         [Fact]
         public void SelectFields()
         {
@@ -33,6 +36,20 @@ namespace EPiServer.ContentGraph.UnitTests
             Assert.Contains(expectedFields, query.GetQuery().Query);
             query = query.BuildQueries();
         }
+
+        [Fact]
+        public void SelectFieldWithAlias()
+        {
+            string expectedFields = @"{items{property1:Property1 property2:Property2}}";
+            typeQueryBuilder.Field(x => x.Property1, "property1").Field(x => x.Property2, "property2");
+            GraphQueryBuilder query = typeQueryBuilder.ToQuery();
+
+            Assert.NotNull(query.GetQuery());
+            //check selected fields
+            Assert.Contains(expectedFields, query.GetQuery().Query);
+            query = query.BuildQueries();
+        }
+
         [Fact]
         public void SelectNestedFields()
         {
@@ -49,7 +66,7 @@ namespace EPiServer.ContentGraph.UnitTests
         }
 
         [Theory]
-        [InlineData(0,100)]
+        [InlineData(0, 100)]
         [InlineData(0, int.MaxValue)]
         public void QueryWithPaging(int skip, int limit)
         {
@@ -86,6 +103,7 @@ namespace EPiServer.ContentGraph.UnitTests
             Assert.Contains(expectedFields, query.GetQuery().Query);
             Assert.Equal($"RequestTypeObject{{{expectedFields} {expectedFacets}}}", query.GetQuery().Query);
         }
+
         [Fact]
         public void FacetsQueryWithFilter()
         {
@@ -129,6 +147,7 @@ namespace EPiServer.ContentGraph.UnitTests
             Assert.Contains(expectedAutoComplete, query.GetQuery().Query);
             Assert.Equal($"RequestTypeObject{{{expectedFields} {expectedFacets} {expectedAutoComplete}}}", query.GetQuery().Query);
         }
+
         [Fact]
         public void SubtypeQueryTests()
         {
@@ -150,6 +169,7 @@ namespace EPiServer.ContentGraph.UnitTests
             Assert.Contains(expectedFields, query.GetQuery().Query);
             Assert.Equal($"RequestTypeObject{{{expectedFields} {expectedFacets}}}", query.GetQuery().Query);
         }
+
         [Fact]
         public void LinkQueryTests()
         {
@@ -158,8 +178,8 @@ namespace EPiServer.ContentGraph.UnitTests
             string expectedFacets = @"facets{Property3{NestedProperty{name count}}}";
             TypeQueryBuilder<SubTypeObject> linkQuery = new TypeQueryBuilder<SubTypeObject>()
                 .Field(x => x.SubProperty)
-                .Where(x=>x.SubProperty, new StringFilterOperators().Match("test"))
-                .Facet(x=>x.Property3);
+                .Where(x => x.SubProperty, new StringFilterOperators().Match("test"))
+                .Facet(x => x.Property3);
 
             typeQueryBuilder
                 .Field(x => x.Property1)
@@ -195,7 +215,7 @@ namespace EPiServer.ContentGraph.UnitTests
                     .ToQuery()
                 .BuildQueries();
             }
-            
+
             var query = graphQueryBuilder.GetQuery();
             Assert.Contains(expectedQuery1, query.Query);
             Assert.Contains(expectedQuery2, query.Query);

@@ -61,6 +61,13 @@ namespace EPiServer.ContentGraph.Api.Querying
             Field(propertyName);
             return this;
         }
+        public TypeQueryBuilder<T> Field(Expression<Func<T, object>> fieldSelector, string alias)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            var propertyName = fieldSelector.GetFieldPath();
+            Field($"{alias}:{propertyName}");
+            return this;
+        }
         public TypeQueryBuilder<T> Fields(params Expression<Func<T, object>>[] fieldSelectors)
         {
             fieldSelectors.ValidateNotNullArgument("fieldSelectors");
