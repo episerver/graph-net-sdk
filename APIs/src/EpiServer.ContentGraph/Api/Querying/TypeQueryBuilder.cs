@@ -178,6 +178,85 @@ namespace EPiServer.ContentGraph.Api.Querying
                 $"{graphObject.Facets} {facet}";
             return this;
         }
+        /// <summary>
+        /// Get facet by field in a nested object
+        /// </summary>
+        /// <typeparam name="TField"></typeparam>
+        /// <param name="fieldSelector"></param>
+        /// <param name="propertySelector"></param>
+        /// <returns></returns>
+        public TypeQueryBuilder<T> Facet<TField>(Expression<Func<T, IEnumerable<TField>>> fieldSelector, Expression<Func<TField, string>> propertySelector)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            propertySelector.ValidateNotNullArgument("propertySelector");
+        
+            Facet($"{fieldSelector.GetFieldPath()}.{propertySelector.GetFieldPath()}");
+            return this;
+        }
+        
+        /// <summary>
+        /// Get facet by field in a nested object
+        /// </summary>
+        /// <typeparam name="TField"></typeparam>
+        /// <param name="fieldSelector"></param>
+        /// <param name="propertySelector"></param>
+        /// <returns></returns>
+        public TypeQueryBuilder<T> Facet<TField>(Expression<Func<T, IEnumerable<TField>>> fieldSelector, Expression<Func<TField, bool>> propertySelector)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            propertySelector.ValidateNotNullArgument("propertySelector");
+        
+            Facet($"{fieldSelector.GetFieldPath()}.{propertySelector.GetFieldPath()}");
+            return this;
+        }
+        
+        /// <summary>
+        /// Get facet by field in a nested object
+        /// </summary>
+        /// <typeparam name="TField"></typeparam>
+        /// <param name="fieldSelector"></param>
+        /// <param name="propertySelector"></param>
+        /// <returns></returns>
+        public TypeQueryBuilder<T> Facet<TField>(Expression<Func<T, IEnumerable<TField>>> fieldSelector, Expression<Func<TField, int>> propertySelector)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            propertySelector.ValidateNotNullArgument("propertySelector");
+        
+            Facet($"{fieldSelector.GetFieldPath()}.{propertySelector.GetFieldPath()}");
+            return this;
+        }
+        
+        /// <summary>
+        /// Get facet by field in a nested object
+        /// </summary>
+        /// <typeparam name="TField"></typeparam>
+        /// <param name="fieldSelector"></param>
+        /// <param name="propertySelector"></param>
+        /// <returns></returns>
+        public TypeQueryBuilder<T> Facet<TField>(Expression<Func<T, IEnumerable<TField>>> fieldSelector, Expression<Func<TField, DateTime>> propertySelector)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            propertySelector.ValidateNotNullArgument("propertySelector");
+        
+            Facet($"{fieldSelector.GetFieldPath()}.{propertySelector.GetFieldPath()}");
+            return this;
+        }
+        
+        /// <summary>
+        /// Get facet by field in a nested object
+        /// </summary>
+        /// <typeparam name="TField"></typeparam>
+        /// <param name="fieldSelector"></param>
+        /// <param name="propertySelector"></param>
+        /// <returns></returns>
+        public TypeQueryBuilder<T> Facet<TField>(Expression<Func<T, IEnumerable<TField>>> fieldSelector, Expression<Func<TField, object>> propertySelector)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            propertySelector.ValidateNotNullArgument("propertySelector");
+        
+            Facet($"{fieldSelector.GetFieldPath()}.{propertySelector.GetFieldPath()}");
+            return this;
+        }
         public TypeQueryBuilder<T> Total(bool? isAll = null)
         {
             if (!isAll.HasValue)
