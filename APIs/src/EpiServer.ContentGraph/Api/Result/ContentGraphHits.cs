@@ -84,8 +84,6 @@ namespace EPiServer.ContentGraph.Api.Result
                 case "JArray":
                     keyValues.Add(key, ((JArray)jObject).ToObject<IEnumerable<TReturn>>());
                     break;
-                case "JProperty":
-                    break;
                 default:
                     break;
             }
