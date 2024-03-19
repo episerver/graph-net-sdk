@@ -238,7 +238,7 @@ namespace EPiServer.ContentGraph.Api.Querying
         /// </summary>
         /// <returns>string</returns>
         /// <exception cref="ServiceException"></exception>
-        public async Task<string?> GetRawResultAsync()
+        public async Task<string> GetRawResultAsync()
         {
             string url = GetServiceUrl();
 
@@ -253,8 +253,7 @@ namespace EPiServer.ContentGraph.Api.Querying
                     AdditionalInformation(jsonRequest, body);
                     using (var reader = new StreamReader(await jsonRequest.GetResponseStream(body), jsonRequest.Encoding))
                     {
-                        var jsonReader = new JsonTextReader(reader);
-                        return jsonReader.ReadAsString();
+                        return await reader.ReadToEndAsync();
                     }
                 }
                 catch (AggregateException asyncException)
