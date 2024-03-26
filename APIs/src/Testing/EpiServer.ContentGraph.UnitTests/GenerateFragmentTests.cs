@@ -50,5 +50,69 @@ namespace EpiServer.ContentGraph.UnitTests
             Assert.Contains(expectedFragmment, graphQueryBuilder.GetQuery().Query);
             Assert.Contains(expectedFields, graphQueryBuilder.GetQuery().Query);
         }
+        [Fact]
+        public void multiple_fragments_should_generate_correct_query()
+        {
+            const string expectedMainQuery = "query FragmentTest {FragmentObject{items{Name ...FirstFragment ...SecondFragment}}}";
+            const string expectedFistFragment = "fragment FirstFragment on PromoObject {ProviderName}";
+            const string expectedSecondFragmment = "fragment SecondFragment on FragmentObject {ViewingTime PromoImage{Url}}";
+            const string expectedFullQuery = $"{expectedMainQuery}\n{expectedFistFragment}\n{expectedSecondFragmment}";
+
+            var firstFragment = new FragmentBuilder<PromoObject>("FirstFragment");
+            firstFragment.Fields(x => x.ProviderName);
+
+            var secondFragment = new FragmentBuilder<FragmentObject>("SecondFragment");
+            secondFragment.Fields(x => x.ViewingTime, x=> x.PromoImage.Url);
+
+            GraphQueryBuilder graphQueryBuilder = new GraphQueryBuilder();
+            graphQueryBuilder
+                .OperationName("FragmentTest")
+                    .ForType<FragmentObject>()
+                        .Field(x => x.Name)
+                        .Fragments(firstFragment, secondFragment)
+                    .ToQuery()
+                .BuildQueries();
+
+            Assert.Equal(graphQueryBuilder.GetFragments().First().GetName(), "FirstFragment");
+            Assert.Equal(graphQueryBuilder.GetFragments().First().GetQuery().Query, expectedFistFragment);
+
+            Assert.Equal(graphQueryBuilder.GetFragments().Last().GetName(), "SecondFragment");
+            Assert.Equal(graphQueryBuilder.GetFragments().Last().GetQuery().Query, expectedSecondFragmment);
+
+            Assert.Equal(expectedFullQuery, graphQueryBuilder.GetQuery().Query);
+        }
+        [Fact]
+        public void nested_fragments_should_generate_correct_query()
+        {
+            const string expectedMainQuery = "query FragmentTest {FragmentObject{items{Name ...SecondFragment}}}";
+            const string expectedFistFragment = "fragment FirstFragment on PromoObject {Expanded{Property1}}";
+            const string expectedSecondFragmment = "fragment SecondFragment on FragmentObject {PromoText PromoImage{Url} ...FirstFragment}";
+            const string expectedFullQuery = $"{expectedMainQuery}\n{expectedSecondFragmment}\n{expectedFistFragment}";
+
+            var firstFragment = new FragmentBuilder<PromoObject>("FirstFragment");
+            firstFragment.Fields(x => x.Expanded.Property1);
+
+            var secondFragment = new FragmentBuilder<FragmentObject>("SecondFragment");
+            secondFragment.Fields(x => x.PromoText, x=> x.PromoImage.Url);
+            secondFragment.Fragments(firstFragment);
+
+            GraphQueryBuilder graphQueryBuilder = new GraphQueryBuilder();
+            graphQueryBuilder
+                .OperationName("FragmentTest")
+                    .ForType<FragmentObject>()
+                        .Field(x => x.Name)
+                        .Fragments(secondFragment)
+                    .ToQuery()
+                .BuildQueries();
+
+            //expect children in secondary fragment
+            Assert.Equal(graphQueryBuilder.GetFragments().First().GetName(), "SecondFragment");
+            Assert.True(graphQueryBuilder.GetFragments().First().HasChildren);
+            Assert.Equal(graphQueryBuilder.GetFragments().First().ChildrenFragments.First().GetQuery().Query, expectedFistFragment);
+            //expect secondary fragment
+            Assert.Equal(graphQueryBuilder.GetFragments().First().GetQuery().Query, expectedSecondFragmment);
+            //expect full query
+            Assert.Equal(expectedFullQuery, graphQueryBuilder.GetQuery().Query);
+        }
     }
 }

@@ -72,6 +72,14 @@ namespace EPiServer.ContentGraph.Api.Querying
             return this;
         }
 
+        public TypeQueryBuilder<T> Field(Expression<Func<T, object>> fieldSelector, string alias)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            var propertyName = fieldSelector.GetFieldPath();
+            Field($"{alias}:{propertyName}");
+            return this;
+        }
+
         public TypeQueryBuilder<T> Fields(params Expression<Func<T, object>>[] fieldSelectors)
         {
             fieldSelectors.ValidateNotNullArgument("fieldSelectors");
@@ -89,9 +97,10 @@ namespace EPiServer.ContentGraph.Api.Querying
         public TypeQueryBuilder<T> AsType<TSub>(string propertyName) where TSub : T
         {
             string subTypeName = typeof(TSub).Name;
-            graphObject.SelectItems = graphObject.SelectItems.IsNullOrEmpty() ?
+            graphObject.SelectItems.Append(graphObject.SelectItems.Length == 0 ?
                 $"... on {subTypeName}{{{ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName)}}}" :
-                $"{graphObject.SelectItems} ... on {subTypeName}{{{ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName)}}}";
+                $" ... on {subTypeName}{{{ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName)}}}"
+            );
             return this;
         }
 
@@ -112,9 +121,10 @@ namespace EPiServer.ContentGraph.Api.Querying
                 propertyName += ConvertNestedFieldToString.ConvertNestedFieldForQuery(fieldSelector.GetFieldPath());
             }
             string subTypeName = typeof(TSub).Name;
-            graphObject.SelectItems = graphObject.SelectItems.IsNullOrEmpty() ?
+            graphObject.SelectItems.Append(graphObject.SelectItems.Length == 0 ?
                 $"... on {subTypeName}{{{propertyName}}}" :
-                $"{graphObject.SelectItems} ... on {subTypeName}{{{propertyName}}}";
+                $" ... on {subTypeName}{{{propertyName}}}"
+            );
             return this;
         }
 
@@ -127,9 +137,10 @@ namespace EPiServer.ContentGraph.Api.Querying
             subTypeQuery.ValidateNotNullArgument("subTypeQuery");
             subTypeQuery.Parent = this.Parent;
             string subTypeName = typeof(TSub).Name;
-            graphObject.SelectItems = graphObject.SelectItems.IsNullOrEmpty() ?
+            graphObject.SelectItems.Append(graphObject.SelectItems.Length == 0 ?
                 $"... on {subTypeName}{subTypeQuery.GetQuery().Query}" :
-                $"{graphObject.SelectItems} ... on {subTypeName}{subTypeQuery.GetQuery().Query}";
+                $" ... on {subTypeName}{subTypeQuery.GetQuery().Query}"
+            );
             return this;
         }
 
@@ -675,7 +686,7 @@ namespace EPiServer.ContentGraph.Api.Querying
         {
             if (!_compiled)
             {
-                if (graphObject.SelectItems.IsNullOrEmpty() && graphObject.Total.IsNullOrEmpty() && graphObject.Facets.IsNullOrEmpty() && graphObject.Autocomplete.IsNullOrEmpty())
+                if (graphObject.SelectItems?.Length == 0 && graphObject.Total.IsNullOrEmpty() && graphObject.Facets.IsNullOrEmpty() && graphObject.Autocomplete.IsNullOrEmpty())
                 {
                     throw new ArgumentNullException("You must select at least one of the values [Field(s), Facet(s), Total, Autocomplete(s)]");
                 }
@@ -692,9 +703,9 @@ namespace EPiServer.ContentGraph.Api.Querying
                 {
                     graphObject.Filter = graphObject.Filter.IsNullOrEmpty() ? graphObject.Ids : $"{graphObject.Filter},{graphObject.Ids}";
                 }
-                if (!graphObject.SelectItems.IsNullOrEmpty())
+                if (graphObject.SelectItems.Length > 0)
                 {
-                    graphObject.SelectItems = $"items{{{graphObject.SelectItems}}}";
+                    graphObject.SelectItems = new System.Text.StringBuilder($"items{{{graphObject.SelectItems}}}");
                 }
 
                 if (!graphObject.WhereClause.IsNullOrEmpty())

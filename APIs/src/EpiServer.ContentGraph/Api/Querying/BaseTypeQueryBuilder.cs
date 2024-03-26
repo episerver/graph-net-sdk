@@ -12,7 +12,7 @@ namespace EPiServer.ContentGraph.Api.Querying
         protected IQuery _parent = null;
         public virtual IQuery Parent
         {
-            get => _parent; 
+            get => _parent;
             set
             {
                 if (_parent.IsNull())
@@ -55,14 +55,11 @@ namespace EPiServer.ContentGraph.Api.Querying
             if (!propertyName.IsNullOrEmpty())
             {
                 string clonedPropName = ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName);
-                if (graphObject.SelectItems.IsNullOrEmpty())
-                {
-                    graphObject.SelectItems = $"{clonedPropName}";
-                }
-                else
-                {
-                    graphObject.SelectItems += $" {clonedPropName}";
-                }
+                graphObject.SelectItems.Append(
+                    graphObject.SelectItems.Length == 0 ?
+                    $"{clonedPropName}" :
+                    $" {clonedPropName}"
+                );
             }
 
             return this;
@@ -73,9 +70,11 @@ namespace EPiServer.ContentGraph.Api.Querying
             string linkItems = link.GetQuery()?.Query ?? string.Empty;
             if (!linkItems.IsNullOrEmpty())
             {
-                graphObject.SelectItems += graphObject.SelectItems.IsNullOrEmpty() ?
+                graphObject.SelectItems.Append(
+                    graphObject.SelectItems.Length == 0 ?
                     $"_link{{{linkItems}}}" :
-                    $" _link{{{linkItems}}}";
+                    $" _link{{{linkItems}}}"
+                );
             }
             return this;
         }
@@ -86,9 +85,11 @@ namespace EPiServer.ContentGraph.Api.Querying
             string childrenItems = children.GetQuery()?.Query ?? string.Empty;
             if (!childrenItems.IsNullOrEmpty())
             {
-                graphObject.SelectItems += graphObject.SelectItems.IsNullOrEmpty() ?
+                graphObject.SelectItems.Append(
+                    graphObject.SelectItems.Length == 0 ?
                     $"_children{{{childrenItems}}}" :
-                    $" _children{{{childrenItems}}}";
+                    $" _children{{{childrenItems}}}"
+                );
             }
 
             return this;
@@ -105,9 +106,39 @@ namespace EPiServer.ContentGraph.Api.Querying
         protected virtual BaseTypeQueryBuilder Fragment(FragmentBuilder fragment)
         {
             fragment.ValidateNotNullArgument("fragment");
-            graphObject.SelectItems += graphObject.SelectItems.IsNullOrEmpty() ? $"...{fragment.GetName()}" : $" ...{fragment.GetName()}";
-            Parent?.AddFragment(fragment);
+            graphObject.SelectItems.Append(
+                graphObject.SelectItems.Length == 0 ? 
+                $"...{fragment.GetName()}" : 
+                $" ...{fragment.GetName()}"
+            );
+
+            if (Parent != null)
+            {
+                Parent.AddFragment(fragment);
+                var children = GetAllChildren(fragment);
+                foreach (var childFragment in children)
+                {
+                    Parent.AddFragment(childFragment);
+                }
+            }
             return this;
+        }
+        private IEnumerable<FragmentBuilder> GetAllChildren(FragmentBuilder fragment)
+        {
+            if (fragment.HasChildren)
+            {
+                foreach (var child in fragment.ChildrenFragments)
+                {
+                    yield return child;
+                    if (child.HasChildren)
+                    {
+                        foreach (var item in GetAllChildren(child))
+                        {
+                            yield return item;
+                        }
+                    }
+                }
+            }
         }
     }
 }
