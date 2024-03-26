@@ -1,4 +1,5 @@
 ﻿using EPiServer.ContentGraph.Helpers;
+using EPiServer.ContentGraph.Helpers.Text;
 using GraphQL.Transport;
 using System;
 
@@ -64,22 +65,79 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             return this;
         }
-        public virtual BaseTypeQueryBuilder Link(BaseTypeQueryBuilder link)
+        public virtual BaseTypeQueryBuilder Link(ITypeQueryBuilder link)
         {
             link.ValidateNotNullArgument("link");
-            string linkItems = link.GetQuery()?.Query ?? string.Empty;
-            if (!linkItems.IsNullOrEmpty())
+            var linkQueryBuilder = link as ILinkQueryBuilder;
+            if (linkQueryBuilder is null)
             {
+                throw new ArgumentException("The argument [link] is not type of [LinkQueryBuilder]");
+            }
+            string linkQuery = linkQueryBuilder.GetQuery()?.Query ?? string.Empty;
+            if (!linkQuery.IsNullOrEmpty())
+            {
+                if (!linkQueryBuilder.GetLinkType().IsNullOrEmpty())
+                {
+                    graphObject.SelectItems.Append(
+                        graphObject.SelectItems.Length == 0 ?
+                        $"_link(type:{linkQueryBuilder.GetLinkType()})" :
+                        $" _link(type:{linkQueryBuilder.GetLinkType()})"
+                    );
+                }
                 graphObject.SelectItems.Append(
                     graphObject.SelectItems.Length == 0 ?
-                    $"_link{{{linkItems}}}" :
-                    $" _link{{{linkItems}}}"
+                    $"{{{linkQuery}}}" :
+                    $" {{{linkQuery}}}"
                 );
             }
             return this;
         }
+        public virtual BaseTypeQueryBuilder Link(ITypeQueryBuilder link, string alias)
+        {
+            link.ValidateNotNullArgument("link");
+            var linkQueryBuilder = link as ILinkQueryBuilder;
+            if (linkQueryBuilder is null)
+            {
+                throw new ArgumentException("The argument [link] is not type of [LinkQueryBuilder]");
+            }
+            if (!alias.IsValidName(50))
+            {
+                throw new ArgumentException($"Alias name {alias} is not valid");
+            }
+            string linkQuery = linkQueryBuilder.GetQuery()?.Query ?? string.Empty;
+            if (!linkQuery.IsNullOrEmpty())
+            {
+                if (!linkQueryBuilder.GetLinkType().IsNullOrEmpty())
+                {
+                    if (string.IsNullOrEmpty(alias))
+                    {
+                        graphObject.SelectItems.Append(
+                            graphObject.SelectItems.Length == 0 ?
+                            $"_link(type:{linkQueryBuilder.GetLinkType()})" :
+                            $" _link(type:{linkQueryBuilder.GetLinkType()})"
+                        );
+                    }
+                    else
+                    {
+                        graphObject.SelectItems.Append(
+                            graphObject.SelectItems.Length == 0 ?
+                            $"{alias}:_link(type:{linkQueryBuilder.GetLinkType()})" :
+                            $" {alias}:_link(type:{linkQueryBuilder.GetLinkType()})"
+                        );
+                    }  
+                    
+                }
+                graphObject.SelectItems.Append(
+                    graphObject.SelectItems.Length == 0 ?
+                    $"{{{linkQuery}}}" :
+                    $" {{{linkQuery}}}"
+                );
+
+            }
+            return this;
+        }
         [Obsolete("Use Link method instead")]
-        public virtual BaseTypeQueryBuilder Children(BaseTypeQueryBuilder children)
+        public virtual BaseTypeQueryBuilder Children(ITypeQueryBuilder children)
         {
             children.ValidateNotNullArgument("children");
             string childrenItems = children.GetQuery()?.Query ?? string.Empty;

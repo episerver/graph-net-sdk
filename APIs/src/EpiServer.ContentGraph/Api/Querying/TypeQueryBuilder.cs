@@ -33,6 +33,18 @@ namespace EPiServer.ContentGraph.Api.Querying
             base.Link(link);
             return this;
         }
+        /// <summary>
+        /// Link with simple alias
+        /// </summary>
+        /// <param name="link"></param>
+        /// <param name="alias">Length should lte 50, can not start with numbers</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        public TypeQueryBuilder<T> Link<TLink>(TypeQueryBuilder<TLink> link, string alias)
+        {
+            base.Link(link, alias);
+            return this;
+        }
         [Obsolete("Use Link method instead")]
         public TypeQueryBuilder<T> Children<TChildren>(TypeQueryBuilder<TChildren> children)
         {

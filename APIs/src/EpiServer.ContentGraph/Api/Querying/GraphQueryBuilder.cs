@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
+using EPiServer.ContentGraph.Helpers.Text;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {
@@ -113,8 +114,7 @@ namespace EPiServer.ContentGraph.Api.Querying
         /// <returns></returns>
         public GraphQueryBuilder OperationName(string op)
         {
-            Regex reg = new Regex(@"^[a-zA-Z_]\w*$");
-            if (reg.IsMatch(op))
+            if (op.IsValidName())
             {
                 _query.OperationName = op;
             }
