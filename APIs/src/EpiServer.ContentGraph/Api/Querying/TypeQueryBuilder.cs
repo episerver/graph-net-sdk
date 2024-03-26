@@ -9,18 +9,22 @@ using EPiServer.ContentGraph.Api.Facets;
 using EPiServer.ServiceLocation;
 using EPiServer.ContentGraph.ExpressionHelper;
 using System.Text.RegularExpressions;
+using EPiServer.ContentGraph.Extensions;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {
     public partial class TypeQueryBuilder<T> : TypeQueryBuilder
     {
         private static IEnumerable<IFilterForVisitor>? _filters;
+
         public TypeQueryBuilder(GraphQLRequest request) : base(request)
         {
         }
+
         public TypeQueryBuilder() : base()
         {
         }
+
         public override GraphQLRequest GetQuery()
         {
             ToQuery();
@@ -28,32 +32,38 @@ namespace EPiServer.ContentGraph.Api.Querying
         }
 
         #region Queries
+
         public TypeQueryBuilder<T> Link<TLink>(TypeQueryBuilder<TLink> link)
         {
             base.Link(link);
             return this;
         }
+
         [Obsolete("Use Link method instead")]
         public TypeQueryBuilder<T> Children<TChildren>(TypeQueryBuilder<TChildren> children)
         {
             base.Children(children);
             return this;
         }
+
         public override TypeQueryBuilder<T> Fragments(params FragmentBuilder[] fragments)
         {
             base.Fragments(fragments);
             return this;
         }
+
         protected override TypeQueryBuilder<T> Fragment(FragmentBuilder fragment)
         {
             base.Fragment(fragment);
             return this;
         }
+
         public override TypeQueryBuilder<T> Field(string propertyName)
         {
             base.Field(propertyName);
             return this;
         }
+
         public TypeQueryBuilder<T> Field(Expression<Func<T, object>> fieldSelector)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
@@ -61,6 +71,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             Field(propertyName);
             return this;
         }
+
         public TypeQueryBuilder<T> Field(Expression<Func<T, object>> fieldSelector, string alias)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
@@ -68,6 +79,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             Field($"{alias}:{propertyName}");
             return this;
         }
+
         public TypeQueryBuilder<T> Fields(params Expression<Func<T, object>>[] fieldSelectors)
         {
             fieldSelectors.ValidateNotNullArgument("fieldSelectors");
@@ -77,12 +89,11 @@ namespace EPiServer.ContentGraph.Api.Querying
             }
             return this;
         }
-        /// <summary>
-        /// Select fields in a subtype. The response of your query may need to convert data type. If then consider to use GetContent<TOriginal,TExpectedType> method.
-        /// </summary>
-        /// <typeparam name="TSub">Subtype must be inherited from type <typeparamref name="T"/></typeparam>
-        /// <param name="propertyName"></param>
-        /// <returns></returns>
+
+        /// <summary> Select fields in a subtype. The response of your query may need to convert
+        /// data type. If then consider to use GetContent<TOriginal,TExpectedType> method.
+        /// </summary> <typeparam name="TSub">Subtype must be inherited from type <typeparamref
+        /// name="T"/></typeparam> <param name="propertyName"></param> <returns></returns>
         public TypeQueryBuilder<T> AsType<TSub>(string propertyName) where TSub : T
         {
             string subTypeName = typeof(TSub).Name;
@@ -92,12 +103,11 @@ namespace EPiServer.ContentGraph.Api.Querying
             );
             return this;
         }
-        /// <summary>
-        /// Select fields in a subtype. The response of your query may need to convert data type. If then consider to use GetContent<TOriginal,TExpectedType> method.
-        /// </summary>
-        /// <typeparam name="TSub">Subtype must be inherited from type <typeparamref name="T"/></typeparam>
-        /// <param name="fieldSelector"></param>
-        /// <returns></returns>
+
+        /// <summary> Select fields in a subtype. The response of your query may need to convert
+        /// data type. If then consider to use GetContent<TOriginal,TExpectedType> method.
+        /// </summary> <typeparam name="TSub">Subtype must be inherited from type <typeparamref
+        /// name="T"/></typeparam> <param name="fieldSelector"></param> <returns></returns>
         public TypeQueryBuilder<T> AsType<TSub>(params Expression<Func<TSub, object>>[] fieldSelectors) where TSub : T
         {
             fieldSelectors.ValidateNotNullArgument("fieldSelectors");
@@ -109,7 +119,6 @@ namespace EPiServer.ContentGraph.Api.Querying
                     propertyName += " ";
                 }
                 propertyName += ConvertNestedFieldToString.ConvertNestedFieldForQuery(fieldSelector.GetFieldPath());
-
             }
             string subTypeName = typeof(TSub).Name;
             graphObject.SelectItems.Append(graphObject.SelectItems.Length == 0 ?
@@ -118,12 +127,11 @@ namespace EPiServer.ContentGraph.Api.Querying
             );
             return this;
         }
-        /// <summary>
-        /// Select fields in a subtype. The response of your query may need to convert data type. If then consider to use GetContent<TOriginal,TExpectedType> method.
-        /// </summary>
-        /// <typeparam name="TSub">Subtype must be inherited from type <typeparamref name="T"/></typeparam>
-        /// <param name="propertyName"></param>
-        /// <returns></returns>
+
+        /// <summary> Select fields in a subtype. The response of your query may need to convert
+        /// data type. If then consider to use GetContent<TOriginal,TExpectedType> method.
+        /// </summary> <typeparam name="TSub">Subtype must be inherited from type <typeparamref
+        /// name="T"/></typeparam> <param name="propertyName"></param> <returns></returns>
         public TypeQueryBuilder<T> AsType<TSub>(SubTypeQueryBuilder<TSub> subTypeQuery) where TSub : T
         {
             subTypeQuery.ValidateNotNullArgument("subTypeQuery");
@@ -151,6 +159,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             }
             return this;
         }
+
         /// <summary>
         /// Get facet by field
         /// </summary>
@@ -162,24 +171,28 @@ namespace EPiServer.ContentGraph.Api.Querying
             Facet(fieldSelector.GetFieldPath());
             return this;
         }
+
         public TypeQueryBuilder<T> Facet(Expression<Func<T, DateTime>> fieldSelector)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             Facet(fieldSelector.GetFieldPath());
             return this;
         }
+
         public TypeQueryBuilder<T> Facet(Expression<Func<T, bool>> fieldSelector)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             Facet(fieldSelector.GetFieldPath());
             return this;
         }
+
         public TypeQueryBuilder<T> Facet(Expression<Func<T, int>> fieldSelector)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             Facet(fieldSelector.GetFieldPath());
             return this;
         }
+
         public TypeQueryBuilder<T> Facet(string propertyName)
         {
             string facet = ConvertNestedFieldToString.ConvertNestedFieldForFacet(propertyName);
@@ -188,6 +201,92 @@ namespace EPiServer.ContentGraph.Api.Querying
                 $"{graphObject.Facets} {facet}";
             return this;
         }
+
+        /// <summary>
+        /// Get facet by field in a nested object
+        /// </summary>
+        /// <typeparam name="TField"></typeparam>
+        /// <param name="fieldSelector">The object</param>
+        /// <param name="propertySelector">Inner property of the object</param>
+        /// <param name="limit">Number of facets to be returned</param>
+        /// <returns></returns>
+        public TypeQueryBuilder<T> Facet<TField>(Expression<Func<T, IEnumerable<TField>>> fieldSelector, Expression<Func<TField, string>> propertySelector, int? limit = null)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            propertySelector.ValidateNotNullArgument("propertySelector");
+
+            Facet($"{(limit.HasValue ? fieldSelector.GetFieldPath().FacetLimit(limit.Value) : fieldSelector.GetFieldPath())}.{propertySelector.GetFieldPath()}");
+            return this;
+        }
+
+        /// <summary>
+        /// Get facet by field in a nested object
+        /// </summary>
+        /// <typeparam name="TField"></typeparam>
+        /// <param name="fieldSelector">The object</param>
+        /// <param name="propertySelector">Inner property of the object</param>
+        /// <param name="limit">Number of facets to be returned</param>
+        /// <returns></returns>
+        public TypeQueryBuilder<T> Facet<TField>(Expression<Func<T, IEnumerable<TField>>> fieldSelector, Expression<Func<TField, bool>> propertySelector, int? limit = null)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            propertySelector.ValidateNotNullArgument("propertySelector");
+
+            Facet($"{(limit.HasValue ? fieldSelector.GetFieldPath().FacetLimit(limit.Value) : fieldSelector.GetFieldPath())}.{propertySelector.GetFieldPath()}");
+            return this;
+        }
+
+        /// <summary>
+        /// Get facet by field in a nested object
+        /// </summary>
+        /// <typeparam name="TField"></typeparam>
+        /// <param name="fieldSelector">The object</param>
+        /// <param name="propertySelector">Inner property of the object</param>
+        /// <param name="limit">Number of facets to be returned</param>
+        /// <returns></returns>
+        public TypeQueryBuilder<T> Facet<TField>(Expression<Func<T, IEnumerable<TField>>> fieldSelector, Expression<Func<TField, int>> propertySelector, int? limit = null)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            propertySelector.ValidateNotNullArgument("propertySelector");
+
+            Facet($"{(limit.HasValue ? fieldSelector.GetFieldPath().FacetLimit(limit.Value) : fieldSelector.GetFieldPath())}.{propertySelector.GetFieldPath()}");
+            return this;
+        }
+
+        /// <summary>
+        /// Get facet by field in a nested object
+        /// </summary>
+        /// <typeparam name="TField"></typeparam>
+        /// <param name="fieldSelector">The object</param>
+        /// <param name="propertySelector">Inner property of the object</param>
+        /// <param name="limit">Number of facets to be returned</param>
+        /// <returns></returns>
+        public TypeQueryBuilder<T> Facet<TField>(Expression<Func<T, IEnumerable<TField>>> fieldSelector, Expression<Func<TField, DateTime>> propertySelector, int? limit = null)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            propertySelector.ValidateNotNullArgument("propertySelector");
+
+            Facet($"{(limit.HasValue ? fieldSelector.GetFieldPath().FacetLimit(limit.Value) : fieldSelector.GetFieldPath())}.{propertySelector.GetFieldPath()}");
+            return this;
+        }
+
+        /// <summary>
+        /// Get facet by field in a nested object
+        /// </summary>
+        /// <typeparam name="TField"></typeparam>
+        /// <param name="fieldSelector">The object</param>
+        /// <param name="propertySelector">Inner property of the object</param>
+        /// <param name="limit">Number of facets to be returned</param>
+        /// <returns></returns>
+        public TypeQueryBuilder<T> Facet<TField>(Expression<Func<T, IEnumerable<TField>>> fieldSelector, Expression<Func<TField, object>> propertySelector, int? limit = null)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            propertySelector.ValidateNotNullArgument("propertySelector");
+
+            Facet($"{(limit.HasValue ? fieldSelector.GetFieldPath().FacetLimit(limit.Value) : fieldSelector.GetFieldPath())}.{propertySelector.GetFieldPath()}");
+            return this;
+        }
+
         public TypeQueryBuilder<T> Total(bool? isAll = null)
         {
             if (!isAll.HasValue)
@@ -201,6 +300,7 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             return this;
         }
+
         /// <summary>
         /// Get scroll id from search
         /// </summary>
@@ -210,14 +310,17 @@ namespace EPiServer.ContentGraph.Api.Querying
             graphObject.Cursor = "cursor";
             return this;
         }
-        #endregion
+
+        #endregion Queries
 
         #region Filters
+
         public TypeQueryBuilder<T> Skip(long skip)
         {
             graphObject.Skip = $"skip:{skip}";
             return this;
         }
+
         /// <summary>
         /// Set scroll id for search query
         /// </summary>
@@ -233,12 +336,14 @@ namespace EPiServer.ContentGraph.Api.Querying
             }
             return this;
         }
+
         public TypeQueryBuilder<T> Ids(params string[] ids)
         {
             ids.ValidateNotNullArgument("ids");
             graphObject.Ids = $"ids:[{string.Join(',', ids.Select(id => $"\"{id}\""))}]";
             return this;
         }
+
         public TypeQueryBuilder<T> Locale(LocaleMode locale)
         {
             if (!locale.IsNull())
@@ -250,6 +355,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             }
             return this;
         }
+
         public TypeQueryBuilder<T> Locales(params CultureInfo[] cultures)
         {
             cultures.ValidateNotNullArgument("cultures");
@@ -257,6 +363,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             graphObject.Locale = allLocales;
             return this;
         }
+
         /// <summary>
         /// Order for a field. Add more for order many fields.
         /// </summary>
@@ -278,6 +385,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             }
             return this;
         }
+
         public TypeQueryBuilder<T> OrderBy(Expression<Func<T, object>> fieldSelector, OrderMode orderMode, Ranking? ranking)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
@@ -294,6 +402,7 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             return this;
         }
+
         public TypeQueryBuilder<T> OrderBy(Ranking ranking = Ranking.SEMANTIC)
         {
             if (graphObject.OrderBy.IsNullOrEmpty())
@@ -307,16 +416,19 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             return this;
         }
+
         public TypeQueryBuilder<T> Limit(int limit = 20)
         {
             graphObject.Limit = $"limit:{limit}";
             return this;
         }
+
         public TypeQueryBuilder<T> Search(IFilterOperator filterOperator)
         {
             Where(FIELDS.FULLTEXT, filterOperator);
             return this;
         }
+
         /// <summary>
         /// Full text search using Match operator
         /// </summary>
@@ -327,7 +439,9 @@ namespace EPiServer.ContentGraph.Api.Querying
             Where(FIELDS.FULLTEXT, new StringFilterOperators().Match(q));
             return this;
         }
+
         private Dictionary<string, string> FullTextFilters = new Dictionary<string, string>();
+
         private string MergeFilters(string exsting, string additional)
         {
             Regex reg = new Regex(@"\{.*\}");
@@ -335,10 +449,11 @@ namespace EPiServer.ContentGraph.Api.Querying
             var newFilter = reg.Match(additional).Value;
             if (originalFilter != newFilter)
             {
-                return $"{originalFilter.Replace("{","").Replace("}","")},{newFilter.Replace("{", "").Replace("}", "")}";
+                return $"{originalFilter.Replace("{", "").Replace("}", "")},{newFilter.Replace("{", "").Replace("}", "")}";
             }
             return exsting;
         }
+
         public TypeQueryBuilder<T> Where(string fieldName, IFilterOperator filterOperator)
         {
             filterOperator.ValidateNotNullArgument("filterOperator");
@@ -371,6 +486,7 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             return this;
         }
+
         public TypeQueryBuilder<T> Where(Expression<Func<T, Filter>> fieldSelector)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
@@ -382,6 +498,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             }
             return this;
         }
+
         public TypeQueryBuilder<T> Where(Expression<Func<T, string>> fieldSelector, StringFilterOperators filterOperator)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
@@ -390,6 +507,7 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             return this;
         }
+
         public TypeQueryBuilder<T> Where(Expression<Func<T, long?>> fieldSelector, NumericFilterOperators filterOperator)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
@@ -398,6 +516,7 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             return this;
         }
+
         public TypeQueryBuilder<T> Where(Expression<Func<T, string>> fieldSelector, DateFilterOperators filterOperator)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
@@ -406,6 +525,7 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             return this;
         }
+
         public TypeQueryBuilder<T> Where(Expression<Func<T, bool>> fieldSelector, BooleanFilterOperators filterOperator)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
@@ -414,6 +534,7 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             return this;
         }
+
         public TypeQueryBuilder<T> Where(Expression<Func<T, DateTime?>> fieldSelector, DateFilterOperators filterOperator)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
@@ -422,6 +543,7 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             return this;
         }
+
         public TypeQueryBuilder<T> Where(IFilter filter)
         {
             filter.ValidateNotNullArgument("filter");
@@ -436,6 +558,7 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             return this;
         }
+
         private TypeQueryBuilder<T> Facet(string propertyName, IFacetOperator facetFilter)
         {
             propertyName.ValidateNotNullArgument("propertyName");
@@ -446,6 +569,7 @@ namespace EPiServer.ContentGraph.Api.Querying
                 $"{graphObject.Facets} {facets}";
             return this;
         }
+
         public TypeQueryBuilder<T> Facet(Expression<Func<T, object>> fieldSelector, IFacetOperator facetFilter)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
@@ -453,6 +577,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             Facet(fieldSelector.GetFieldPath(), facetFilter);
             return this;
         }
+
         public TypeQueryBuilder<T> Facet(params Expression<Func<T, FacetFilter>>[] facetFilters)
         {
             facetFilters.ValidateNotNullArgument("facetFilters");
@@ -464,6 +589,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             }
             return this;
         }
+
         public TypeQueryBuilder<T> Facet(IEnumerable<FacetFilter> facetFilters)
         {
             facetFilters.ValidateNotNullArgument("facetFilters");
@@ -473,6 +599,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             }
             return this;
         }
+
         /// <summary>
         /// Get facet with filter
         /// </summary>
@@ -486,6 +613,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             Facet(fieldSelector.GetFieldPath(), facetFilter);
             return this;
         }
+
         public TypeQueryBuilder<T> Facet(Expression<Func<T, bool>> fieldSelector, StringFacetFilterOperators facetFilter)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
@@ -493,6 +621,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             Facet(fieldSelector.GetFieldPath(), facetFilter);
             return this;
         }
+
         public TypeQueryBuilder<T> Facet(Expression<Func<T, object>> fieldSelector, StringFacetFilterOperators facetFilter)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
@@ -500,6 +629,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             Facet(fieldSelector.GetFieldPath(), facetFilter);
             return this;
         }
+
         public TypeQueryBuilder<T> Facet(Expression<Func<T, int?>> fieldSelector, NumericFacetFilterOperators facetFilter)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
@@ -507,6 +637,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             Facet(fieldSelector.GetFieldPath(), facetFilter);
             return this;
         }
+
         public TypeQueryBuilder<T> Facet(Expression<Func<T, DateTime?>> fieldSelector, DateFacetFilterOperators facetFilter)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
@@ -514,6 +645,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             Facet(fieldSelector.GetFieldPath(), facetFilter);
             return this;
         }
+
         public TypeQueryBuilder<T> Facet(IFacetFilter facetFilter)
         {
             facetFilter.ValidateNotNullArgument("facetFilter");
@@ -522,6 +654,7 @@ namespace EPiServer.ContentGraph.Api.Querying
                 $"{graphObject.Facets} {facetFilter.FilterClause}";
             return this;
         }
+
         public TypeQueryBuilder<T> FilterForVisitor(params IFilterForVisitor[] filterForVisitors)
         {
             if (filterForVisitors != null && filterForVisitors.Length > 0)
@@ -542,7 +675,8 @@ namespace EPiServer.ContentGraph.Api.Querying
             }
             return this;
         }
-        #endregion
+
+        #endregion Filters
 
         /// <summary>
         /// Build the query for current type
@@ -623,9 +757,9 @@ namespace EPiServer.ContentGraph.Api.Querying
         public TypeQueryBuilder(GraphQLRequest request) : base(request)
         {
         }
+
         public TypeQueryBuilder() : base()
         {
         }
-
     }
 }
