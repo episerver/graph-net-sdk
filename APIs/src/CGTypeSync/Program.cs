@@ -62,6 +62,7 @@ namespace Optimizely.Graph.Client.Tools
             sb.AppendLine("using EPiServer.DataAnnotations;");
             sb.AppendLine("using System.Globalization;");
             sb.AppendLine();
+            sb.AppendLine($"#pragma warning disable CS0108, CS0114");
             sb.AppendLine("namespace Optimizely.ContentGraph.DataModels");
             sb.AppendLine("{");
 
