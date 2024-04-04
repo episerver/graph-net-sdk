@@ -163,7 +163,7 @@ namespace Optimizely.Graph.Client.Tools
                 foreach (JProperty propertyProperty in properties.Where(x => x is JProperty))
                 {
                     var name = propertyProperty.Name;
-                    var searchableAttr = (bool)(propertyProperty.Children()["searchable"].First() as JValue).Value;
+                    var searchableAttr = (bool)((propertyProperty.Children()["searchable"].FirstOrDefault() as JValue)?.Value ?? false);
                     var dataType = (propertyProperty.Children()["type"].First() as JValue).Value.ToString();
                     dataType = ConvertType(dataType);
                     if (searchableAttr)
