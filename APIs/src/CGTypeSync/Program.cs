@@ -9,14 +9,39 @@ namespace Optimizely.Graph.Client.Tools
         private static string USER_AGENT => $"Optimizely-Graph-Tools/{typeof(Program).Assembly.GetName().Version}";
         static void Main(string[] args)
         {
-            Console.WriteLine("************************************ Optimizely Content Graph Client Tools ************************************");
-            Console.WriteLine("This tool will generate C# classes from Optimizely Graph schema. Ensure you config correct account");
-
-            string configPath = "appsettings.json", directory = ".", source = "default";
+            Console.WriteLine("**** Optimizely Content Graph Client Tools ****");
+            Console.WriteLine("Version: " + USER_AGENT);
+            Console.WriteLine("This tool will generate C# classes from Optimizely Graph schema.");
+            Console.WriteLine("Learn more: https://github.com/episerver/graph-net-sdk");
+            Console.WriteLine("");
+            Console.WriteLine("Usage:");
+            Console.WriteLine("dotnet ogschema <settingsfile> <output> <optional-source> <optional-namespace>");
+            Console.WriteLine("settingsfile: Relative or full path to an appSettings.json file with Graph configuration");
+            Console.WriteLine("output: Relative or full path to a directory or .cs file to write generated C# models to");
+            Console.WriteLine("optional-source: The content source in your Graph instance, default value is: \"default\"");
+            Console.WriteLine("optional-namespace: The namespace for the generated C# classes");
+            
+            
+            const string defaultFileName = "GraphModels.cs";
+            string configPath = "appsettings.json",
+                output = ".",
+                source = "default",
+                modelNamespace = "Optimizely.ContentGraph.DataModels";
             if (args.Length > 0)
             {
                 configPath = args[0];
             }
+
+            FileInfo fi = new FileInfo(configPath);
+            if (fi.Exists == false)
+            {
+                Console.WriteLine("Cannot locate settings file: {0}", fi.FullName);
+                Environment.ExitCode = -1;
+                return;
+            }
+            
+            // Make sure we operate on a full path
+            configPath = fi.FullName;
             
             IConfigurationRoot config = new ConfigurationBuilder()
                                         .AddJsonFile(configPath)
@@ -27,7 +52,19 @@ namespace Optimizely.Graph.Client.Tools
             {
                 if (args.Length > 1)
                 {
-                    directory = args[1];
+                    // First, check if output is a file (we don't care if it exists or not)
+                    fi = new FileInfo(args[1]);
+                    if (string.IsNullOrEmpty(fi.Extension) == false)
+                    {
+                        // we have a file, just pass that on
+                        output = fi.FullName;
+                    }
+                    else
+                    {
+                        // Not a file, assume it is a directory
+                        var di = new DirectoryInfo(args[1]);
+                        output = Path.Combine(di.FullName, defaultFileName);
+                    }
                 }
 
                 if (args.Length > 2)
@@ -35,18 +72,38 @@ namespace Optimizely.Graph.Client.Tools
                     source = args[2];
                 }
 
-                Run(config, directory, source);
+                if (args.Length > 3)
+                {
+                    modelNamespace = args[3];
+                }
+
+                Console.WriteLine("");
+                Console.WriteLine("Running with the following settings");
+                Console.WriteLine("  Configuration file: {0}", configPath);
+                Console.WriteLine("  Output: {0}", output);
+                Console.WriteLine("  Content Source: {0}", source);
+                Console.WriteLine("  Namespace: {0}", modelNamespace);
+                Console.WriteLine("");
+                Run(config, output, source, modelNamespace);
+            }
+            else
+            {
+                Console.WriteLine("Cannot build settings from settings file: {0}", configPath);
+                Environment.ExitCode = -1;
             }
         }
-        public static void Run(IConfiguration configuration, string output, string source)
+        public static void Run(IConfiguration configuration,
+            string output,
+            string source,
+            string modelNamespace)
         {
             //parse the CGTypes.json file
             var schemaTypes = new Dictionary<string, List<Tuple<string, string>>>();
-            const string fileName = "GraphModels.cs";
             JObject json = GetSchemaDataTypes(configuration, source);
             if (json == null)
             {
                 Console.WriteLine("Error! schema is null");
+                Environment.ExitCode = -1;
                 return;
             }
             var propertyTypes = json["propertyTypes"];
@@ -62,14 +119,14 @@ namespace Optimizely.Graph.Client.Tools
             sb.AppendLine("using EPiServer.DataAnnotations;");
             sb.AppendLine("using System.Globalization;");
             sb.AppendLine();
-            sb.AppendLine("namespace Optimizely.ContentGraph.DataModels");
+            sb.AppendLine("namespace " + modelNamespace);
             sb.AppendLine("{");
 
             foreach (JProperty propertyType in propertyTypes)
             {
                 var propertyTypeName = propertyType.Name;
                 
-                sb.AppendLine($"    public class {propertyTypeName}");
+                sb.AppendLine($"    public partial class {propertyTypeName}");
                 sb.AppendLine ("    {");
 
                 var properties = propertyType.First().Children().Children().Children();
@@ -124,19 +181,18 @@ namespace Optimizely.Graph.Client.Tools
 
             sb.AppendLine("}");
             var classes = sb.ToString();
-            if (string.IsNullOrEmpty(output))
+            FileInfo fi = new FileInfo(output);
+            // Check if directory exists, create if not
+            if(fi.Directory != null && fi.Directory.Exists == false)
             {
-                output = Directory.GetCurrentDirectory();
+                fi.Directory.Create();
             }
-            if (!Directory.Exists(output)){
-                Directory.CreateDirectory(output);
-            }
-            var outFile = Path.Combine(output, fileName);
-            using (var writer = new StreamWriter(outFile, false))
+            
+            using (var writer = new StreamWriter(output, false))
             {
                 writer.Write(sb.ToString());
             }
-            Console.WriteLine($"Classes had been generated to {output}/{fileName}.");
+            Console.WriteLine($"Optimizely Graph model C# classes have been written to {output}.");
         }
 
         private static string ConvertType(string propType)

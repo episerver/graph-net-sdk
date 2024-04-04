@@ -17,7 +17,7 @@ From repository level:
 
 #### Run Integration tests
 - Configure appsettings.json file in `.\APIs\src\Testing\EPiServer.ContentGraph.IntegrationTests` to connect to GraphQL gateway.
-If appsettings.json was ready, from repository level:
+  If appsettings.json was ready, from repository level:
 - Run `cd msbuild`
 - Run `powershell .\intergrationTest.ps1` if you're using Command Line or `.\intergrationTest.ps1` if PowerShell
 
@@ -32,15 +32,57 @@ If appsettings.json was ready, from repository level:
 - On the way...
 
 ### Optimizely Graph Client Tool
-This tool supports for generating Optimizely Graph's schema to C# object models. You do not need to create models manually if install this tool.
+This tool will generate C# classes (models) based on Optimizely Graph's schema. The Client SDK graph builder classes uses these models to provide strongly typed access to the Graph data.
+
 #### Install Optimizely Graph Client Tool
-From repository level:
-- Run `mkdir ogtools`
-- Run `cd ogtools`
+You typically want to install this tool into your solution directory. It is installed as a `dotnet tool` which you can invoke using the `dotnet` command. If you install the tool at the root of your solution (where your .sln and/or .git directory is located), the command will also work in all subdirectories.
+Open a command line, navigate to the root of your repository/solution:
 - Run `dotnet new tool-manifest`
 - Run `dotnet tool install Optimizely.Graph.Client.Tools --local`
-- Run `dotnet ogschema path_to_your_appsettings.json path_to_store_your_models`
-When the last command is succeed you will see the models will be generated in file `GraphModels.cs` located in the `path_to_store_your_models` you have ran in last command.
+
+You can now invoke the `ogschema` tool using the follwing command:\
+`dotnet ogschema path_to_your_appsettings.json path_to_store_your_models`
+
+This will create a file `GraphModels.cs` in the `path_to_store_your_models` directory.
+
+#### Example installation
+
+You have an ASP.NET project in `c:\dev\alloy\`, and the following file setup
+```
+alloy.sln
+\src
+  alloy.csproj
+  \Models
+  \Controllers
+  ...
+\docs
+  readme.md
+```
+1. Open a command prompt at the root of your ASP.NET project (`c:\dev\alloy\`) 
+2. Run the following command: `dotnet new tool-manifest`
+3. This will generate a `.config` folder with a dotnet tool manifest
+4. Run the following command: `dotnet tool install Optimizely.Graph.Client.Tools --local`
+5. This will register the ogschema tool in the manifest, and allow the tool to be invoked anywhere in or below `c:\dev\alloy\`
+6. Change to your src directory: `cd src`
+7. Run the following command: `dotnet ogschema appsettings.json Models`
+8. This will generate a file called `GraphModels.cs` in the Models directory
+
+In this example, your `appSettings.config` file must have the necessary Optimizely Graph settings. See the [developer documentation](https://docs.developers.optimizely.com/platform-optimizely/v1.4.0-optimizely-graph/docs/configure-package-settings-in-aspnet-core) for more information.
+
+#### Command Line Reference
+`dotnet ogschema <settingsfile> <output> <optional-source> <optional-namespace>`
+
+* `settingsfile`: Relative or full path to an appSettings.json file with Graph configuration
+* `output`: Relative or full path to a directory or .cs file to write generated C# models to
+* `optional-source`: The content source in your Graph instance, default value is: *default*
+* `optional-namespace`: The namespace for the generated C# classes
+
+The following command:\
+`dotnet ogschema appsettings.json Models\MyContentSource.cs dt1 Alloy.Models`
+1. will look for an `appsettings.json` file in the current directory
+2. will create a file called `MyContentSource.cs` in the `Models` directory below the current directory
+3. will generate model classes for the [content source](https://docs.developers.optimizely.com/platform-optimizely/v1.4.0-optimizely-graph/docs/synchronize-content-types) called `dt1`. This could be a custom content source that you have created previously
+4. The namespace used in the `MyContentSource.cs` file will be `Alloy.Models`
 
 ### Contributing
 
