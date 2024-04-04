@@ -155,7 +155,7 @@ namespace Optimizely.Graph.Client.Tools
                     inheritedFromType = string.Join(',', parentTypes.Select(type=> type.ToString()));
                     inheritedFromType = $":{inheritedFromType}";
                 }
-                sb.AppendLine($"    public class {propertyTypeName}{inheritedFromType}");
+                sb.AppendLine($"    public partial class {propertyTypeName}{inheritedFromType}");
                 sb.AppendLine("    {");
 
                 var properties = contentType.First().Children().Children().Children();
