@@ -27,6 +27,27 @@ namespace EPiServer.ContentGraph.Api.Querying
             base.Field(fieldSelector.GetFieldPath());
             return this;
         }
+        public SubTypeQueryBuilder<T> Field(Expression<Func<T, object>> fieldSelector, string alias)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            var propertyName = fieldSelector.GetFieldPath();
+            base.Field(propertyName, alias);
+            return this;
+        }
+        public SubTypeQueryBuilder<T> Field(Expression<Func<T, object>> fieldSelector, HighLightOptions highLightOptions, string alias = "")
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            var propertyName = fieldSelector.GetFieldPath();
+            if (string.IsNullOrEmpty(alias))
+            {
+                base.Field($"{propertyName}", highLightOptions);
+            }
+            else
+            {
+                base.Field($"{alias}:{propertyName}", highLightOptions);
+            }
+            return this;
+        }
         public SubTypeQueryBuilder<T> Fields(params Expression<Func<T, object>>[] fieldSelectors)
         {
             fieldSelectors.ValidateNotNullArgument("fieldSelectors");

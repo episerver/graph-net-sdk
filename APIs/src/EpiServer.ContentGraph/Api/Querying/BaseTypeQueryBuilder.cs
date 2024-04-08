@@ -65,6 +65,47 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             return this;
         }
+        public virtual BaseTypeQueryBuilder Field(string propertyName, string alias)
+        {
+            propertyName.ValidateNotNullArgument("propertyName");
+            alias.ValidateNotNullArgument("alias");
+            if (!propertyName.IsNullOrEmpty() && !alias.IsNullOrEmpty())
+            {
+                string clonedPropName = ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName);
+                graphObject.SelectItems.Append(
+                    graphObject.SelectItems.Length == 0 ?
+                    $"{alias}:{clonedPropName}" :
+                    $" {alias}:{clonedPropName}"
+                );
+            }
+            else
+            {
+                Field(propertyName);
+            }
+
+            return this;
+        }
+        public virtual BaseTypeQueryBuilder Field(string propertyName, HighLightOptions highLightOptions)
+        {
+            propertyName.ValidateNotNullArgument("propertyName");
+
+            if (!propertyName.IsNullOrEmpty())
+            {
+                if (highLightOptions.IsNull())
+                {
+                    Field(propertyName);
+                    return this;
+                }
+                string clonedPropName = ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName);
+                graphObject.SelectItems.Append(
+                    graphObject.SelectItems.Length == 0 ?
+                    $"{clonedPropName}{highLightOptions.Query}" :
+                    $" {clonedPropName}{highLightOptions.Query}"
+                );
+            }
+
+            return this;
+        }
         public virtual BaseTypeQueryBuilder Link(ITypeQueryBuilder link)
         {
             link.ValidateNotNullArgument("link");

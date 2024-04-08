@@ -201,7 +201,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
                 return false;
             }
         }
-        protected static void SetupData<T>(string indexingData, string testId)
+        protected static void SetupData<T>(string indexingData, string testId="test")
         {
             string path = $@"{WorkingDirectory}\TestingData\SimpleTypeMapping.json";
             using (StreamReader mappingReader = new StreamReader(path))
