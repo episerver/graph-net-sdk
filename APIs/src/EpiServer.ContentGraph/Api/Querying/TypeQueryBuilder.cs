@@ -33,6 +33,18 @@ namespace EPiServer.ContentGraph.Api.Querying
             base.Link(link);
             return this;
         }
+        /// <summary>
+        /// Link with simple alias
+        /// </summary>
+        /// <param name="link"></param>
+        /// <param name="alias">Length should lte 50, can not start with numbers</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        public TypeQueryBuilder<T> Link<TLink>(TypeQueryBuilder<TLink> link, string alias)
+        {
+            base.Link(link, alias);
+            return this;
+        }
         [Obsolete("Use Link method instead")]
         public TypeQueryBuilder<T> Children<TChildren>(TypeQueryBuilder<TChildren> children)
         {
@@ -65,7 +77,21 @@ namespace EPiServer.ContentGraph.Api.Querying
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             var propertyName = fieldSelector.GetFieldPath();
-            Field($"{alias}:{propertyName}");
+            base.Field(propertyName, alias);
+            return this;
+        }
+        public TypeQueryBuilder<T> Field(Expression<Func<T, object>> fieldSelector, HighLightOptions highLightOptions, string alias = "")
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            var propertyName = fieldSelector.GetFieldPath();
+            if (string.IsNullOrEmpty(alias))
+            {
+                Field($"{propertyName}", highLightOptions);
+            }
+            else
+            {
+                Field($"{alias}:{propertyName}", highLightOptions);
+            }
             return this;
         }
         public TypeQueryBuilder<T> Fields(params Expression<Func<T, object>>[] fieldSelectors)

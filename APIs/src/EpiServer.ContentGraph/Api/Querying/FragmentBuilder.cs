@@ -20,6 +20,12 @@ namespace EPiServer.ContentGraph.Api.Querying
             base.Field(fieldSelector.GetFieldPath());
             return this;
         }
+        public FragmentBuilder<T> Field(Expression<Func<T, object>> fieldSelector, string alias)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            base.Field(fieldSelector.GetFieldPath(), alias);
+            return this;
+        }
         public FragmentBuilder<T> Fields(params Expression<Func<T, object>>[] fieldSelectors)
         {
             fieldSelectors.ValidateNotNullArgument("fieldSelectors");

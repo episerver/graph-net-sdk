@@ -1,10 +1,6 @@
-﻿using EPiServer.ContentGraph.Helpers;
-using EPiServer.ContentGraph.Json;
+﻿using EPiServer.ContentGraph.Json;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace EPiServer.ContentGraph.Api.Result
 {
@@ -17,7 +13,14 @@ namespace EPiServer.ContentGraph.Api.Result
             try
             {
                 string typeName = typeof(TResult).Name;
-                return RawData[typeName].ToObject<ContentGraphHits<TResult>>(JsonSerializerHelper.CreateSerializerIgnoreNullValue());
+                if (RawData.ContainsKey(typeName))
+                {
+                    return RawData[typeName].ToObject<ContentGraphHits<TResult>>(JsonSerializerHelper.CreateSerializerIgnoreNullValue());
+                }
+                else
+                {
+                    return RawData.Values.First().ToObject<ContentGraphHits<TResult>>(JsonSerializerHelper.CreateSerializerIgnoreNullValue());
+                }
             }
             catch (Exception e)
             {
@@ -43,46 +46,22 @@ namespace EPiServer.ContentGraph.Api.Result
         [JsonProperty("errors")]
         public ContentGraphError[] Errors { get; set; }
     }
-    public class ContentGraphResult<T>
+    public class ContentGraphResult<T> : ContentGraphResult
     {
         [JsonIgnore]
-        ContentGraphHits<T> rs = null;
-        [JsonProperty("data")]
-        private Dictionary<string, JObject> RawData { get; set; }
+        ContentGraphHits<T> _content = null;
         public ContentGraphHits<T> Content
         {
             get
             {
-                if (rs != null)
+                if (_content != null)
                 {
-                    return rs;
+                    return _content;
                 }
 
-                return GetContent<T>();
+                _content = GetContent<T>();
+                return _content;
             }
         }
-        private ContentGraphHits<TResult> GetContent<TResult>()
-        {
-            try
-            {
-                string typeName = typeof(TResult).Name;
-                JObject keyValues;
-                if (RawData != null && RawData.TryGetValue(typeName, out keyValues) && keyValues != null)
-                {
-                    return keyValues.ToObject<ContentGraphHits<TResult>>(JsonSerializerHelper.CreateSerializerIgnoreNullValue());
-                }
-                return null;
-            }
-            catch (Exception e)
-            {
-               throw new Exception($"Can not convert response to type [{typeof(TResult).Name}]", e);
-            }
-        }
-        [JsonIgnore]
-        public string[] DataTypes { get => RawData.Keys.ToStringArray(); }
-        [JsonProperty("extensions")]
-        public Extensions Extensions { get; set; }
-        [JsonProperty("errors")]
-         public ContentGraphError[] Errors { get; set; }
     }
 }

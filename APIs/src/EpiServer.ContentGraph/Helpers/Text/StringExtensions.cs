@@ -264,5 +264,10 @@ namespace EPiServer.ContentGraph.Helpers.Text
 
             return false;
         }
+        public static bool IsValidName(this string name, int length=25)
+        {
+            Regex reg = new Regex(@"^[a-zA-Z_]\w*$");
+            return reg.IsMatch(name) && name.Length <= length;
+        }
     }
 }

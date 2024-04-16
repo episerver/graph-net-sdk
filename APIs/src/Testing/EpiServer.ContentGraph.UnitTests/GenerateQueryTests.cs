@@ -171,30 +171,6 @@ namespace EPiServer.ContentGraph.UnitTests
         }
 
         [Fact]
-        public void LinkQueryTests()
-        {
-            string childQuery = "SubTypeObject(where:{SubProperty:{match: \"test\"}}){items{SubProperty} facets{Property3{name count}}}";
-            string expectedFields = $"items{{Property1 Property2 _link{{{childQuery}}}}}";
-            string expectedFacets = @"facets{Property3{NestedProperty{name count}}}";
-            TypeQueryBuilder<SubTypeObject> linkQuery = new TypeQueryBuilder<SubTypeObject>()
-                .Field(x => x.SubProperty)
-                .Where(x => x.SubProperty, new StringFilterOperators().Match("test"))
-                .Facet(x => x.Property3);
-
-            typeQueryBuilder
-                .Field(x => x.Property1)
-                .Field(x => x.Property2)
-                .Link(linkQuery)
-                .Facet(x => x.Property3.NestedProperty);
-            GraphQueryBuilder query = typeQueryBuilder.ToQuery();
-
-            Assert.NotNull(query.GetQuery());
-            Assert.Contains(expectedFacets, query.GetQuery().Query);
-            Assert.Contains(expectedFields, query.GetQuery().Query);
-            Assert.Equal($"RequestTypeObject{{{expectedFields} {expectedFacets}}}", query.GetQuery().Query);
-        }
-
-        [Fact]
         public void Multiple_types_query()
         {
             string expectedQuery1 = "RequestTypeObject(where:{Property1:{eq: \"test\"}}){items{Property1}}";
@@ -245,6 +221,31 @@ namespace EPiServer.ContentGraph.UnitTests
             Assert.Contains(expectedFacets, query.GetQuery().Query);
             Assert.Contains(expectedFields, query.GetQuery().Query);
             Assert.Equal($"RequestTypeObject{{{expectedFields} {expectedFacets}}}", query.GetQuery().Query);
+        }
+        [Fact]
+        public void query_with_highlight_should_generate_correctly()
+        {
+            string expectedQuery1 = "RequestTypeObject(where:{Property1:{eq: \"test\"}}){items{Property1(highlight:{enabled:true})}}";
+            string expectedQuery2 = "SubTypeObject(where:{Property2:{eq: 100}}){items{Property2(highlight:{enabled:true,startToken:\"a\",endToken:\"z\"})}}";
+            string expectedFullQuery = $"query myquery {{{expectedQuery1} {expectedQuery2}}}";
+            GraphQueryBuilder graphQueryBuilder = new GraphQueryBuilder();
+            for (int i = 0; i < 2; i++)
+            {
+                graphQueryBuilder
+                    .OperationName("myquery")
+                    .ForType<RequestTypeObject>()
+                        .Field(x => x.Property1,HighLightOptions.Create().Enable(true))
+                        .Where(x => x.Property1, new StringFilterOperators().Eq("test"))
+                    .ToQuery()
+                    .ForType<SubTypeObject>()
+                        .Field(x => x.Property2, HighLightOptions.Create().Enable(true).StartToken("a").EndToken("z"))
+                        .Where(x => x.Property2, new NumericFilterOperators().Eq(100))
+                    .ToQuery()
+                .BuildQueries();
+            }
+
+            var query = graphQueryBuilder.GetQuery();
+            Assert.Equal(expectedFullQuery, query.Query);
         }
     }
 }
