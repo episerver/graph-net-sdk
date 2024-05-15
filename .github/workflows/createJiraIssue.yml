@@ -1,0 +1,53 @@
+name: Create Jira issue
+
+on:
+  issues:
+    types: [labeled]
+jobs:
+    creatJiraIssue:
+        name: Create Jira Issue
+        runs-on: windows-latest
+        if: github.event.label.name == vars.LABELNAME
+        steps:
+          - name: Check user permission
+            id: checkPermission
+            uses: actions-cool/check-user-permission@v2
+            with:
+              require: 'admin'
+
+          - name: Checkout source code
+            if: ${{steps.checkPermission.outputs.require-result}} == true
+            uses: actions/checkout@v3
+
+          - name: Create Jira Issue
+            id: createJiraIssue
+            if: success()
+            shell: powershell
+            run: |
+              $title = Write-Output "${{github.event.issue.title}}"
+              $body = Write-Output "${{github.event.issue.body}}"
+              $jiraIssueParams = @{
+                  JiraUrl      = '${{secrets.JIRA_URL}}'
+                  Username     = '${{secrets.JIRA_USERNAME}}'
+                  Password     = '${{secrets.JIRA_PASSWORD}}'
+                  Summary      = ($title -join ' ').ToString()
+                  Description  = ($body -join ' ').ToString()
+                  Reporter     = '${{vars.REPORTER}}'
+                  CreatedBy    = '${{github.event.issue.user.login}}'
+                  AcceptedBy   = '${{github.actor}}'
+                  IssueNumber  =  ${{github.event.issue.number}}
+              }
+
+              Write-Output "Create Jira release"
+              $jiraTaskKey = buildscripts\CreateJiraIssue.ps1 @jiraIssueParams
+              Write-Output "JiraKey=$jiraTaskKey" >> $env:GITHUB_OUTPUT
+
+          - name: Update issue
+            if: success() && ${{steps.createJiraIssue.outputs.JiraKey}}
+            uses: actions-cool/issues-helper@v3
+            with:
+              actions: 'update-issue'
+              token: ${{ secrets.GITHUB_TOKEN }}
+              issue-number: ${{ github.event.issue.number }}
+              title: "${{github.event.issue.title}} [${{steps.createJiraIssue.outputs.JiraKey}}]"
+              update-mode: 'replace'
