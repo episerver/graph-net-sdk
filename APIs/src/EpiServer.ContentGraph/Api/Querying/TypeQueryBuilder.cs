@@ -304,23 +304,27 @@ namespace EPiServer.ContentGraph.Api.Querying
             }
             return this;
         }
-        public TypeQueryBuilder<T> OrderBy(Expression<Func<T, object>> fieldSelector, OrderMode orderMode, Ranking? ranking)
+        public TypeQueryBuilder<T> OrderBy(Expression<Func<T, object>> fieldSelector, OrderMode orderMode, Ranking? ranking, double? semanticWeight)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             var propertyName = fieldSelector.GetFieldPath();
 
             if (graphObject.OrderBy.IsNullOrEmpty())
             {
-                graphObject.OrderBy = $"{propertyName}:{orderMode},_ranking:{ranking}";
+                graphObject.OrderBy = $"{propertyName}:{orderMode}";
             }
             else
             {
-                graphObject.OrderBy += $",{propertyName}:{orderMode},_ranking:{ranking}";
+                graphObject.OrderBy += $",{propertyName}:{orderMode}";
             }
 
+            if (ranking.HasValue)
+            {
+                OrderBy(ranking.Value, semanticWeight);
+            }
             return this;
         }
-        public TypeQueryBuilder<T> OrderBy(Ranking ranking = Ranking.SEMANTIC)
+        public TypeQueryBuilder<T> OrderBy(Ranking ranking, double? semanticWeight = null)
         {
             if (graphObject.OrderBy.IsNullOrEmpty())
             {
@@ -330,7 +334,11 @@ namespace EPiServer.ContentGraph.Api.Querying
             {
                 graphObject.OrderBy += $",_ranking:{ranking}";
             }
-
+            if (ranking == Ranking.SEMANTIC)
+            {
+                graphObject.OrderBy += semanticWeight.HasValue ? $",_semanticWeight:{semanticWeight.Value}" : string.Empty;
+            }
+            
             return this;
         }
         public TypeQueryBuilder<T> Limit(int limit = 20)

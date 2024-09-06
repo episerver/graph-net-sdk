@@ -4,6 +4,7 @@ using EPiServer.ContentGraph.Api.Autocomplete;
 using EPiServer.ContentGraph.Api.Facets;
 using EPiServer.ContentGraph.Api.Filters;
 using EPiServer.ContentGraph.Api.Querying;
+using System.ComponentModel;
 using Xunit;
 
 namespace EPiServer.ContentGraph.UnitTests
@@ -240,6 +241,52 @@ namespace EPiServer.ContentGraph.UnitTests
                     .ForType<SubTypeObject>()
                         .Field(x => x.Property2, HighLightOptions.Create().Enable(true).StartToken("a").EndToken("z"))
                         .Where(x => x.Property2, new NumericFilterOperators().Eq(100))
+                    .ToQuery()
+                .BuildQueries();
+            }
+
+            var query = graphQueryBuilder.GetQuery();
+            Assert.Equal(expectedFullQuery, query.Query);
+        }
+        //simple order test
+        [Fact]
+        [Category("OrderBy")]
+        public void query_with_order_should_generate_correctly()
+        {
+            string expectedQuery1 = "RequestTypeObject(orderBy:{_ranking:DOC}where:{Property1:{eq: \"test\"}}){items{Property1(highlight:{enabled:true})}}";
+            string expectedFullQuery = $"query myquery {{{expectedQuery1}}}";
+            GraphQueryBuilder graphQueryBuilder = new GraphQueryBuilder();
+            for (int i = 0; i < 2; i++)
+            {
+                graphQueryBuilder
+                    .OperationName("myquery")
+                    .ForType<RequestTypeObject>()
+                        .Field(x => x.Property1, HighLightOptions.Create().Enable(true))
+                        .Where(x => x.Property1, new StringFilterOperators().Eq("test"))
+                        .OrderBy(Ranking.DOC)
+                    .ToQuery()
+                .BuildQueries();
+            }
+
+            var query = graphQueryBuilder.GetQuery();
+            Assert.Equal(expectedFullQuery, query.Query);
+        }
+        //semantic search with weight test
+        [Fact]
+        [Category("OrderBy")]
+        public void query_with_semantic_search_should_generate_correctly()
+        {
+            string expectedQuery1 = "RequestTypeObject(orderBy:{_ranking:SEMANTIC,_semanticWeight:0.5}where:{Property1:{eq: \"test\"}}){items{Property1(highlight:{enabled:true})}}";
+            string expectedFullQuery = $"query myquery {{{expectedQuery1}}}";
+            GraphQueryBuilder graphQueryBuilder = new GraphQueryBuilder();
+            for (int i = 0; i < 2; i++)
+            {
+                graphQueryBuilder
+                    .OperationName("myquery")
+                    .ForType<RequestTypeObject>()
+                        .Field(x => x.Property1, HighLightOptions.Create().Enable(true))
+                        .Where(x => x.Property1, new StringFilterOperators().Eq("test"))
+                        .OrderBy(Ranking.SEMANTIC, 0.5)
                     .ToQuery()
                 .BuildQueries();
             }
