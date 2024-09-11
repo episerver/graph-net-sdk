@@ -1,8 +1,9 @@
-﻿using EpiServer.ContentGraph.UnitTests.QueryTypeObjects;
-using EPiServer.ContentGraph.Api.Querying;
+﻿using EPiServer.ContentGraph.Api.Querying;
+using EPiServer.ContentGraph.ExpressionHelper;
+using EPiServer.ContentGraph.Extensions;
 using Xunit;
 
-namespace EpiServer.ContentGraph.UnitTests
+namespace EpiServer.ContentGraph.UnitTests.QueryTypeObjects
 {
     public class GenerateFragmentTests
     {
@@ -101,7 +102,81 @@ namespace EpiServer.ContentGraph.UnitTests
                 .OperationName("FragmentTest")
                     .ForType<FragmentObject>()
                         .Field(x => x.Name)
-                        .Fragments(secondFragment)
+                        .AddFragments(secondFragment)
+                    .ToQuery()
+                .BuildQueries();
+
+            //expect children in secondary fragment
+            Assert.Equal(graphQueryBuilder.GetFragments().First().GetName(), "SecondFragment");
+            Assert.True(graphQueryBuilder.GetFragments().First().HasChildren);
+            Assert.Equal(graphQueryBuilder.GetFragments().First().ChildrenFragments.First().GetQuery().Query, expectedFistFragment);
+            //expect secondary fragment
+            Assert.Equal(graphQueryBuilder.GetFragments().First().GetQuery().Query, expectedSecondFragmment);
+            //expect full query
+            Assert.Equal(expectedFullQuery, graphQueryBuilder.GetQuery().Query);
+        }
+
+        [Fact]
+        public void fragment_with_inlinefragment_should_generate_correct_query()
+        {
+            const string expectedMainQuery = "query FragmentTest {FragmentObject{items{Name ...SecondFragment}}}";
+            const string expectedFistFragment = "fragment FirstFragment on PromoObject {Expanded{Property1} ... on PromoExtend{ProviderName}}";
+            const string expectedSecondFragmment = "fragment SecondFragment on FragmentObject {PromoText PromoImage{Url} ...FirstFragment}";
+            const string expectedFullQuery = $"{expectedMainQuery}\n{expectedSecondFragmment}\n{expectedFistFragment}";
+
+            var firstFragment = new FragmentBuilder<PromoObject>("FirstFragment");
+            firstFragment.Fields(x => x.Expanded.Property1);
+            firstFragment.Inline<PromoExtend>(x => x.ProviderName);
+
+            Assert.Equal(firstFragment.GetQuery().Query, expectedFistFragment);
+
+            var secondFragment = new FragmentBuilder<FragmentObject>("SecondFragment");
+            secondFragment.Fields(x => x.PromoText, x => x.PromoImage.Url);
+            secondFragment.AddFragments(firstFragment);
+
+            GraphQueryBuilder graphQueryBuilder = new GraphQueryBuilder();
+            graphQueryBuilder
+                .OperationName("FragmentTest")
+                    .ForType<FragmentObject>()
+                        .Field(x => x.Name)
+                        .AddFragments(secondFragment)
+                    .ToQuery()
+                .BuildQueries();
+
+            //expect children in secondary fragment
+            Assert.Equal(graphQueryBuilder.GetFragments().First().GetName(), "SecondFragment");
+            Assert.True(graphQueryBuilder.GetFragments().First().HasChildren);
+            Assert.Equal(graphQueryBuilder.GetFragments().First().ChildrenFragments.First().GetQuery().Query, expectedFistFragment);
+            //expect secondary fragment
+            Assert.Equal(graphQueryBuilder.GetFragments().First().GetQuery().Query, expectedSecondFragmment);
+            //expect full query
+            Assert.Equal(expectedFullQuery, graphQueryBuilder.GetQuery().Query);
+        }
+
+        [Fact]
+        public void fragment_with_single_recursive_should_generate_correct_query()
+        {
+            const string expectedMainQuery = "query FragmentTest {FragmentObject{items{Name ...SecondFragment}}}";
+            const string expectedFistFragment = "fragment FirstFragment on PromoObject {Expanded{Property1} ... on PromoExtend{Details{CompanyContentLink @recursive(depth:10)}}}";
+            const string expectedSecondFragmment = "fragment SecondFragment on FragmentObject {PromoText PromoImage{Url} ...FirstFragment}";
+            const string expectedFullQuery = $"{expectedMainQuery}\n{expectedSecondFragmment}\n{expectedFistFragment}";
+
+            var firstFragment = new FragmentBuilder<PromoObject>("FirstFragment");
+            firstFragment.Fields(x => x.Expanded.Property1);
+            firstFragment.Recursive<PromoExtend>(x => x.Details.CompanyContentLink, 10);
+
+            Assert.Equal(firstFragment.GetQuery().Query, expectedFistFragment);
+
+            var secondFragment = new FragmentBuilder<FragmentObject>("SecondFragment");
+            secondFragment.Fields(x => x.PromoText, x => x.PromoImage.Url);
+            secondFragment.AddFragments(firstFragment);
+
+            GraphQueryBuilder graphQueryBuilder = new GraphQueryBuilder();
+            graphQueryBuilder
+                .OperationName("FragmentTest")
+                    .ForType<FragmentObject>()
+                        .Field(x => x.Name)
+                        .AddFragments(secondFragment)
                     .ToQuery()
                 .BuildQueries();
 

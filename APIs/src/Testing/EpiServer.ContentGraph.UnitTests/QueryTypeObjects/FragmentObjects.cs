@@ -14,6 +14,7 @@ namespace EpiServer.ContentGraph.UnitTests.QueryTypeObjects
         public string ProviderName { get; set; }
         public string Url { get; set; }
         public RequestTypeObject Expanded { get; set; }
+        public PromoExtend PromoExtend { get; set; }
     }
     internal class FragmentObject
     {
@@ -60,5 +61,9 @@ namespace EpiServer.ContentGraph.UnitTests.QueryTypeObjects
         public string ViewingTime { get; set; }
 
         public DateTime CommonDate { get; set; }
+    }
+    internal class PromoExtend : PromoObject
+    {
+        public FragmentObject Details { get; set; }
     }
 }

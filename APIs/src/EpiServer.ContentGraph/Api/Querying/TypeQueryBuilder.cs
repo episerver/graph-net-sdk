@@ -103,6 +103,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             }
             return this;
         }
+        [Obsolete("Obsoleted. Use InlineFragment instead")]
         /// <summary>
         /// Select fields in a subtype. The response of your query may need to convert data type. If then consider to use GetContent<TOriginal,TExpectedType> method.
         /// </summary>
@@ -118,6 +119,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             );
             return this;
         }
+        [Obsolete("Obsoleted. Use InlineFragment instead")]
         /// <summary>
         /// Select fields in a subtype. The response of your query may need to convert data type. If then consider to use GetContent<TOriginal,TExpectedType> method.
         /// </summary>
@@ -144,6 +146,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             );
             return this;
         }
+        [Obsolete("Obsoleted. Use InlineFragment instead")]
         /// <summary>
         /// Select fields in a subtype. The response of your query may need to convert data type. If then consider to use GetContent<TOriginal,TExpectedType> method.
         /// </summary>
@@ -161,7 +164,95 @@ namespace EPiServer.ContentGraph.Api.Querying
             );
             return this;
         }
+        public TypeQueryBuilder<T> InlineFragment<TSub>(params Expression<Func<TSub, string>>[] fieldSelectors) where TSub : T
+        {
+            fieldSelectors.ValidateNotNullArgument("fieldSelectors");
+            string propertyName = string.Empty;
+            foreach (var fieldSelector in fieldSelectors)
+            {
+                if (!propertyName.IsNullOrEmpty())
+                {
+                    propertyName += " ";
+                }
+                propertyName += ConvertNestedFieldToString.ConvertNestedFieldForQuery(fieldSelector.GetFieldPath());
 
+            }
+            string subTypeName = typeof(TSub).Name;
+            graphObject.SelectItems.Append(graphObject.SelectItems.Length == 0 ?
+                $"... on {subTypeName}{{{propertyName}}}" :
+                $" ... on {subTypeName}{{{propertyName}}}"
+            );
+            return this;
+        }
+        public TypeQueryBuilder<T> InlineFragment<TSub>(params Expression<Func<TSub, int>>[] fieldSelectors) where TSub : T
+        {
+            fieldSelectors.ValidateNotNullArgument("fieldSelectors");
+            string propertyName = string.Empty;
+            foreach (var fieldSelector in fieldSelectors)
+            {
+                if (!propertyName.IsNullOrEmpty())
+                {
+                    propertyName += " ";
+                }
+                propertyName += ConvertNestedFieldToString.ConvertNestedFieldForQuery(fieldSelector.GetFieldPath());
+
+            }
+            string subTypeName = typeof(TSub).Name;
+            graphObject.SelectItems.Append(graphObject.SelectItems.Length == 0 ?
+                $"... on {subTypeName}{{{propertyName}}}" :
+                $" ... on {subTypeName}{{{propertyName}}}"
+            );
+            return this;
+        }
+        public TypeQueryBuilder<T> InlineFragment<TSub>(params Expression<Func<TSub, double>>[] fieldSelectors) where TSub : T
+        {
+            fieldSelectors.ValidateNotNullArgument("fieldSelectors");
+            string propertyName = string.Empty;
+            foreach (var fieldSelector in fieldSelectors)
+            {
+                if (!propertyName.IsNullOrEmpty())
+                {
+                    propertyName += " ";
+                }
+                propertyName += ConvertNestedFieldToString.ConvertNestedFieldForQuery(fieldSelector.GetFieldPath());
+
+            }
+            string subTypeName = typeof(TSub).Name;
+            graphObject.SelectItems.Append(graphObject.SelectItems.Length == 0 ?
+                $"... on {subTypeName}{{{propertyName}}}" :
+                $" ... on {subTypeName}{{{propertyName}}}"
+            );
+            return this;
+        }
+        public TypeQueryBuilder<T> InlineFragment<TSub>(params Expression<Func<TSub, IEnumerable<string>>>[] fieldSelectors) where TSub : T
+        {
+            fieldSelectors.ValidateNotNullArgument("fieldSelectors");
+            string propertyName = string.Empty;
+            foreach (var fieldSelector in fieldSelectors)
+            {
+                if (!propertyName.IsNullOrEmpty())
+                {
+                    propertyName += " ";
+                }
+                propertyName += ConvertNestedFieldToString.ConvertNestedFieldForQuery(fieldSelector.GetFieldPath());
+
+            }
+            string subTypeName = typeof(TSub).Name;
+            graphObject.SelectItems.Append(graphObject.SelectItems.Length == 0 ?
+                $"... on {subTypeName}{{{propertyName}}}" :
+                $" ... on {subTypeName}{{{propertyName}}}"
+            );
+            return this;
+        }
+        public TypeQueryBuilder<T> InlineFragment<TSub>(params Expression<Func<TSub, Recursion>>[] fieldSelectors) where TSub : T
+        {
+            fieldSelectors.ValidateNotNullArgument("fieldSelectors");
+            //foreach (var fieldSelector in fieldSelectors)
+            //{
+
+            //}
+            return this;
+        }
         public TypeQueryBuilder<T> Autocomplete(Expression<Func<T, object>> fieldSelector, AutoCompleteOperators autocomplete)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
