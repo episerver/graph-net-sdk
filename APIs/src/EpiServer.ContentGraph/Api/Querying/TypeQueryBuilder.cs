@@ -51,14 +51,26 @@ namespace EPiServer.ContentGraph.Api.Querying
             base.Children(children);
             return this;
         }
-        public override TypeQueryBuilder<T> Fragments(params FragmentBuilder[] fragments)
+        [Obsolete("Use AddFragments method instead")]
+        public TypeQueryBuilder<T> Fragments(params FragmentBuilder[] fragments)
         {
-            base.Fragments(fragments);
+            base.AddFragments(fragments);
             return this;
         }
-        protected override TypeQueryBuilder<T> Fragment(FragmentBuilder fragment)
+        public override TypeQueryBuilder<T> AddFragments(params FragmentBuilder[] fragments)
         {
-            base.Fragment(fragment);
+            base.AddFragments(fragments);
+            return this;
+        }
+        [Obsolete("Use AddFragment method instead")]
+        public TypeQueryBuilder<T> Fragment(FragmentBuilder fragment)
+        {
+            base.AddFragment(fragment);
+            return this;
+        }
+        protected override TypeQueryBuilder<T> AddFragment(FragmentBuilder fragment)
+        {
+            base.AddFragment(fragment);
             return this;
         }
         public override TypeQueryBuilder<T> Field(string propertyName)
@@ -242,15 +254,6 @@ namespace EPiServer.ContentGraph.Api.Querying
                 $"... on {subTypeName}{{{propertyName}}}" :
                 $" ... on {subTypeName}{{{propertyName}}}"
             );
-            return this;
-        }
-        public TypeQueryBuilder<T> InlineFragment<TSub>(params Expression<Func<TSub, Recursion>>[] fieldSelectors) where TSub : T
-        {
-            fieldSelectors.ValidateNotNullArgument("fieldSelectors");
-            //foreach (var fieldSelector in fieldSelectors)
-            //{
-
-            //}
             return this;
         }
         public TypeQueryBuilder<T> Autocomplete(Expression<Func<T, object>> fieldSelector, AutoCompleteOperators autocomplete)

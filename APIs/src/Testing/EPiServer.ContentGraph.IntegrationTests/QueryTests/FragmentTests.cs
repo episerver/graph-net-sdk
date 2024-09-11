@@ -27,7 +27,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
             IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                  .ForType<HomePage>()
                     .Fields(x => x.Id)
-                    .Fragments(fragment)
+                    .AddFragments(fragment)
                  .ToQuery()
                 .BuildQueries();
 

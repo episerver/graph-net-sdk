@@ -1,29 +1,26 @@
+using System;
 using System.Collections.Generic;
 using EPiServer.Core;
 using EPiServer.Framework.Blobs;
 using EPiServer.SpecializedProperties;
 using EPiServer.DataAnnotations;
 using System.Globalization;
-using System;
 
+#pragma warning disable CS0108, CS0114
 namespace Optimizely.ContentGraph.DataModels
 {
-    public class StartPageSiteLogotypeBlock
+    public partial class StartPageSiteLogotypeBlock
     {
         public string Url { get; set; }
         public string Title { get; set; }
     }
-    public class ContentLanguageModel
+    public partial class ContentLanguageModel
     {
         public string Link { get; set; }
         public string DisplayName { get; set; }
         public string Name { get; set; }
     }
-    public class AllPropertiesTestPageEditorialBlock
-    {
-        public string MainBody { get; set; }
-    }
-    public class ContentModelReference
+    public partial class ContentModelReference
     {
         public int Id { get; set; }
         public int WorkId { get; set; }
@@ -33,11 +30,23 @@ namespace Optimizely.ContentGraph.DataModels
         public ContentLanguageModel Language { get; set; }
         public IContent Expanded { get; set; }
     }
-    public class AllPropertiesTestPageListBlock
+    public partial class AllPropertiesTestPageEditorialBlock
+    {
+        public string MainBody { get; set; }
+    }
+    public partial class AllPropertiesTestPageContactBlock
+    {
+        public ContentModelReference Image { get; set; }
+        public string Heading { get; set; }
+        public ContentModelReference ContactPageLink { get; set; }
+        public string LinkText { get; set; }
+        public string LinkUrl { get; set; }
+    }
+    public partial class AllPropertiesTestPageListBlock
     {
         public IEnumerable<string> Tags { get; set; }
     }
-    public class ContentRootsModel
+    public partial class ContentRootsModel
     {
         public ContentModelReference GlobalAssetsRoot { get; set; }
         public ContentModelReference StartPage { get; set; }
@@ -46,21 +55,22 @@ namespace Optimizely.ContentGraph.DataModels
         public ContentModelReference RootPage { get; set; }
         public ContentModelReference WasteBasket { get; set; }
     }
-    public class AllPropertiesTestPageContactBlock
-    {
-        public ContentModelReference Image { get; set; }
-        public string Heading { get; set; }
-        public ContentModelReference ContactPageLink { get; set; }
-        public string LinkText { get; set; }
-        public string LinkUrl { get; set; }
-    }
-    public class CategoryModel
+    public partial class CategoryModel
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
     }
-    public class NewsPagePageListBlock
+    public partial class SearchPageJumbotronBlock
+    {
+        public ContentModelReference Image { get; set; }
+        public string ImageDescription { get; set; }
+        public string Heading { get; set; }
+        public string SubHeading { get; set; }
+        public string ButtonText { get; set; }
+        public string ButtonLink { get; set; }
+    }
+    public partial class NewsPagePageListBlock
     {
         public string Heading { get; set; }
         public bool IncludePublishDate { get; set; }
@@ -72,23 +82,23 @@ namespace Optimizely.ContentGraph.DataModels
         public IEnumerable<CategoryModel> CategoryFilter { get; set; }
         public bool Recursive { get; set; }
     }
-    public class BlobModel
+    public partial class BlobModel
     {
         public string Id { get; set; }
         public string Url { get; set; }
     }
-    public class InlineBlockPropertyModel
+    public partial class InlineBlockPropertyModel
     {
         public IEnumerable<string> ContentType { get; set; }
     }
-    public class ContentAreaItemModel
+    public partial class ContentAreaItemModel
     {
         public string DisplayOption { get; set; }
         public string Tag { get; set; }
         public ContentModelReference ContentLink { get; set; }
         public InlineBlockPropertyModel InlineBlock { get; set; }
     }
-    public class LinkItemNode
+    public partial class LinkItemNode
     {
         public string Href { get; set; }
         public string Title { get; set; }
@@ -96,49 +106,49 @@ namespace Optimizely.ContentGraph.DataModels
         public string Text { get; set; }
         public ContentModelReference ContentLink { get; set; }
     }
-    public class XhtmlPropertyModel
+    public partial class XhtmlPropertyModel
     {
         public bool ExcludePersonalizedContent { get; set; }
         public string Value { get; set; }
         public string PropertyDataType { get; set; }
     }
-    public class NumberPropertyModel
+    public partial class NumberPropertyModel
     {
         public int Value { get; set; }
         public string PropertyDataType { get; set; }
     }
-    public class PageReferencePropertyModel
+    public partial class PageReferencePropertyModel
     {
         public IContent ExpandedValue { get; set; }
         public bool ExcludePersonalizedContent { get; set; }
         public ContentModelReference Value { get; set; }
         public string PropertyDataType { get; set; }
     }
-    public class ContentReferencePropertyModel
+    public partial class ContentReferencePropertyModel
     {
         public IContent ExpandedValue { get; set; }
         public bool ExcludePersonalizedContent { get; set; }
         public ContentModelReference Value { get; set; }
         public string PropertyDataType { get; set; }
     }
-    public class GuidPropertyModel
+    public partial class GuidPropertyModel
     {
         public string Value { get; set; }
         public string PropertyDataType { get; set; }
     }
-    public class LinkItemPropertyModel
+    public partial class LinkItemPropertyModel
     {
         public IContent ExpandedValue { get; set; }
         public bool ExcludePersonalizedContent { get; set; }
         public LinkItemNode Value { get; set; }
         public string PropertyDataType { get; set; }
     }
-    public class UrlPropertyModel
+    public partial class UrlPropertyModel
     {
         public string Value { get; set; }
         public string PropertyDataType { get; set; }
     }
-    public class SiteDefinitionLanguageModel
+    public partial class SiteDefinitionLanguageModel
     {
         public bool IsMasterLanguage { get; set; }
         public string UrlSegment { get; set; }
@@ -146,19 +156,19 @@ namespace Optimizely.ContentGraph.DataModels
         public string DisplayName { get; set; }
         public string Name { get; set; }
     }
-    public class HostDefinitionModel
+    public partial class HostDefinitionModel
     {
         public string Name { get; set; }
         public string Type { get; set; }
         public ContentLanguageModel Language { get; set; }
     }
-    public class ContentLanguageModelSearch
+    public partial class ContentLanguageModelSearch
     {
         public string Link { get; set; }
         public string DisplayName { get; set; }
         public string Name { get; set; }
     }
-    public class ContentModelReferenceSearch
+    public partial class ContentModelReferenceSearch
     {
         public int Id { get; set; }
         public int WorkId { get; set; }
@@ -168,18 +178,18 @@ namespace Optimizely.ContentGraph.DataModels
         public ContentLanguageModelSearch Language { get; set; }
         public IContent Expanded { get; set; }
     }
-    public class InlineBlockPropertyModelSearch
+    public partial class InlineBlockPropertyModelSearch
     {
         public IEnumerable<string> ContentType { get; set; }
     }
-    public class ContentAreaItemModelSearch
+    public partial class ContentAreaItemModelSearch
     {
         public string DisplayOption { get; set; }
         public string Tag { get; set; }
         public ContentModelReferenceSearch ContentLink { get; set; }
         public InlineBlockPropertyModelSearch InlineBlock { get; set; }
     }
-    public class IngredientBlock:Content
+    public partial class IngredientBlock:Content
     {
         public ContentModelReference ContentLink { get; set; }
         [Searchable]
@@ -205,7 +215,7 @@ namespace Optimizely.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class VideoFile:Content
+    public partial class VideoFile:Content
     {
         public ContentModelReference ContentLink { get; set; }
         [Searchable]
@@ -236,7 +246,7 @@ namespace Optimizely.ContentGraph.DataModels
         [Searchable]
         public string Content { get; set; }
     }
-    public class ImageFile:Content
+    public partial class ImageFile:Content
     {
         public ContentModelReference ContentLink { get; set; }
         [Searchable]
@@ -266,7 +276,7 @@ namespace Optimizely.ContentGraph.DataModels
         [Searchable]
         public string Content { get; set; }
     }
-    public class GenericMedia:Content
+    public partial class GenericMedia:Content
     {
         public ContentModelReference ContentLink { get; set; }
         [Searchable]
@@ -296,7 +306,7 @@ namespace Optimizely.ContentGraph.DataModels
         [Searchable]
         public string Content { get; set; }
     }
-    public class TagHelperPage:Content
+    public partial class TagHelperPage:Content
     {
         public ContentModelReference ContentLink { get; set; }
         [Searchable]
@@ -336,7 +346,7 @@ namespace Optimizely.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class StartPage:Content
+    public partial class StartPage:Content
     {
         public ContentModelReference ContentLink { get; set; }
         [Searchable]
@@ -385,7 +395,7 @@ namespace Optimizely.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class NumberEditorTest:Content
+    public partial class NumberEditorTest:Content
     {
         public ContentModelReference ContentLink { get; set; }
         [Searchable]
@@ -410,7 +420,7 @@ namespace Optimizely.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class StandardPage:Content
+    public partial class StandardPage:Content
     {
         public ContentModelReference ContentLink { get; set; }
         [Searchable]
@@ -449,7 +459,7 @@ namespace Optimizely.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class SearchPage:Content
+    public partial class SearchPage:Content
     {
         public ContentModelReference ContentLink { get; set; }
         [Searchable]
@@ -468,6 +478,7 @@ namespace Optimizely.ContentGraph.DataModels
         public DateTime Saved { get; set; }
         public string Status { get; set; }
         public IEnumerable<CategoryModel> Category { get; set; }
+        public SearchPageJumbotronBlock JumbotronBlock { get; set; }
         [Searchable]
         public string MetaTitle { get; set; }
         public ContentModelReference PageImage { get; set; }
@@ -486,7 +497,7 @@ namespace Optimizely.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class ProductPage:Content
+    public partial class ProductPage:Content
     {
         public ContentModelReference ContentLink { get; set; }
         [Searchable]
@@ -528,7 +539,7 @@ namespace Optimizely.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class NewsPage:Content
+    public partial class NewsPage:Content
     {
         public ContentModelReference ContentLink { get; set; }
         [Searchable]
@@ -568,7 +579,7 @@ namespace Optimizely.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class LandingPage:Content
+    public partial class LandingPage:Content
     {
         public ContentModelReference ContentLink { get; set; }
         [Searchable]
@@ -605,7 +616,7 @@ namespace Optimizely.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class ContainerPage:Content
+    public partial class ContainerPage:Content
     {
         public ContentModelReference ContentLink { get; set; }
         [Searchable]
@@ -640,7 +651,7 @@ namespace Optimizely.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class ArticlePage:Content
+    public partial class ArticlePage:Content
     {
         public ContentModelReference ContentLink { get; set; }
         [Searchable]
@@ -679,7 +690,7 @@ namespace Optimizely.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class ContactPage:Content
+    public partial class ContactPage:Content
     {
         public ContentModelReference ContentLink { get; set; }
         [Searchable]
@@ -719,7 +730,7 @@ namespace Optimizely.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class EditorialBlock:Content
+    public partial class EditorialBlock:Content
     {
         public ContentModelReference ContentLink { get; set; }
         [Searchable]
@@ -745,7 +756,7 @@ namespace Optimizely.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class VectorImageFile:Content
+    public partial class VectorImageFile:Content
     {
         public ContentModelReference ContentLink { get; set; }
         [Searchable]
@@ -773,7 +784,7 @@ namespace Optimizely.ContentGraph.DataModels
         [Searchable]
         public string Content { get; set; }
     }
-    public class TeaserBlock:Content
+    public partial class TeaserBlock:Content
     {
         public ContentModelReference ContentLink { get; set; }
         [Searchable]
@@ -803,7 +814,7 @@ namespace Optimizely.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class SiteLogotypeBlock:Content
+    public partial class SiteLogotypeBlock:Content
     {
         public ContentModelReference ContentLink { get; set; }
         [Searchable]
@@ -829,7 +840,7 @@ namespace Optimizely.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class PageListBlock:Content
+    public partial class PageListBlock:Content
     {
         public ContentModelReference ContentLink { get; set; }
         [Searchable]
@@ -863,7 +874,7 @@ namespace Optimizely.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class NestedBlock:Content
+    public partial class NestedBlock:Content
     {
         public ContentModelReference ContentLink { get; set; }
         [Searchable]
@@ -891,7 +902,7 @@ namespace Optimizely.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class ListBlock:Content
+    public partial class ListBlock:Content
     {
         public ContentModelReference ContentLink { get; set; }
         [Searchable]
@@ -916,7 +927,7 @@ namespace Optimizely.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class JumbotronBlock:Content
+    public partial class JumbotronBlock:Content
     {
         public ContentModelReference ContentLink { get; set; }
         [Searchable]
@@ -950,7 +961,7 @@ namespace Optimizely.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class AllPropertiesTestPage:Content
+    public partial class AllPropertiesTestPage:Content
     {
         public ContentModelReference ContentLink { get; set; }
         [Searchable]
@@ -1080,7 +1091,7 @@ namespace Optimizely.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class ContactBlock:Content
+    public partial class ContactBlock:Content
     {
         public ContentModelReference ContentLink { get; set; }
         [Searchable]
@@ -1111,7 +1122,7 @@ namespace Optimizely.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class ButtonBlock:Content
+    public partial class ButtonBlock:Content
     {
         public ContentModelReference ContentLink { get; set; }
         [Searchable]
@@ -1138,7 +1149,7 @@ namespace Optimizely.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class TestBlock:Content
+    public partial class TestBlock:Content
     {
         public ContentModelReference ContentLink { get; set; }
         [Searchable]
@@ -1169,7 +1180,7 @@ namespace Optimizely.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class RecipeBlock:Content
+    public partial class RecipeBlock:Content
     {
         public ContentModelReference ContentLink { get; set; }
         [Searchable]
@@ -1195,7 +1206,7 @@ namespace Optimizely.ContentGraph.DataModels
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
     }
-    public class Content
+    public partial class Content : IContent
     {
         public ContentModelReference ContentLink { get; set; }
         [Searchable]
@@ -1217,8 +1228,16 @@ namespace Optimizely.ContentGraph.DataModels
         public bool IsCommonDraft { get; set; }
         public string RelativePath { get; set; }
         public string SiteId { get; set; }
+        public Guid ContentGuid { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public int ContentTypeID { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public bool IsDeleted { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public PropertyDataCollection Property => throw new NotImplementedException();
+
+        ContentReference IContent.ContentLink { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        ContentReference IContent.ParentLink { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     }
-    public class SiteDefinition
+    public partial class SiteDefinition
     {
         public ContentModelReference ContentLink { get; set; }
         public IEnumerable<string> ContentType { get; set; }

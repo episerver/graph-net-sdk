@@ -43,7 +43,7 @@ namespace EpiServer.ContentGraph.UnitTests.QueryTypeObjects
             graphQueryBuilder
                     .ForType<RequestTypeObject>()
                         .Field(x=>x.Property1)
-                        .Fragments(fragmentBuilder)
+                        .AddFragments(fragmentBuilder)
                     .ToQuery()
                 .BuildQueries();
 
@@ -70,7 +70,7 @@ namespace EpiServer.ContentGraph.UnitTests.QueryTypeObjects
                 .OperationName("FragmentTest")
                     .ForType<FragmentObject>()
                         .Field(x => x.Name)
-                        .Fragments(firstFragment, secondFragment)
+                        .AddFragments(firstFragment, secondFragment)
                     .ToQuery()
                 .BuildQueries();
 
@@ -95,7 +95,7 @@ namespace EpiServer.ContentGraph.UnitTests.QueryTypeObjects
 
             var secondFragment = new FragmentBuilder<FragmentObject>("SecondFragment");
             secondFragment.Fields(x => x.PromoText, x=> x.PromoImage.Url);
-            secondFragment.Fragments(firstFragment);
+            secondFragment.AddFragments(firstFragment);
 
             GraphQueryBuilder graphQueryBuilder = new GraphQueryBuilder();
             graphQueryBuilder

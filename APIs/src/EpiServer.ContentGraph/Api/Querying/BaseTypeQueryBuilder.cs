@@ -193,16 +193,16 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             return this;
         }
-        public virtual BaseTypeQueryBuilder Fragments(params FragmentBuilder[] fragments)
+        public virtual BaseTypeQueryBuilder AddFragments(params FragmentBuilder[] fragments)
         {
             fragments.ValidateNotNullArgument("fragments");
             foreach (var fragment in fragments)
             {
-                Fragment(fragment);
+                AddFragment(fragment);
             }
             return this;
         }
-        protected virtual BaseTypeQueryBuilder Fragment(FragmentBuilder fragment)
+        protected virtual BaseTypeQueryBuilder AddFragment(FragmentBuilder fragment)
         {
             fragment.ValidateNotNullArgument("fragment");
             graphObject.SelectItems.Append(

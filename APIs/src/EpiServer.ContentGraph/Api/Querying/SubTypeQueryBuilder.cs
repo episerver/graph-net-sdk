@@ -68,14 +68,14 @@ namespace EPiServer.ContentGraph.Api.Querying
             base.Children(children);
             return this;
         }
-        public override SubTypeQueryBuilder<T> Fragments(params FragmentBuilder[] fragments)
+        public override SubTypeQueryBuilder<T> AddFragments(params FragmentBuilder[] fragments)
         {
-            base.Fragments(fragments);
+            base.AddFragments(fragments);
             return this;
         }
-        protected override SubTypeQueryBuilder<T> Fragment(FragmentBuilder fragment)
+        protected override SubTypeQueryBuilder<T> AddFragment(FragmentBuilder fragment)
         {
-            base.Fragment(fragment);
+            base.AddFragment(fragment);
             return this;
         }
     }
