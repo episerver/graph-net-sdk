@@ -9,6 +9,7 @@ using EPiServer.ContentGraph.Api.Facets;
 using EPiServer.ServiceLocation;
 using EPiServer.ContentGraph.ExpressionHelper;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Primitives;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {
@@ -113,6 +114,27 @@ namespace EPiServer.ContentGraph.Api.Querying
             {
                 Field(fieldSelector);
             }
+            return this;
+        }
+        /// <summary>
+        /// Select properties of an IEnumerable of <typeparamref name="TField"/>
+        /// </summary>
+        /// <typeparam name="TField"></typeparam>
+        /// <param name="enumSelector">IEnumerable property of <typeparamref name="T"/></param>
+        /// <param name="fieldSelectors">Fields of type <typeparamref name="TField"/></param>
+        /// <returns></returns>
+        public TypeQueryBuilder<T> FieldsOf<TField>(Expression<Func<T, IEnumerable<TField>>> enumSelector, params Expression<Func<TField, object>>[] fieldSelectors )
+        {
+            enumSelector.ValidateNotNullArgument("fieldSelector");
+            fieldSelectors.ValidateNotNullArgument("fields");
+            var enumPath = enumSelector.GetFieldPath();
+            string fields = string.Empty;
+            foreach (var fieldSelector in fieldSelectors)
+            {
+                fields += fields.IsNullOrEmpty() ? fieldSelector.GetFieldPath(): $" {fieldSelector.GetFieldPath()}";
+            }
+            var combinedPath = ConvertNestedFieldToString.ConvertNestedFieldForQuery($"{enumPath}.{fields}");
+            Field(combinedPath);
             return this;
         }
         [Obsolete("Obsoleted. Use InlineFragment instead")]
