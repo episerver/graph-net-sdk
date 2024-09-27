@@ -26,6 +26,7 @@ namespace EPiServer.ContentGraph.UnitTests
         }
 
         [Fact]
+        [Category("Select Fields")]
         public void SelectFields()
         {
             string expectedFields = @"{items{Property1 Property2}}";
@@ -35,10 +36,24 @@ namespace EPiServer.ContentGraph.UnitTests
             Assert.NotNull(query.GetQuery());
             //check selected fields
             Assert.Contains(expectedFields, query.GetQuery().Query);
-            query = query.BuildQueries();
         }
 
         [Fact]
+        [Category("Select Fields")]
+        public void SelectFieldsOfEnumerable()
+        {
+            string expectedFields = @"{items{Property1 Property2 NestedObjects{NestedProperty}}}";
+            typeQueryBuilder.Fields(x => x.Property1, x => x.Property2);
+            typeQueryBuilder.FieldsOf(x => x.NestedObjects, f => f.NestedProperty);
+            GraphQueryBuilder query = typeQueryBuilder.ToQuery();
+
+            Assert.NotNull(query.GetQuery());
+            //check selected fields
+            Assert.Contains(expectedFields, query.GetQuery().Query);
+        }
+
+        [Fact]
+        [Category("Select Fields")]
         public void SelectFieldWithAlias()
         {
             string expectedFields = @"{items{property1:Property1 property2:Property2}}";
@@ -52,6 +67,7 @@ namespace EPiServer.ContentGraph.UnitTests
         }
 
         [Fact]
+        [Category("Select Fields")]
         public void SelectNestedFields()
         {
             string expectedFields = @"{items{Property1 Property2 Property3{NestedProperty}}}";

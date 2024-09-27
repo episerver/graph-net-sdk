@@ -67,7 +67,7 @@ namespace EPiServer.ContentGraph.Api.Querying
         public FragmentBuilder() : base() { }
         public FragmentBuilder(string name)
         {
-            _query.OperationName = name;
+            base.OperationName(name);
         }
         private FragmentBuilder<T> Field(Expression<Func<T, object>> fieldSelector)
         {
