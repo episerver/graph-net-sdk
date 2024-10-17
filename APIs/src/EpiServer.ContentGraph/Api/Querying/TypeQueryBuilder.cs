@@ -292,6 +292,12 @@ namespace EPiServer.ContentGraph.Api.Querying
             }
             return this;
         }
+        private void SetFacetClause(string facetClause)
+        {
+            graphObject.Facets = graphObject.Facets.IsNullOrEmpty() ?
+            $"{facetClause}" :
+                $"{graphObject.Facets} {facetClause}";
+        }
         /// <summary>
         /// Get facet by field
         /// </summary>
@@ -324,9 +330,25 @@ namespace EPiServer.ContentGraph.Api.Querying
         public TypeQueryBuilder<T> Facet(string propertyName)
         {
             string facet = ConvertNestedFieldToString.ConvertNestedFieldForFacet(propertyName);
-            graphObject.Facets = graphObject.Facets.IsNullOrEmpty() ?
-                $"{facet}" :
-                $"{graphObject.Facets} {facet}";
+            SetFacetClause(facet);
+            return this;
+        }
+        public TypeQueryBuilder<T> Facet<TField>(Expression<Func<T, IEnumerable<TField>>> enumSelector, Expression<Func<TField, object>> fieldSelector)
+        {
+            enumSelector.ValidateNotNullArgument("enumSelector");
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            var combinePath = $"{enumSelector.GetFieldPath()}.{fieldSelector.GetFieldPath()}";
+            Facet(combinePath);
+            return this;
+        }
+        public TypeQueryBuilder<T> Facet<TField>(Expression<Func<T, IEnumerable<TField>>> enumSelector, Expression<Func<TField, FacetFilter>> fieldSelector)
+        {
+            enumSelector.ValidateNotNullArgument("enumSelector");
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            var parse = new FacetExpressionParser();
+            var facetFilter = parse.GetFacetFilter(fieldSelector);
+
+            SetFacetClause($"{enumSelector.GetFieldPath()}{{{facetFilter.FilterClause}}}");
             return this;
         }
         public TypeQueryBuilder<T> Total(bool? isAll = null)
@@ -708,14 +730,12 @@ namespace EPiServer.ContentGraph.Api.Querying
             Where(fieldPath, filterOperator);
             return this;
         }
-        private TypeQueryBuilder<T> Facet(string propertyName, IFacetOperator facetFilter)
+        public TypeQueryBuilder<T> Facet(string propertyName, IFacetOperator facetFilter)
         {
             propertyName.ValidateNotNullArgument("propertyName");
             facetFilter.ValidateNotNullArgument("facetFilter");
             string facets = ConvertNestedFieldToString.ConvertNestedFieldForFacet(propertyName, facetFilter);
-            graphObject.Facets = graphObject.Facets.IsNullOrEmpty() ?
-                $"{facets}" :
-                $"{graphObject.Facets} {facets}";
+            SetFacetClause(facets);
             return this;
         }
         public TypeQueryBuilder<T> Facet(Expression<Func<T, object>> fieldSelector, IFacetOperator facetFilter)
@@ -789,9 +809,7 @@ namespace EPiServer.ContentGraph.Api.Querying
         public TypeQueryBuilder<T> Facet(IFacetFilter facetFilter)
         {
             facetFilter.ValidateNotNullArgument("facetFilter");
-            graphObject.Facets = graphObject.Facets.IsNullOrEmpty() ?
-                $"{facetFilter.FilterClause}" :
-                $"{graphObject.Facets} {facetFilter.FilterClause}";
+            SetFacetClause(facetFilter.FilterClause);
             return this;
         }
         public TypeQueryBuilder<T> FilterForVisitor(params IFilterForVisitor[] filterForVisitors)

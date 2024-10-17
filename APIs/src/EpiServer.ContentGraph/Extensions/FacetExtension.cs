@@ -5,10 +5,31 @@ namespace EPiServer.ContentGraph.Extensions
 {
     public static class FacetExtension
     {
-        public static DelegateFacetFilterBuilder FacetLimit(this object field, int limit=5)
+        public static DelegateFacetFilterBuilder FacetLimit(this object field, int limit = 5)
         {
             return new DelegateFacetFilterBuilder(field => new TermFacetFilter(field, new StringFacetFilterOperators().Limit(limit)));
         }
+        public static DelegateFacetFilterBuilder FacetLimit(this string field, int limit=5)
+        {
+            return new DelegateFacetFilterBuilder(field => new TermFacetFilter(field, new StringFacetFilterOperators().Limit(limit)));
+        }
+        public static DelegateFacetFilterBuilder FacetLimit(this float field, int limit = 5)
+        {
+            return new DelegateFacetFilterBuilder(field => new TermFacetFilter(field, new StringFacetFilterOperators().Limit(limit)));
+        }
+        public static DelegateFacetFilterBuilder FacetLimit(this double field, int limit = 5)
+        {
+            return new DelegateFacetFilterBuilder(field => new TermFacetFilter(field, new StringFacetFilterOperators().Limit(limit)));
+        }
+        public static DelegateFacetFilterBuilder FacetLimit(this int field, int limit = 5)
+        {
+            return new DelegateFacetFilterBuilder(field => new TermFacetFilter(field, new StringFacetFilterOperators().Limit(limit)));
+        }
+        public static DelegateFacetFilterBuilder FacetLimit(this bool field, int limit = 5)
+        {
+            return new DelegateFacetFilterBuilder(field => new TermFacetFilter(field, new StringFacetFilterOperators().Limit(limit)));
+        }
+
         public static DelegateFacetFilterBuilder FacetFilters(this string field, params string[] values)
         {
             return new DelegateFacetFilterBuilder(field => new TermFacetFilter(field, new StringFacetFilterOperators().Filters(values)));
@@ -65,6 +86,38 @@ namespace EPiServer.ContentGraph.Extensions
         public static DelegateFacetFilterBuilder FacetInRange(this IEnumerable<float> field, float? from, float? to)
         {
             return new DelegateFacetFilterBuilder(field => new TermFacetFilter(field, new NumericFacetFilterOperators().Ranges((from, to))));
+        }
+        public static DelegateFacetFilterBuilder FacetInRanges(this float field, params (float? from, float? to)[] ranges)
+        {
+            return new DelegateFacetFilterBuilder(field => new TermFacetFilter(field, new NumericFacetFilterOperators().Ranges(ranges)));
+        }
+        public static DelegateFacetFilterBuilder FacetInRanges(this IEnumerable<float> field, params (float? from, float? to)[] ranges)
+        {
+            return new DelegateFacetFilterBuilder(field => new TermFacetFilter(field, new NumericFacetFilterOperators().Ranges(ranges)));
+        }
+        public static DelegateFacetFilterBuilder FacetInRanges(this double field, params (double? from, double? to)[] ranges)
+        {
+            return new DelegateFacetFilterBuilder(field => new TermFacetFilter(field, new NumericFacetFilterOperators().Ranges(ranges)));
+        }
+        public static DelegateFacetFilterBuilder FacetInRanges(this IEnumerable<double> field, params (double? from, double? to)[] ranges)
+        {
+            return new DelegateFacetFilterBuilder(field => new TermFacetFilter(field, new NumericFacetFilterOperators().Ranges(ranges)));
+        }
+        public static DelegateFacetFilterBuilder FacetInRanges(this int field, params (int? from, int? to)[] ranges)
+        {
+            return new DelegateFacetFilterBuilder(field => new TermFacetFilter(field, new NumericFacetFilterOperators().Ranges(ranges)));
+        }
+        public static DelegateFacetFilterBuilder FacetInRanges(this IEnumerable<int> field, params (int? from, int? to)[] ranges)
+        {
+            return new DelegateFacetFilterBuilder(field => new TermFacetFilter(field, new NumericFacetFilterOperators().Ranges(ranges)));
+        }
+        public static DelegateFacetFilterBuilder FacetInRanges(this long field, params (long? from, long? to)[] ranges)
+        {
+            return new DelegateFacetFilterBuilder(field => new TermFacetFilter(field, new NumericFacetFilterOperators().Ranges(ranges)));
+        }
+        public static DelegateFacetFilterBuilder FacetInRanges(this IEnumerable<long> field, params (long? from, long? to)[] ranges)
+        {
+            return new DelegateFacetFilterBuilder(field => new TermFacetFilter(field, new NumericFacetFilterOperators().Ranges(ranges)));
         }
     }
 }
