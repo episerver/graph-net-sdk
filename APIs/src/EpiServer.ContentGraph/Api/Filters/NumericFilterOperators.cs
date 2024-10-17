@@ -71,14 +71,6 @@ namespace EPiServer.ContentGraph.Api.Filters
             }
             return this;
         }
-        public NumericFilterOperators InRanges(params (int? from, int? to)[] ranges)
-        {
-            foreach (var range in ranges)
-            {
-                InRange(range.from, range.to);
-            }
-            return this;
-        }
 
         public NumericFilterOperators Eq(float value)
         {
@@ -161,22 +153,6 @@ namespace EPiServer.ContentGraph.Api.Filters
             if (to.HasValue)
             {
                 Lte(to.Value);
-            }
-            return this;
-        }
-        public NumericFilterOperators InRanges(params (float? from, float? to)[] ranges)
-        {
-            foreach (var range in ranges)
-            {
-                InRange(range.from, range.to);
-            }
-            return this;
-        }
-        public NumericFilterOperators InRanges(params (double? from, double? to)[] ranges)
-        {
-            foreach (var range in ranges)
-            {
-                InRange(range.from, range.to);
             }
             return this;
         }

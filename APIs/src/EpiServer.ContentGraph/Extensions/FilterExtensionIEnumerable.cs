@@ -142,16 +142,6 @@ namespace EPiServer.ContentGraph.Extensions
         {
             return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().InRange(from, to)));
         }
-        /// <summary>
-        /// Multiple ranges for InRange filter. 
-        /// </summary>
-        /// <param name="field"></param>
-        /// <param name="ranges">Array of tuples (from,to)</param>
-        /// <returns></returns>
-        public static DelegateFilterBuilder InRanges(this IEnumerable<int> field, params (int? from, int? to)[] ranges)
-        {
-            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().InRanges(ranges)));
-        }
         #endregion
 
         #region Long type
@@ -201,16 +191,6 @@ namespace EPiServer.ContentGraph.Extensions
         public static DelegateFilterBuilder InRange(this IEnumerable<long> field, int from, int to)
         {
             return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().InRange(from, to)));
-        }
-        /// <summary>
-        /// Multiple ranges for InRange filter. 
-        /// </summary>
-        /// <param name="field"></param>
-        /// <param name="ranges">Array of tuples (from,to)</param>
-        /// <returns></returns>
-        public static DelegateFilterBuilder InRanges(this IEnumerable<long> field, params (int? from, int? to)[] ranges)
-        {
-            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().InRanges(ranges)));
         }
         #endregion
 
@@ -262,16 +242,6 @@ namespace EPiServer.ContentGraph.Extensions
         {
             return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().InRange(from, to)));
         }
-        /// <summary>
-        /// Multiple ranges for InRange filter. 
-        /// </summary>
-        /// <param name="field"></param>
-        /// <param name="ranges">Array of tuples (from,to)</param>
-        /// <returns></returns>
-        public static DelegateFilterBuilder InRanges(this IEnumerable<float> field, params (float? from, float? to)[] ranges)
-        {
-            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().InRanges(ranges)));
-        }
         #endregion
 
         #region Double type
@@ -321,16 +291,6 @@ namespace EPiServer.ContentGraph.Extensions
         public static DelegateFilterBuilder InRange(this IEnumerable<double> field, int from, int to)
         {
             return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().InRange(from, to)));
-        }
-        /// <summary>
-        /// Multiple ranges for InRange filter. 
-        /// </summary>
-        /// <param name="field"></param>
-        /// <param name="ranges">Array of tuples (from,to)</param>
-        /// <returns></returns>
-        public static DelegateFilterBuilder InRanges(this IEnumerable<double> field, params (float? from, float? to)[] ranges)
-        {
-            return new DelegateFilterBuilder(field => new TermFilter(field, new NumericFilterOperators().InRanges(ranges)));
         }
         #endregion
         

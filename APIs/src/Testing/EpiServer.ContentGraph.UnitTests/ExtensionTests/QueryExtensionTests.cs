@@ -70,5 +70,22 @@ namespace EpiServer.ContentGraph.UnitTests.ExtensionTests
             Assert.Contains(expectedFields, query.Query);
             Assert.Equal(query.Query, expectedFullQuery);
         }
+        [Fact]
+        public void generate_where_with_IEnumerable()
+        {
+            const string expectedFields = "{items{Property1 _score}}";
+            const string expectedFilter = "where:{NestedObjects:{NestedProperty:{eq: 100}}}";
+            const string expectedFullQuery = $"RequestTypeObject({expectedFilter}){expectedFields}";
+
+            typeQueryBuilder.Field(x => x.Property1);
+            typeQueryBuilder.GetScore();
+            typeQueryBuilder.Where(x => x.NestedObjects, f => f.NestedProperty.Eq(100));
+
+            var query = typeQueryBuilder.ToQuery().GetQuery();
+
+            Assert.NotNull(query);
+            Assert.Contains(expectedFields, query.Query);
+            Assert.Equal(query.Query, expectedFullQuery);
+        }
     }
 }

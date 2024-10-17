@@ -54,6 +54,12 @@ namespace EPiServer.ContentGraph.Api.Filters
             Or(fieldSelector.GetFieldPath(), filterOperator);
             return this;
         }
+        public OrFilter<T> Not(Expression<Func<T, float?>> fieldSelector, IFilterOperator filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            Or(fieldSelector.GetFieldPath(), filterOperator);
+            return this;
+        }
         public OrFilter<T> Or(Expression<Func<T, double?>> fieldSelector, IFilterOperator filterOperator)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
@@ -92,6 +98,63 @@ namespace EPiServer.ContentGraph.Api.Filters
             }
             return this;
         }
+        #region Enumerable
+        public OrFilter<T> Or(Expression<Func<T, IEnumerable<string>>> fieldSelector, IFilterOperator filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            Or(fieldSelector.GetFieldPath(), filterOperator);
+            return this;
+        }
+        public OrFilter(Expression<Func<T, IEnumerable<string>>> fieldSelector, StringFilterOperators filterOperators)
+        {
+            Or(fieldSelector, filterOperators);
+        }
+        public OrFilter<T> Or(Expression<Func<T, IEnumerable<bool>>> fieldSelector, IFilterOperator filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            Or(fieldSelector.GetFieldPath(), filterOperator);
+            return this;
+        }
+        public OrFilter<T> Or(Expression<Func<T, IEnumerable<int>>> fieldSelector, IFilterOperator filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            Or(fieldSelector.GetFieldPath(), filterOperator);
+            return this;
+        }
+        public OrFilter<T> Or(Expression<Func<T, IEnumerable<double>>> fieldSelector, IFilterOperator filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            Or(fieldSelector.GetFieldPath(), filterOperator);
+            return this;
+        }
+        public OrFilter<T> Or(Expression<Func<T, IEnumerable<long>>> fieldSelector, IFilterOperator filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            Or(fieldSelector.GetFieldPath(), filterOperator);
+            return this;
+        }
+        public OrFilter<T> Or(Expression<Func<T, IEnumerable<float>>> fieldSelector, IFilterOperator filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            Or(fieldSelector.GetFieldPath(), filterOperator);
+            return this;
+        }
+        public OrFilter<T> Or(Expression<Func<T, IEnumerable<DateTime>>> fieldSelector, IFilterOperator filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            Or(fieldSelector.GetFieldPath(), filterOperator);
+            return this;
+        }
+        public OrFilter<T> Or<TField>(Expression<Func<T, IEnumerable<TField>>> rootSelector,
+        Expression<Func<TField, object>> fieldSelector,
+        IFilterOperator filterOperator)
+        {
+            rootSelector.ValidateNotNullArgument("rootSelector");
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            Or($"{rootSelector.GetFieldPath()}.{fieldSelector.GetFieldPath()}", filterOperator);
+            return this;
+        }
+        #endregion
     }
 
     public class OrFilter : Filter

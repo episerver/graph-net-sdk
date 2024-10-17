@@ -103,5 +103,37 @@ namespace EpiServer.ContentGraph.UnitTests
             Assert.Contains(expectedFilters, query);
             Assert.Equal($"{type}{expectedFilters}{items}", query);
         }
+        [Fact]
+        public void generate_where_with_raw_string()
+        {
+            const string expectedFields = "{items{Property1}}";
+            const string expectedFilter = "where:{Nesteds:{NestedProperty:{eq: 100}}}";
+            const string expectedFullQuery = $"RequestTypeObject({expectedFilter}){expectedFields}";
+
+            typeQueryBuilder.Field(x => x.Property1);
+            typeQueryBuilder.Where("Nesteds.NestedProperty", new NumericFilterOperators().Eq(100));
+
+            var query = typeQueryBuilder.ToQuery().GetQuery();
+
+            Assert.NotNull(query);
+            Assert.Contains(expectedFields, query.Query);
+            Assert.Equal(query.Query, expectedFullQuery);
+        }
+        [Fact]
+        public void generate_where_with_IFilterOperator()
+        {
+            const string expectedFields = "{items{Property1}}";
+            const string expectedFilter = "where:{NestedObjects:{NestedProperty:{eq: 100}}}";
+            const string expectedFullQuery = $"RequestTypeObject({expectedFilter}){expectedFields}";
+
+            typeQueryBuilder.Field(x => x.Property1);
+            typeQueryBuilder.Where(x => x.NestedObjects, f => f.NestedProperty, new NumericFilterOperators().Eq(100));
+
+            var query = typeQueryBuilder.ToQuery().GetQuery();
+
+            Assert.NotNull(query);
+            Assert.Contains(expectedFields, query.Query);
+            Assert.Equal(query.Query, expectedFullQuery);
+        }
     }
 }

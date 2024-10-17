@@ -37,6 +37,7 @@ namespace EPiServer.ContentGraph.Api.Filters
             And(fieldSelector, filterOperators);
         }
         #endregion
+        #region Base type
         public AndFilter<T> And(Expression<Func<T, string>> fieldSelector, IFilterOperator filterOperator)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
@@ -61,6 +62,12 @@ namespace EPiServer.ContentGraph.Api.Filters
             And(fieldSelector.GetFieldPath(), filterOperator);
             return this;
         }
+        public AndFilter<T> And(Expression<Func<T, float?>> fieldSelector, IFilterOperator filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            And(fieldSelector.GetFieldPath(), filterOperator);
+            return this;
+        }
         public AndFilter<T> And(Expression<Func<T, int>> fieldSelector, IFilterOperator filterOperator)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
@@ -73,6 +80,64 @@ namespace EPiServer.ContentGraph.Api.Filters
             And(fieldSelector.GetFieldPath(), filterOperator);
             return this;
         }
+        #endregion
+        #region Enumerable
+        public AndFilter<T> And(Expression<Func<T, IEnumerable<string>>> fieldSelector, IFilterOperator filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            And(fieldSelector.GetFieldPath(), filterOperator);
+            return this;
+        }
+        public AndFilter(Expression<Func<T, IEnumerable<string>>> fieldSelector, StringFilterOperators filterOperators)
+        {
+            And(fieldSelector, filterOperators);
+        }
+        public AndFilter<T> And(Expression<Func<T, IEnumerable<bool>>> fieldSelector, IFilterOperator filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            And(fieldSelector.GetFieldPath(), filterOperator);
+            return this;
+        }
+        public AndFilter<T> And(Expression<Func<T, IEnumerable<int>>> fieldSelector, IFilterOperator filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            And(fieldSelector.GetFieldPath(), filterOperator);
+            return this;
+        }
+        public AndFilter<T> And(Expression<Func<T, IEnumerable<double>>> fieldSelector, IFilterOperator filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            And(fieldSelector.GetFieldPath(), filterOperator);
+            return this;
+        }
+        public AndFilter<T> And(Expression<Func<T, IEnumerable<long>>> fieldSelector, IFilterOperator filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            And(fieldSelector.GetFieldPath(), filterOperator);
+            return this;
+        }
+        public AndFilter<T> And(Expression<Func<T, IEnumerable<float>>> fieldSelector, IFilterOperator filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            And(fieldSelector.GetFieldPath(), filterOperator);
+            return this;
+        }
+        public AndFilter<T> And(Expression<Func<T, IEnumerable<DateTime>>> fieldSelector, IFilterOperator filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            And(fieldSelector.GetFieldPath(), filterOperator);
+            return this;
+        }
+        public AndFilter<T> And<TField>(Expression<Func<T, IEnumerable<TField>>> rootSelector,
+        Expression<Func<TField, object>> fieldSelector,
+        IFilterOperator filterOperator)
+        {
+            rootSelector.ValidateNotNullArgument("rootSelector");
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            And($"{rootSelector.GetFieldPath()}.{fieldSelector.GetFieldPath()}", filterOperator);
+            return this;
+        }
+        #endregion
         private AndFilter<T> And(Expression<Func<T, Filter>> fieldSelector)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");

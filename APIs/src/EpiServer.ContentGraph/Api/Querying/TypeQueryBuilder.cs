@@ -488,6 +488,17 @@ namespace EPiServer.ContentGraph.Api.Querying
             }
             return exsting;
         }
+        private void SetWhereClause(string clause)
+        {
+            if (graphObject.WhereClause.IsNullOrEmpty())
+            {
+                graphObject.WhereClause = clause;
+            }
+            else
+            {
+                graphObject.WhereClause += $",{clause}";
+            }
+        }
         public TypeQueryBuilder<T> Where(string fieldName, IFilterOperator filterOperator)
         {
             filterOperator.ValidateNotNullArgument("filterOperator");
@@ -509,14 +520,7 @@ namespace EPiServer.ContentGraph.Api.Querying
                 }
             }
 
-            if (graphObject.WhereClause.IsNullOrEmpty())
-            {
-                graphObject.WhereClause = $"{combinedQuery}";
-            }
-            else
-            {
-                graphObject.WhereClause += $",{combinedQuery}";
-            }
+            SetWhereClause(combinedQuery);
 
             return this;
         }
@@ -539,7 +543,71 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             return this;
         }
+        public TypeQueryBuilder<T> Where(Expression<Func<T, IEnumerable<string>>> fieldSelector, StringFilterOperators filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            filterOperator.ValidateNotNullArgument("filterOperator");
+            Where(fieldSelector.GetFieldPath(), filterOperator);
+
+            return this;
+        }
         public TypeQueryBuilder<T> Where(Expression<Func<T, long?>> fieldSelector, NumericFilterOperators filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            filterOperator.ValidateNotNullArgument("filterOperator");
+            Where(fieldSelector.GetFieldPath(), filterOperator);
+
+            return this;
+        }
+        public TypeQueryBuilder<T> Where(Expression<Func<T, IEnumerable<long>>> fieldSelector, NumericFilterOperators filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            filterOperator.ValidateNotNullArgument("filterOperator");
+            Where(fieldSelector.GetFieldPath(), filterOperator);
+
+            return this;
+        }
+        public TypeQueryBuilder<T> Where(Expression<Func<T, int?>> fieldSelector, NumericFilterOperators filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            filterOperator.ValidateNotNullArgument("filterOperator");
+            Where(fieldSelector.GetFieldPath(), filterOperator);
+
+            return this;
+        }
+        public TypeQueryBuilder<T> Where(Expression<Func<T, IEnumerable<int>>> fieldSelector, NumericFilterOperators filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            filterOperator.ValidateNotNullArgument("filterOperator");
+            Where(fieldSelector.GetFieldPath(), filterOperator);
+
+            return this;
+        }
+        public TypeQueryBuilder<T> Where(Expression<Func<T, float?>> fieldSelector, NumericFilterOperators filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            filterOperator.ValidateNotNullArgument("filterOperator");
+            Where(fieldSelector.GetFieldPath(), filterOperator);
+
+            return this;
+        }
+        public TypeQueryBuilder<T> Where(Expression<Func<T, IEnumerable<float>>> fieldSelector, NumericFilterOperators filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            filterOperator.ValidateNotNullArgument("filterOperator");
+            Where(fieldSelector.GetFieldPath(), filterOperator);
+
+            return this;
+        }
+        public TypeQueryBuilder<T> Where(Expression<Func<T, double?>> fieldSelector, NumericFilterOperators filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            filterOperator.ValidateNotNullArgument("filterOperator");
+            Where(fieldSelector.GetFieldPath(), filterOperator);
+
+            return this;
+        }
+        public TypeQueryBuilder<T> Where(Expression<Func<T, IEnumerable<double>>> fieldSelector, NumericFilterOperators filterOperator)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             filterOperator.ValidateNotNullArgument("filterOperator");
@@ -555,7 +623,23 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             return this;
         }
+        public TypeQueryBuilder<T> Where(Expression<Func<T, IEnumerable<string>>> fieldSelector, DateFilterOperators filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            filterOperator.ValidateNotNullArgument("filterOperator");
+            Where(fieldSelector.GetFieldPath(), filterOperator);
+
+            return this;
+        }
         public TypeQueryBuilder<T> Where(Expression<Func<T, bool>> fieldSelector, BooleanFilterOperators filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            filterOperator.ValidateNotNullArgument("filterOperator");
+            Where(fieldSelector.GetFieldPath(), filterOperator);
+
+            return this;
+        }
+        public TypeQueryBuilder<T> Where(Expression<Func<T, IEnumerable<bool>>> fieldSelector, BooleanFilterOperators filterOperator)
         {
             fieldSelector.ValidateNotNullArgument("fieldSelector");
             filterOperator.ValidateNotNullArgument("filterOperator");
@@ -571,18 +655,57 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             return this;
         }
+        public TypeQueryBuilder<T> Where(Expression<Func<T, IEnumerable<DateTime>>> fieldSelector, DateFilterOperators filterOperator)
+        {
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            filterOperator.ValidateNotNullArgument("filterOperator");
+            Where(fieldSelector.GetFieldPath(), filterOperator);
+
+            return this;
+        }
         public TypeQueryBuilder<T> Where(IFilter filter)
         {
             filter.ValidateNotNullArgument("filter");
-            if (graphObject.WhereClause.IsNullOrEmpty())
-            {
-                graphObject.WhereClause = $"{filter.FilterClause}";
-            }
-            else
-            {
-                graphObject.WhereClause += $",{filter.FilterClause}";
-            }
+            SetWhereClause(filter.FilterClause);
+            return this;
+        }
+        //Support filter property of IEnumerable with filter extension
+        public TypeQueryBuilder<T> Where<TField>(Expression<Func<T, IEnumerable<TField>>> enumSelector, Expression<Func<TField, Filter>> fieldSelector)
+        {
+            enumSelector.ValidateNotNullArgument("enumSelector");
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
 
+            var enumPath = enumSelector.GetFieldPath();
+            var paser = new FilterExpressionParser();
+            var filter = paser.GetFilter(fieldSelector);
+            if (filter.IsNotNull())
+            {
+                var fieldFilter = filter.FilterClause;
+                var combineFilter = $"{enumPath}:{{{fieldFilter}}}";
+                SetWhereClause(combineFilter);
+            }
+            return this;
+        }
+        //Support filter property of IEnumerable with filter operator
+        public TypeQueryBuilder<T> Where<TField>(Expression<Func<T, IEnumerable<TField>>> enumSelector, 
+            Expression<Func<TField, object>> fieldSelector, IFilterOperator filterOperator)
+        {
+            enumSelector.ValidateNotNullArgument("enumSelector");
+            fieldSelector.ValidateNotNullArgument("fieldSelector");
+            filterOperator.ValidateNotNullArgument("filterOperator");
+
+            var enumPath = enumSelector.GetFieldPath();
+            var fullFieldPath = $"{enumPath}.{fieldSelector.GetFieldPath()}";
+
+            Where(fullFieldPath, filterOperator);
+            return this;
+        }
+        //Support raw string field path
+        public TypeQueryBuilder<T> Where<TField>(string fieldPath, IFilterOperator filterOperator)
+        {
+            fieldPath.ValidateNotNullArgument("fieldPath");
+            filterOperator.ValidateNotNullArgument("filterOperator");
+            Where(fieldPath, filterOperator);
             return this;
         }
         private TypeQueryBuilder<T> Facet(string propertyName, IFacetOperator facetFilter)
