@@ -73,6 +73,16 @@ namespace EPiServer.ContentGraph.Api.Querying
             base.AddFragment(fragment);
             return this;
         }
+        public TypeQueryBuilder<T> AddFragment<TProp>(Expression<Func<T, TProp>> fieldSelector, FragmentBuilder<TProp> fragment)
+        {
+            fieldSelector.ValidateNotNullArgument(nameof(fieldSelector));
+            fragment.ValidateNotNullArgument(nameof(fragment));
+
+            var fieldPath = fieldSelector.GetFieldPath();
+            base.AddFragment(fieldPath, fragment);
+            return this;
+        }
+
         public override TypeQueryBuilder<T> Field(string propertyName)
         {
             base.Field(propertyName);
@@ -146,10 +156,7 @@ namespace EPiServer.ContentGraph.Api.Querying
         public TypeQueryBuilder<T> AsType<TSub>(string propertyName) where TSub : T
         {
             string subTypeName = typeof(TSub).Name;
-            graphObject.SelectItems.Append(graphObject.SelectItems.Length == 0 ?
-                $"... on {subTypeName}{{{ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName)}}}" :
-                $" ... on {subTypeName}{{{ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName)}}}"
-            );
+            AppendItem($"... on {subTypeName}{{{ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName)}}}");
             return this;
         }
         [Obsolete("Obsoleted. Use InlineFragment instead")]
@@ -173,10 +180,7 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             }
             string subTypeName = typeof(TSub).Name;
-            graphObject.SelectItems.Append(graphObject.SelectItems.Length == 0 ?
-                $"... on {subTypeName}{{{propertyName}}}" :
-                $" ... on {subTypeName}{{{propertyName}}}"
-            );
+            AppendItem($"... on {subTypeName}{{{propertyName}}}");
             return this;
         }
         [Obsolete("Obsoleted. Use InlineFragment instead")]
@@ -191,10 +195,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             subTypeQuery.ValidateNotNullArgument("subTypeQuery");
             subTypeQuery.Parent = this.Parent;
             string subTypeName = typeof(TSub).Name;
-            graphObject.SelectItems.Append(graphObject.SelectItems.Length == 0 ?
-                $"... on {subTypeName}{subTypeQuery.GetQuery().Query}" :
-                $" ... on {subTypeName}{subTypeQuery.GetQuery().Query}"
-            );
+            AppendItem($"... on {subTypeName}{subTypeQuery.GetQuery().Query}");
             return this;
         }
         public TypeQueryBuilder<T> InlineFragment<TSub>(params Expression<Func<TSub, string>>[] fieldSelectors) where TSub : T
@@ -211,10 +212,7 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             }
             string subTypeName = typeof(TSub).Name;
-            graphObject.SelectItems.Append(graphObject.SelectItems.Length == 0 ?
-                $"... on {subTypeName}{{{propertyName}}}" :
-                $" ... on {subTypeName}{{{propertyName}}}"
-            );
+            AppendItem($"... on {subTypeName}{{{propertyName}}}");
             return this;
         }
         public TypeQueryBuilder<T> InlineFragment<TSub>(params Expression<Func<TSub, int>>[] fieldSelectors) where TSub : T
@@ -231,10 +229,7 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             }
             string subTypeName = typeof(TSub).Name;
-            graphObject.SelectItems.Append(graphObject.SelectItems.Length == 0 ?
-                $"... on {subTypeName}{{{propertyName}}}" :
-                $" ... on {subTypeName}{{{propertyName}}}"
-            );
+            AppendItem($"... on {subTypeName}{{{propertyName}}}");
             return this;
         }
         public TypeQueryBuilder<T> InlineFragment<TSub>(params Expression<Func<TSub, double>>[] fieldSelectors) where TSub : T
@@ -251,10 +246,7 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             }
             string subTypeName = typeof(TSub).Name;
-            graphObject.SelectItems.Append(graphObject.SelectItems.Length == 0 ?
-                $"... on {subTypeName}{{{propertyName}}}" :
-                $" ... on {subTypeName}{{{propertyName}}}"
-            );
+            AppendItem($"... on {subTypeName}{{{propertyName}}}");
             return this;
         }
         public TypeQueryBuilder<T> InlineFragment<TSub>(params Expression<Func<TSub, IEnumerable<string>>>[] fieldSelectors) where TSub : T
@@ -271,10 +263,7 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             }
             string subTypeName = typeof(TSub).Name;
-            graphObject.SelectItems.Append(graphObject.SelectItems.Length == 0 ?
-                $"... on {subTypeName}{{{propertyName}}}" :
-                $" ... on {subTypeName}{{{propertyName}}}"
-            );
+            AppendItem($"... on {subTypeName}{{{propertyName}}}");
             return this;
         }
         public TypeQueryBuilder<T> Autocomplete(Expression<Func<T, object>> fieldSelector, AutoCompleteOperators autocomplete)
