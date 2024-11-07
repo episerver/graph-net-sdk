@@ -60,6 +60,17 @@ namespace EPiServer.ContentGraph.Api.Querying
             }
             return this;
         }
+        public FragmentBuilder AddFragment(string path, FragmentBuilder fragment)
+        {
+            if (_childrenFragments.IsNull())
+            {
+                _childrenFragments = new List<FragmentBuilder>();
+            }
+            base.AddFragment(path, fragment);
+            _childrenFragments.Add(fragment);
+
+            return this;
+        }
     }
     
     public class FragmentBuilder<T> : FragmentBuilder
@@ -112,10 +123,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             }
 
             string subTypeName = typeof(TSub).Name;
-            graphObject.SelectItems.Append(graphObject.SelectItems.Length == 0 ?
-                $"... on {subTypeName}{{{recursiveNess}}}" :
-                $" ... on {subTypeName}{{{recursiveNess}}}"
-            );
+            AppendItem($"... on {subTypeName}{{{recursiveNess}}}");
             return this;
         }
         private FragmentBuilder<T> Recursive<TSub>(string fieldName, int? depth = null) where TSub : T
@@ -154,10 +162,7 @@ namespace EPiServer.ContentGraph.Api.Querying
                 propertyBuilder.Append(ConvertNestedFieldToString.ConvertNestedFieldForQuery(field));
             }
             string subTypeName = typeof(TSub).Name;
-            graphObject.SelectItems.Append(graphObject.SelectItems.Length == 0 ?
-                $"... on {subTypeName}{{{propertyBuilder}}}" :
-                $" ... on {subTypeName}{{{propertyBuilder}}}"
-            );
+            AppendItem($"... on {subTypeName}{{{propertyBuilder}}}");
             return this;
         }
         /// <summary>
@@ -179,10 +184,7 @@ namespace EPiServer.ContentGraph.Api.Querying
                 propertyBuilder.Append(ConvertNestedFieldToString.ConvertNestedFieldForQuery(fieldSelector.GetFieldPath()));
             }
             string subTypeName = typeof(TSub).Name;
-            graphObject.SelectItems.Append(graphObject.SelectItems.Length == 0 ?
-                $"... on {subTypeName}{{{propertyBuilder}}}" :
-                $" ... on {subTypeName}{{{propertyBuilder}}}"
-            );
+            AppendItem($"... on {subTypeName}{{{propertyBuilder}}}");
             return this;
         }
         /// <summary>
@@ -196,6 +198,15 @@ namespace EPiServer.ContentGraph.Api.Querying
             fieldSelectors.ValidateNotNullOrEmptyArgument("fieldSelectors");
             var paser = new FragmentExpressionParser();
             Recursive<TSub>(fieldSelectors.Select(selector => paser.GetReturnType(selector)).ToArray());
+            return this;
+        }
+        public FragmentBuilder<T> AddFragment<TProp>(Expression<Func<T, TProp>> fieldSelector, FragmentBuilder<TProp> fragment)
+        {
+            fieldSelector.ValidateNotNullArgument(nameof(fieldSelector));
+            fragment.ValidateNotNullArgument(nameof(fragment));
+
+            var fieldPath = fieldSelector.GetFieldPath();
+            base.AddFragment(fieldPath, fragment);
             return this;
         }
         public override GraphQLRequest GetQuery()

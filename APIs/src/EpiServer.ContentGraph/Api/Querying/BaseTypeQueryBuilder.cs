@@ -56,11 +56,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             if (!propertyName.IsNullOrEmpty())
             {
                 string clonedPropName = ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName);
-                graphObject.SelectItems.Append(
-                    graphObject.SelectItems.Length == 0 ?
-                    $"{clonedPropName}" :
-                    $" {clonedPropName}"
-                );
+                AppendItem(clonedPropName);
             }
 
             return this;
@@ -72,11 +68,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             if (!propertyName.IsNullOrEmpty() && !alias.IsNullOrEmpty())
             {
                 string clonedPropName = ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName);
-                graphObject.SelectItems.Append(
-                    graphObject.SelectItems.Length == 0 ?
-                    $"{alias}:{clonedPropName}" :
-                    $" {alias}:{clonedPropName}"
-                );
+                AppendItem($"{alias}:{clonedPropName}");
             }
             else
             {
@@ -97,11 +89,7 @@ namespace EPiServer.ContentGraph.Api.Querying
                     return this;
                 }
                 string clonedPropName = ConvertNestedFieldToString.ConvertNestedFieldForQuery(propertyName);
-                graphObject.SelectItems.Append(
-                    graphObject.SelectItems.Length == 0 ?
-                    $"{clonedPropName}{highLightOptions.Query}" :
-                    $" {clonedPropName}{highLightOptions.Query}"
-                );
+                AppendItem($"{clonedPropName}{highLightOptions.Query}");
             }
 
             return this;
@@ -119,17 +107,9 @@ namespace EPiServer.ContentGraph.Api.Querying
             {
                 if (!linkQueryBuilder.GetLinkType().IsNullOrEmpty())
                 {
-                    graphObject.SelectItems.Append(
-                        graphObject.SelectItems.Length == 0 ?
-                        $"_link(type:{linkQueryBuilder.GetLinkType()})" :
-                        $" _link(type:{linkQueryBuilder.GetLinkType()})"
-                    );
+                    AppendItem($"_link(type:{linkQueryBuilder.GetLinkType()})");
                 }
-                graphObject.SelectItems.Append(
-                    graphObject.SelectItems.Length == 0 ?
-                    $"{{{linkQuery}}}" :
-                    $" {{{linkQuery}}}"
-                );
+                AppendItem($"{{{linkQuery}}}");
             }
             return this;
         }
@@ -152,27 +132,15 @@ namespace EPiServer.ContentGraph.Api.Querying
                 {
                     if (string.IsNullOrEmpty(alias))
                     {
-                        graphObject.SelectItems.Append(
-                            graphObject.SelectItems.Length == 0 ?
-                            $"_link(type:{linkQueryBuilder.GetLinkType()})" :
-                            $" _link(type:{linkQueryBuilder.GetLinkType()})"
-                        );
+                        AppendItem($"_link(type:{linkQueryBuilder.GetLinkType()})");
                     }
                     else
                     {
-                        graphObject.SelectItems.Append(
-                            graphObject.SelectItems.Length == 0 ?
-                            $"{alias}:_link(type:{linkQueryBuilder.GetLinkType()})" :
-                            $" {alias}:_link(type:{linkQueryBuilder.GetLinkType()})"
-                        );
+                        AppendItem($"{alias}:_link(type:{linkQueryBuilder.GetLinkType()})");
                     }  
                     
                 }
-                graphObject.SelectItems.Append(
-                    graphObject.SelectItems.Length == 0 ?
-                    $"{{{linkQuery}}}" :
-                    $" {{{linkQuery}}}"
-                );
+                AppendItem($"{{{linkQuery}}}");
 
             }
             return this;
@@ -184,11 +152,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             string childrenItems = children.GetQuery()?.Query ?? string.Empty;
             if (!childrenItems.IsNullOrEmpty())
             {
-                graphObject.SelectItems.Append(
-                    graphObject.SelectItems.Length == 0 ?
-                    $"_children{{{childrenItems}}}" :
-                    $" _children{{{childrenItems}}}"
-                );
+                AppendItem($"_children{{{childrenItems}}}");
             }
 
             return this;
@@ -204,12 +168,26 @@ namespace EPiServer.ContentGraph.Api.Querying
         }
         protected virtual BaseTypeQueryBuilder AddFragment(FragmentBuilder fragment)
         {
+            AddFragment(null, fragment);
+            return this;
+        }
+        public virtual BaseTypeQueryBuilder AddFragment(string fieldPath, FragmentBuilder fragment)
+        {
             fragment.ValidateNotNullArgument("fragment");
-            graphObject.SelectItems.Append(
-                graphObject.SelectItems.Length == 0 ? 
-                $"...{fragment.GetName()}" : 
-                $" ...{fragment.GetName()}"
-            );
+            string propName;
+            if (fieldPath.IsNullOrEmpty())
+            {
+                propName = $"...{fragment.GetName()}";
+            }
+            else
+            {
+                var newPath = $"{fieldPath}.$$${fragment.GetName()}";
+                //trick: fragment init by $$$ then replace by dots ...
+                propName = ConvertNestedFieldToString.ConvertNestedFieldForQuery(newPath);
+                propName = propName.Replace("$", ".");
+            }
+
+            AppendItem(propName);
 
             if (Parent != null)
             {
@@ -237,6 +215,14 @@ namespace EPiServer.ContentGraph.Api.Querying
                         }
                     }
                 }
+            }
+        }
+
+        protected virtual void AppendItem(string item)
+        {
+            if (!item.IsNullOrEmpty())
+            {
+                graphObject.SelectItems.Append(graphObject.SelectItems.Length > 0 ? $" {item}": item);
             }
         }
     }
