@@ -98,10 +98,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             {
                 _fragmentBuilders = new Dictionary<string, FragmentBuilder>();
             }
-            if (!_fragmentBuilders.TryAdd(fragmentBuilder.GetName(), fragmentBuilder))
-            {
-                throw new ArgumentException($"Fragment [{fragmentBuilder.GetName()}] had added already.");
-            }
+            _fragmentBuilders.TryAdd(fragmentBuilder.GetName(), fragmentBuilder);
         }
         public IEnumerable<FragmentBuilder> GetFragments()
         {
@@ -327,6 +324,11 @@ namespace EPiServer.ContentGraph.Api.Querying
         public void AddQuery(string typeQuery)
         {
             typeQueries.Add(typeQuery);
+        }
+
+        public bool HasFragment(string fragmentName)
+        {
+            return _fragmentBuilders.ContainsKey(fragmentName);
         }
     }
 }

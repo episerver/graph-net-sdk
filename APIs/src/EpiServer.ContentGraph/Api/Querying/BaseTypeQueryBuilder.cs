@@ -206,7 +206,15 @@ namespace EPiServer.ContentGraph.Api.Querying
             {
                 foreach (var child in fragment.ChildrenFragments)
                 {
-                    yield return child;
+                    if (Parent.HasFragment(child.GetName()))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        yield return child;
+                    }
+                    
                     if (child.HasChildren)
                     {
                         foreach (var item in GetAllChildren(child))

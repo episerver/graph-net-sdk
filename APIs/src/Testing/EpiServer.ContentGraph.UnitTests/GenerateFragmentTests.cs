@@ -225,5 +225,49 @@ namespace EpiServer.ContentGraph.UnitTests.QueryTypeObjects
             //expect full query
             Assert.Equal(expectedFullQuery, graphQueryBuilder.GetQuery().Query);
         }
+        [Fact]
+        public void cyclic_fragments_should_generate_correct_query()
+        {
+            const string expectedMainQuery = "query FragmentTest {FragmentObject{items{Name ...FirstFragment ...SecondFragment}}}";
+            const string expectedFistFragment = "fragment FirstFragment on PromoExtend {ProviderName Details{PromoImage{PromoExtend{...FirstFragment}}}}";
+            const string expectedSecondFragmment = "fragment SecondFragment on PromoObject {Url PromoExtend{...ThirdFragment}}";
+            const string expectedThirdFragmment = "fragment ThirdFragment on PromoExtend {ProviderName PromoExtend{...SecondFragment}}";
+            const string expectedFullQuery = $"{expectedMainQuery}\n{expectedFistFragment}\n{expectedSecondFragmment}\n{expectedThirdFragmment}";
+            //Self-referenced query: a -> a
+            var firstFragment = new FragmentBuilder<PromoExtend>("FirstFragment");
+            firstFragment.Fields(x => x.ProviderName);
+            firstFragment.AddFragment(x => x.Details.PromoImage.PromoExtend, firstFragment);
+
+            Assert.Equal(firstFragment.GetQuery().Query, expectedFistFragment);
+
+            //Cross-referenced: a -> b -> a
+            var secondFragment = new FragmentBuilder<PromoObject>("SecondFragment");
+            secondFragment.Fields(x => x.Url);
+
+            var thirdFragment = new FragmentBuilder<PromoExtend>("ThirdFragment");
+            thirdFragment.Fields(x => x.ProviderName);
+
+            secondFragment.AddFragment(x => x.PromoExtend, thirdFragment);
+            thirdFragment.AddFragment(x=> x.PromoExtend, secondFragment);
+
+            Assert.Equal(secondFragment.GetQuery().Query, expectedSecondFragmment);
+            Assert.Equal(thirdFragment.GetQuery().Query, expectedThirdFragmment);
+
+            GraphQueryBuilder graphQueryBuilder = new GraphQueryBuilder();
+            graphQueryBuilder
+                .OperationName("FragmentTest")
+                    .ForType<FragmentObject>()
+                        .Field(x => x.Name)
+                        .AddFragments(firstFragment, secondFragment)
+                    .ToQuery()
+                .BuildQueries();
+
+            Assert.Equal(graphQueryBuilder.GetFragments().First().GetQuery().Query, expectedFistFragment);
+            Assert.Equal(graphQueryBuilder.GetFragments().Skip(1).First().GetQuery().Query, expectedSecondFragmment);
+            Assert.Equal(graphQueryBuilder.GetFragments().Last().GetQuery().Query, expectedThirdFragmment);
+
+            //expect full query
+            Assert.Equal(expectedFullQuery, graphQueryBuilder.GetQuery().Query);
+        }
     }
 }
