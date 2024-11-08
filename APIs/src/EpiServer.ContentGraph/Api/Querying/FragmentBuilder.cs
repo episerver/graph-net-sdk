@@ -60,12 +60,9 @@ namespace EPiServer.ContentGraph.Api.Querying
             }
             return this;
         }
-        public FragmentBuilder AddFragment(string path, FragmentBuilder fragment)
+        public override FragmentBuilder AddFragment(string path, FragmentBuilder fragment)
         {
-            if (_childrenFragments.IsNull())
-            {
-                _childrenFragments = new List<FragmentBuilder>();
-            }
+            _childrenFragments ??= new List<FragmentBuilder>();
             base.AddFragment(path, fragment);
             _childrenFragments.Add(fragment);
 

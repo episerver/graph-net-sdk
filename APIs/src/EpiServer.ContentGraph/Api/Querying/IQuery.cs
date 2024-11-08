@@ -8,6 +8,7 @@ namespace EPiServer.ContentGraph.Api.Querying
         public Task<ContentGraphResult<TResult>> GetResultAsync<TResult>();
         public Task<ContentGraphResult> GetResultAsync();
         internal void AddFragment(FragmentBuilder fragmentBuilder);
+        internal bool HasFragment(string fragmentName);
         internal void AddQuery(string typeQuery);
     }
 }
