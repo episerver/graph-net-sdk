@@ -94,7 +94,7 @@ jobs:
 
       - name: Upload packages to artifacts
         if: success() && env.publishPackages == 'true'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Optimizely.Graph.Client-${{ env.packageVersion }}
           path: ${{ github.workspace}}/artifacts/
