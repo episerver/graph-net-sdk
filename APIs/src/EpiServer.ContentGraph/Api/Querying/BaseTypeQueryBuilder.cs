@@ -1,7 +1,9 @@
 ﻿using EPiServer.ContentGraph.Helpers;
+using EPiServer.ContentGraph.Helpers.Reflection;
 using EPiServer.ContentGraph.Helpers.Text;
 using GraphQL.Transport;
 using System;
+using System.Linq.Expressions;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {
@@ -157,7 +159,42 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             return this;
         }
-        public virtual BaseTypeQueryBuilder AddFragments(params FragmentBuilder[] fragments)
+        protected virtual void AppendItem(string item)
+        {
+            if (!item.IsNullOrEmpty())
+            {
+                graphObject.SelectItems.Append(graphObject.SelectItems.Length > 0 ? $" {item}": item);
+            }
+        }
+    }
+
+    public class BaseTypeQueryBuilder<T> : BaseTypeQueryBuilder
+    {
+        public BaseTypeQueryBuilder():base() { }
+        public BaseTypeQueryBuilder(GraphQLRequest query): base(query) { }
+        /// <summary>
+        /// Select properties of an IEnumerable of <typeparamref name="TField"/>
+        /// </summary>
+        /// <typeparam name="TField"></typeparam>
+        /// <param name="enumSelector">IEnumerable property of <typeparamref name="T"/></param>
+        /// <param name="fieldSelectors">Fields of type <typeparamref name="TField"/></param>
+        /// <returns></returns>
+        public virtual BaseTypeQueryBuilder<T> NestedFields<TField>(Expression<Func<T, IEnumerable<TField>>> enumSelector, params Expression<Func<TField, object>>[] fieldSelectors)
+        {
+            enumSelector.ValidateNotNullArgument("fieldSelector");
+            fieldSelectors.ValidateNotNullArgument("fields");
+            var enumPath = enumSelector.GetFieldPath();
+            string fields = string.Empty;
+            foreach (var fieldSelector in fieldSelectors)
+            {
+                fields += fields.IsNullOrEmpty() ? fieldSelector.GetFieldPath() : $" {fieldSelector.GetFieldPath()}";
+            }
+            var combinedPath = ConvertNestedFieldToString.ConvertNestedFieldForQuery($"{enumPath}.{fields}");
+            Field(combinedPath);
+            return this;
+        }
+
+        public virtual BaseTypeQueryBuilder<T> AddFragments(params IFragmentBuilder[] fragments)
         {
             fragments.ValidateNotNullArgument("fragments");
             foreach (var fragment in fragments)
@@ -166,12 +203,12 @@ namespace EPiServer.ContentGraph.Api.Querying
             }
             return this;
         }
-        protected virtual BaseTypeQueryBuilder AddFragment(FragmentBuilder fragment)
+        protected virtual BaseTypeQueryBuilder<T> AddFragment(IFragmentBuilder fragment)
         {
             AddFragment(null, fragment);
             return this;
         }
-        public virtual BaseTypeQueryBuilder AddFragment(string fieldPath, FragmentBuilder fragment)
+        public virtual BaseTypeQueryBuilder<T> AddFragment(string fieldPath, IFragmentBuilder fragment)
         {
             fragment.ValidateNotNullArgument("fragment");
             string propName;
@@ -200,11 +237,11 @@ namespace EPiServer.ContentGraph.Api.Querying
             }
             return this;
         }
-        private IEnumerable<FragmentBuilder> GetAllChildren(FragmentBuilder fragment)
+        private IEnumerable<IFragmentBuilder> GetAllChildren(IFragmentBuilder fragment)
         {
             if (fragment.HasChildren)
             {
-                foreach (var child in fragment.ChildrenFragments)
+                foreach (var child in fragment.GetChildren())
                 {
                     if (Parent.HasFragment(child.GetName()))
                     {
@@ -226,12 +263,5 @@ namespace EPiServer.ContentGraph.Api.Querying
             }
         }
 
-        protected virtual void AppendItem(string item)
-        {
-            if (!item.IsNullOrEmpty())
-            {
-                graphObject.SelectItems.Append(graphObject.SelectItems.Length > 0 ? $" {item}": item);
-            }
-        }
     }
 }

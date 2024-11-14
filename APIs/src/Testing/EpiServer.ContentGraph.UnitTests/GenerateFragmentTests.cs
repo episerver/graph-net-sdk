@@ -11,7 +11,7 @@ namespace EpiServer.ContentGraph.UnitTests.QueryTypeObjects
         public void set_name_for_fragment_should_generate_correct_name()
         {
             const string fragmentName = "my_fragment";
-            FragmentBuilder fragmentBuilder = new FragmentBuilder();
+            FragmentBuilder<RequestTypeObject> fragmentBuilder = new FragmentBuilder<RequestTypeObject>();
             fragmentBuilder.OperationName(fragmentName);
 
             Assert.True(fragmentBuilder.GetName().Equals(fragmentName));
@@ -109,7 +109,7 @@ namespace EpiServer.ContentGraph.UnitTests.QueryTypeObjects
             //expect children in secondary fragment
             Assert.Equal(graphQueryBuilder.GetFragments().First().GetName(), "SecondFragment");
             Assert.True(graphQueryBuilder.GetFragments().First().HasChildren);
-            Assert.Equal(graphQueryBuilder.GetFragments().First().ChildrenFragments.First().GetQuery().Query, expectedFistFragment);
+            Assert.Equal(graphQueryBuilder.GetFragments().First().GetChildren().First().GetQuery().Query, expectedFistFragment);
             //expect secondary fragment
             Assert.Equal(graphQueryBuilder.GetFragments().First().GetQuery().Query, expectedSecondFragmment);
             //expect full query
@@ -146,7 +146,7 @@ namespace EpiServer.ContentGraph.UnitTests.QueryTypeObjects
             //expect children in secondary fragment
             Assert.Equal(graphQueryBuilder.GetFragments().First().GetName(), "SecondFragment");
             Assert.True(graphQueryBuilder.GetFragments().First().HasChildren);
-            Assert.Equal(graphQueryBuilder.GetFragments().First().ChildrenFragments.First().GetQuery().Query, expectedFistFragment);
+            Assert.Equal(graphQueryBuilder.GetFragments().First().GetChildren().First().GetQuery().Query, expectedFistFragment);
             //expect secondary fragment
             Assert.Equal(graphQueryBuilder.GetFragments().First().GetQuery().Query, expectedSecondFragmment);
             //expect full query
@@ -183,7 +183,7 @@ namespace EpiServer.ContentGraph.UnitTests.QueryTypeObjects
             //expect children in secondary fragment
             Assert.Equal(graphQueryBuilder.GetFragments().First().GetName(), "SecondFragment");
             Assert.True(graphQueryBuilder.GetFragments().First().HasChildren);
-            Assert.Equal(graphQueryBuilder.GetFragments().First().ChildrenFragments.First().GetQuery().Query, expectedFistFragment);
+            Assert.Equal(graphQueryBuilder.GetFragments().First().GetChildren().First().GetQuery().Query, expectedFistFragment);
             //expect secondary fragment
             Assert.Equal(graphQueryBuilder.GetFragments().First().GetQuery().Query, expectedSecondFragmment);
             //expect full query
@@ -219,7 +219,7 @@ namespace EpiServer.ContentGraph.UnitTests.QueryTypeObjects
             //expect children in secondary fragment
             Assert.Equal(graphQueryBuilder.GetFragments().First().GetName(), "SecondFragment");
             Assert.True(graphQueryBuilder.GetFragments().First().HasChildren);
-            Assert.Equal(graphQueryBuilder.GetFragments().First().ChildrenFragments.First().GetQuery().Query, expectedFistFragment);
+            Assert.Equal(graphQueryBuilder.GetFragments().First().GetChildren().First().GetQuery().Query, expectedFistFragment);
             //expect secondary fragment
             Assert.Equal(graphQueryBuilder.GetFragments().First().GetQuery().Query, expectedSecondFragmment);
             //expect full query

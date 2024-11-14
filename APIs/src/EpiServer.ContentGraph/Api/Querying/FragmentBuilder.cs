@@ -10,6 +10,13 @@ using System.Text.RegularExpressions;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {
+    public interface IFragmentBuilder
+    {
+        public string GetName();
+        public GraphQLRequest GetQuery();
+        public bool HasChildren { get; }
+        public IEnumerable<IFragmentBuilder> GetChildren();
+    }
     public class Recursion
     {
         public string FieldName { get; set; }
@@ -25,14 +32,13 @@ namespace EPiServer.ContentGraph.Api.Querying
                 return ConvertNestedFieldToString.ConvertNestedFieldForQuery($"{FieldName} @recursive(depth:{RecursiveDepth.Value})");
             }
         }
-    }
-    public class FragmentBuilder : BaseTypeQueryBuilder
+    } 
+    public class FragmentBuilder<T> : BaseTypeQueryBuilder<T>, IFragmentBuilder
     {
-        private List<FragmentBuilder> _childrenFragments;
-        public IEnumerable<FragmentBuilder> ChildrenFragments => _childrenFragments;
+        private List<IFragmentBuilder> _childrenFragments;
+        public IEnumerable<IFragmentBuilder> GetChildren() => _childrenFragments;
         public bool HasChildren => _childrenFragments != null && _childrenFragments.Any();
-        public FragmentBuilder() : base()
-        {
+        public FragmentBuilder() : base() {
             _query.OperationName = "sampleFragment";
         }
         public void OperationName(string name)
@@ -43,39 +49,37 @@ namespace EPiServer.ContentGraph.Api.Querying
                 _query.OperationName = name;
             }
         }
+        public FragmentBuilder(string name)
+        {
+            OperationName(name);
+        }
         public string GetName()
         {
             return _query.OperationName;
         }
-        public override FragmentBuilder AddFragments(params FragmentBuilder[] fragments)
+        public override FragmentBuilder<T> AddFragments(params IFragmentBuilder[] fragments)
         {
             if (fragments.IsNotNull() && fragments.Length > 0)
             {
                 if (_childrenFragments.IsNull())
                 {
-                    _childrenFragments = new List<FragmentBuilder>();
+                    _childrenFragments = new List<IFragmentBuilder>();
                 }
                 base.AddFragments(fragments);
                 _childrenFragments.AddRange(fragments);
             }
             return this;
         }
-        public override FragmentBuilder AddFragment(string path, FragmentBuilder fragment)
+        public override FragmentBuilder<T> AddFragment(string path, IFragmentBuilder fragment)
         {
-            _childrenFragments ??= new List<FragmentBuilder>();
+            if (_childrenFragments.IsNull())
+            {
+                _childrenFragments = new List<IFragmentBuilder>();
+            }
             base.AddFragment(path, fragment);
             _childrenFragments.Add(fragment);
 
             return this;
-        }
-    }
-    
-    public class FragmentBuilder<T> : FragmentBuilder
-    {
-        public FragmentBuilder() : base() { }
-        public FragmentBuilder(string name)
-        {
-            base.OperationName(name);
         }
         private FragmentBuilder<T> Field(Expression<Func<T, object>> fieldSelector)
         {
@@ -109,7 +113,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             base.Children(children);
             return this;
         }
-        private FragmentBuilder Recursive<TSub>(params Recursion[] recursives) where TSub : T
+        private FragmentBuilder<T> Recursive<TSub>(params Recursion[] recursives) where TSub : T
         {
             recursives.ValidateNotNullArgument("recursives");
             if (!recursives.Any()) throw new ArgumentException("recursives can not be empty");
@@ -203,7 +207,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             fragment.ValidateNotNullArgument(nameof(fragment));
 
             var fieldPath = fieldSelector.GetFieldPath();
-            base.AddFragment(fieldPath, fragment);
+            AddFragment(fieldPath, fragment);
             return this;
         }
         public override GraphQLRequest GetQuery()

@@ -12,9 +12,9 @@ using System.Text.RegularExpressions;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {
-    public partial class TypeQueryBuilder<T> : TypeQueryBuilder
+    public partial class TypeQueryBuilder<T> : BaseTypeQueryBuilder<T>
     {
-        private static IEnumerable<IFilterForVisitor>? _filters;
+        private static IEnumerable<IFilterForVisitor> _filters;
         public TypeQueryBuilder(GraphQLRequest request) : base(request)
         {
         }
@@ -52,23 +52,23 @@ namespace EPiServer.ContentGraph.Api.Querying
             return this;
         }
         [Obsolete("Use AddFragments method instead")]
-        public TypeQueryBuilder<T> Fragments(params FragmentBuilder[] fragments)
+        public TypeQueryBuilder<T> Fragments(params IFragmentBuilder[] fragments)
         {
             base.AddFragments(fragments);
             return this;
         }
-        public override TypeQueryBuilder<T> AddFragments(params FragmentBuilder[] fragments)
+        public override TypeQueryBuilder<T> AddFragments(params IFragmentBuilder[] fragments)
         {
             base.AddFragments(fragments);
             return this;
         }
         [Obsolete("Use AddFragment method instead")]
-        public TypeQueryBuilder<T> Fragment(FragmentBuilder fragment)
+        public TypeQueryBuilder<T> Fragment(IFragmentBuilder fragment)
         {
             base.AddFragment(fragment);
             return this;
         }
-        protected override TypeQueryBuilder<T> AddFragment(FragmentBuilder fragment)
+        protected override TypeQueryBuilder<T> AddFragment(IFragmentBuilder fragment)
         {
             base.AddFragment(fragment);
             return this;
@@ -125,26 +125,9 @@ namespace EPiServer.ContentGraph.Api.Querying
             }
             return this;
         }
-        /// <summary>
-        /// Select properties of an IEnumerable of <typeparamref name="TField"/>
-        /// </summary>
-        /// <typeparam name="TField"></typeparam>
-        /// <param name="enumSelector">IEnumerable property of <typeparamref name="T"/></param>
-        /// <param name="fieldSelectors">Fields of type <typeparamref name="TField"/></param>
-        /// <returns></returns>
-        public TypeQueryBuilder<T> NestedFields<TField>(Expression<Func<T, IEnumerable<TField>>> enumSelector, params Expression<Func<TField, object>>[] fieldSelectors )
+        public override TypeQueryBuilder<T> NestedFields<TField>(Expression<Func<T, IEnumerable<TField>>> enumSelector, params Expression<Func<TField, object>>[] fieldSelectors)
         {
-            enumSelector.ValidateNotNullArgument("fieldSelector");
-            fieldSelectors.ValidateNotNullArgument("fields");
-            var enumPath = enumSelector.GetFieldPath();
-            string fields = string.Empty;
-            foreach (var fieldSelector in fieldSelectors)
-            {
-                fields += fields.IsNullOrEmpty() ? fieldSelector.GetFieldPath(): $" {fieldSelector.GetFieldPath()}";
-            }
-            var combinedPath = ConvertNestedFieldToString.ConvertNestedFieldForQuery($"{enumPath}.{fields}");
-            Field(combinedPath);
-            return this;
+            return (TypeQueryBuilder<T>)base.NestedFields(enumSelector, fieldSelectors);
         }
         [Obsolete("Obsoleted. Use InlineFragment instead")]
         /// <summary>
@@ -895,16 +878,5 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             return this.Parent != null ? (GraphQueryBuilder)this.Parent : new GraphQueryBuilder(_query, this);
         }
-    }
-
-    public class TypeQueryBuilder : BaseTypeQueryBuilder
-    {
-        public TypeQueryBuilder(GraphQLRequest request) : base(request)
-        {
-        }
-        public TypeQueryBuilder() : base()
-        {
-        }
-
     }
 }

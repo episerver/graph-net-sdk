@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {
-    public class SubTypeQueryBuilder<T> : BaseTypeQueryBuilder
+    public class SubTypeQueryBuilder<T> : BaseTypeQueryBuilder<T>
     {
         public SubTypeQueryBuilder():base()
         {
@@ -68,12 +68,12 @@ namespace EPiServer.ContentGraph.Api.Querying
             base.Children(children);
             return this;
         }
-        public override SubTypeQueryBuilder<T> AddFragments(params FragmentBuilder[] fragments)
+        public override SubTypeQueryBuilder<T> AddFragments(params IFragmentBuilder[] fragments)
         {
             base.AddFragments(fragments);
             return this;
         }
-        protected override SubTypeQueryBuilder<T> AddFragment(FragmentBuilder fragment)
+        protected override SubTypeQueryBuilder<T> AddFragment(IFragmentBuilder fragment)
         {
             base.AddFragment(fragment);
             return this;

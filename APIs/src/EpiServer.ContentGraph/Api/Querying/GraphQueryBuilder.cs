@@ -27,7 +27,7 @@ namespace EPiServer.ContentGraph.Api.Querying
         private readonly OptiGraphOptions _optiGraphOptions;
         private const string RequestMethod = "POST";
         private const string UnCachedPath = "?cache=false";
-        private Dictionary<string, FragmentBuilder> _fragmentBuilders;
+        private Dictionary<string, IFragmentBuilder> _fragmentBuilders;
         private readonly List<string> typeQueries = new List<string>();
         public GraphQueryBuilder()
         {
@@ -92,15 +92,15 @@ namespace EPiServer.ContentGraph.Api.Querying
             typeQueryBuilder.Parent = this;
             return typeQueryBuilder;
         }
-        public void AddFragment(FragmentBuilder fragmentBuilder)
+        public void AddFragment(IFragmentBuilder fragmentBuilder)
         {
             if (_fragmentBuilders == null)
             {
-                _fragmentBuilders = new Dictionary<string, FragmentBuilder>();
+                _fragmentBuilders = new Dictionary<string, IFragmentBuilder>();
             }
             _fragmentBuilders.TryAdd(fragmentBuilder.GetName(), fragmentBuilder);
         }
-        public IEnumerable<FragmentBuilder> GetFragments()
+        public IEnumerable<IFragmentBuilder> GetFragments()
         {
             return _fragmentBuilders?.Values;
         }
@@ -136,12 +136,12 @@ namespace EPiServer.ContentGraph.Api.Querying
             DefaultHmacDeclarationFactory hmacDeclarationFactory =
                 new DefaultHmacDeclarationFactory(new Sha256HmacAlgorithm(Convert.FromBase64String(_optiGraphOptions.Secret)));
             HmacMessage hmacMessage = GetHmacMessage(requestBody);
-            HmacDeclaration? hmacDeclaration = hmacDeclarationFactory.Create(hmacMessage);
+            HmacDeclaration hmacDeclaration = hmacDeclarationFactory.Create(hmacMessage);
             return $"{hmacDeclaration}";
         }
         private HmacMessage GetHmacMessage(byte[] requestBody)
         {
-            DefaultHmacMessageBuilder? messageBuilder = new DefaultHmacMessageBuilder()
+            DefaultHmacMessageBuilder messageBuilder = new DefaultHmacMessageBuilder()
                 .AddApplicationKey(_optiGraphOptions.AppKey)
                 .AddTarget(new Uri(GetServiceUrl()).PathAndQuery)
                 .AddMethod(RequestMethod)

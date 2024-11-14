@@ -100,15 +100,15 @@ namespace EPiServer.ContentGraph.Extensions
         #endregion
 
         #region Get results
-        public static async Task<ContentGraphResult<TResult>> GetResultAsync<TResult>(this TypeQueryBuilder typeQueryBuilder)
+        public static async Task<ContentGraphResult<TResult>> GetResultAsync<T,TResult>(this TypeQueryBuilder<T> typeQueryBuilder)
         {
-           return await typeQueryBuilder.ToQuery().BuildQueries().GetResultAsync<TResult>();
-        }   
-        public static async Task<ContentGraphResult> GetResultAsync(this TypeQueryBuilder typeQueryBuilder)
+            return await typeQueryBuilder.ToQuery().BuildQueries().GetResultAsync<TResult>();
+        }
+        public static async Task<ContentGraphResult> GetResultAsync<T>(this TypeQueryBuilder<T> typeQueryBuilder)
         {
            return await typeQueryBuilder.ToQuery().BuildQueries().GetResultAsync();
         }
-        public static async Task<string> GetRawResultAsync(this TypeQueryBuilder typeQueryBuilder)
+        public static async Task<string> GetRawResultAsync<T>(this TypeQueryBuilder<T> typeQueryBuilder)
         {
             return await typeQueryBuilder.ToQuery().BuildQueries().GetRawResultAsync();
         }
