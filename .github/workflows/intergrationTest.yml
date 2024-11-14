@@ -22,17 +22,6 @@ jobs:
       - name: Checkout current branch
         uses: actions/checkout@v3
 
-      - name: Replace settings variables
-        if: success()
-        uses: microsoft/variable-substitution@v1
-        with:
-          files: 'APIs/src/Testing/EPiServer.ContentGraph.IntegrationTests/appsettings.json'
-        env:
-          Optimizely.ContentGraph.GatewayAddress: ${{ secrets.GATEWAYADDRESS }}
-          Optimizely.ContentGraph.AppKey: ${{ secrets.APPKEY }}
-          Optimizely.ContentGraph.Secret: ${{ secrets.SECRET }}
-          Optimizely.ContentGraph.SingleKey: ${{ secrets.SINGLEKEY }}
-
       - name: Setup test environment
         if: success()
         uses: ./.github/actions/setup
