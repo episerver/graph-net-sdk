@@ -49,7 +49,7 @@ jobs:
       release_sha: ${{ env.release_sha }}
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Apply versioning
         if: success()
@@ -78,7 +78,7 @@ jobs:
       release_sha: ${{ needs.manageVariable.outputs.release_sha }}
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Build
         if: success()
@@ -129,7 +129,7 @@ jobs:
       release_sha: ${{ needs.manageVariable.outputs.release_sha }}
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Fetch all tags
         run: |
@@ -163,7 +163,7 @@ jobs:
           New-Item -Path "artifacts" -ItemType Directory
 
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: Optimizely.Graph.Client-${{ env.packageVersion }}
           path: artifacts
@@ -198,7 +198,7 @@ jobs:
       release_sha: ${{ needs.manageVariable.outputs.release_sha }}
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Check tag exist
         uses: mukunku/tag-exists-action@v1.2.0
@@ -247,7 +247,7 @@ jobs:
           New-Item -Path "artifacts" -ItemType Directory
 
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: Optimizely.Graph.Client-${{ env.packageVersion }}
           path: artifacts
