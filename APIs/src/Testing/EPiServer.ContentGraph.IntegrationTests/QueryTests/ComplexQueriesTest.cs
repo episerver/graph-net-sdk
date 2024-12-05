@@ -12,7 +12,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
     public class ComplexQueriesTest : IntegrationFixture
     {
         [ClassInitialize]
-        public static void ClassInitialize(TestContext testContext)
+        public static async Task ClassInitialize(TestContext testContext)
         {
             var item1 = TestDataCreator.generateIndexActionJson("1", "en", new IndexActionData { 
                 ContentType = new[] { "Content" }, TypeName = "Content", Id = "content1",
@@ -28,7 +28,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 MainBodySearchable = "Semantic search is supported on searchable string fields, and for the full-text search operators contains and match. It is recommended to set fields that have a lot of content (such as the MainBody in the Optimizely CMS) as searchable to unlock the full-text search capabilities. Optimizely Graph uses a pre-trained model for semantic search.",
                 Priority = 0, IsSecret = false, Status = TestDataCreator.STATUS_PUBLISHED, RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
 
-            SetupData<HomePage>(item1 + item2 + item3, "t2");
+            await SetupData<HomePage>(item1 + item2 + item3, "t2");
         }
 
         [TestCategory("Subtype test")]
@@ -38,7 +38,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
             IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<Content>()
                 .Fields(x => x.Name)
-                    .AsType<HomePage>(x=>x.MainBody)
+                    .InlineFragment<HomePage>(x=>x.MainBody)
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync().Result;
@@ -52,7 +52,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
             IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<Content>()
                 .Fields(x => x.Name)
-                    .AsType<HomePage>(x => x.MainBody)
+                    .InlineFragment<HomePage>(x => x.MainBody)
                 .ToQuery()
                 .BuildQueries();
             var rs = query.GetResultAsync().Result;

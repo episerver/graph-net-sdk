@@ -11,7 +11,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
     public class QueryWithDateFilterOperatorTests : IntegrationFixture
     {
         [ClassInitialize]
-        public static void ClassInitialize(TestContext testContext)
+        public static async Task ClassInitialize(TestContext testContext)
         {
             var item1 = TestDataCreator.generateIndexActionJson("1", "en", new IndexActionData { ContentType = new[] { "HomePage" }, Id = "content1", NameSearchable = "Home 1", 
                 StartPublish = DateTime.Parse("2022-10-11T17:17:56Z", null, DateTimeStyles.AdjustToUniversal), Status = TestDataCreator.STATUS_PUBLISHED, 
@@ -23,10 +23,10 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 StartPublish = DateTime.Parse("2022-11-11T05:17:56Z", null, DateTimeStyles.AdjustToUniversal), Status = TestDataCreator.STATUS_PUBLISHED,
                 RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE });
 
-            SetupData<HomePage>(item1 + item2 + item3, "t10");
+            await SetupData<HomePage>(item1 + item2 + item3, "t10");
         }
         [TestMethod]
-        public void search_startpublish_Equals_datetime_should_return_1_item()
+        public async Task search_startpublish_Equals_datetime_should_return_1_item()
         {
             IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
@@ -34,12 +34,12 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.StartPublish, new DateFilterOperators().Eq("2022-10-11T17:17:56Z"))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResultAsync<HomePage>().Result;
+            var rs = await query.GetResultAsync<HomePage>();
             Assert.IsTrue(rs.Content.Hits.Count().Equals(1), $"Expected 1 item, but found {rs.Content.Hits.Count()}.");
             Assert.IsTrue(rs.Content.Hits.First().Name.Equals("Home 1"), $"Expected the item's name to be 'Home 1', but found '{rs.Content.Hits.First().Name}'.");
         }
         [TestMethod]
-        public void search_startpublish_notEq_datetime_should_return_2_item()
+        public async Task search_startpublish_notEq_datetime_should_return_2_item()
         {
             IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
@@ -47,11 +47,11 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.StartPublish, new DateFilterOperators().NotEq("2022-10-11T17:17:56Z"))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResultAsync<HomePage>().Result;
+            var rs = await query.GetResultAsync<HomePage>();
             Assert.IsTrue(rs.Content.Hits.Count().Equals(2), $"Expected 2 items, but found {rs.Content.Hits.Count()}.");
         }
         [TestMethod]
-        public void search_startpublish_Gt_datetime_should_return_1_item()
+        public async Task search_startpublish_Gt_datetime_should_return_1_item()
         {
             IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
@@ -59,11 +59,11 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.StartPublish, new DateFilterOperators().Gt("2022-10-11T17:17:56Z"))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResultAsync<HomePage>().Result;
+            var rs = await query.GetResultAsync<HomePage>();
             Assert.IsTrue(rs.Content.Hits.Count().Equals(1), $"Expected 1 item, but found {rs.Content.Hits.Count()}.");
         }
         [TestMethod]
-        public void search_startpublish_Gte_datetime_should_return_2_items()
+        public async Task search_startpublish_Gte_datetime_should_return_2_items()
         {
             IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
@@ -71,11 +71,11 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.StartPublish, new DateFilterOperators().Gte("2022-10-11T17:17:56Z"))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResultAsync<HomePage>().Result;
+            var rs = await query.GetResultAsync<HomePage>();
             Assert.IsTrue(rs.Content.Hits.Count().Equals(2), $"Expected 2 items, but found {rs.Content.Hits.Count()}.");
         }
         [TestMethod]
-        public void search_startpublish_Lt_datetime_should_return_1_item()
+        public async Task search_startpublish_Lt_datetime_should_return_1_item()
         {
             IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
@@ -83,11 +83,11 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.StartPublish, new DateFilterOperators().Lt("2022-10-11T17:17:56Z"))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResultAsync<HomePage>().Result;
+            var rs = await query.GetResultAsync<HomePage>();
             Assert.IsTrue(rs.Content.Hits.Count().Equals(1), $"Expected 1 item, but found {rs.Content.Hits.Count()}.");
         }
         [TestMethod]
-        public void search_startpublish_Lte_datetime_should_return_2_items()
+        public async Task search_startpublish_Lte_datetime_should_return_2_items()
         {
             IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
@@ -95,11 +95,11 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.StartPublish, new DateFilterOperators().Lte("2022-10-11T17:17:56Z"))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResultAsync<HomePage>().Result;
+            var rs = await query.GetResultAsync<HomePage>();
             Assert.IsTrue(rs.Content.Hits.Count().Equals(2), $"Expected 2 items, but found {rs.Content.Hits.Count()}.");
         }
         [TestMethod]
-        public void search_startpublish_in_range_should_return_2_items()
+        public async Task search_startpublish_in_range_should_return_2_items()
         {
             IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
@@ -107,7 +107,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .Where(x => x.StartPublish, new DateFilterOperators().Gte("2022-09-11T20:17:56Z").Lte("2022-10-11T17:17:56Z"))
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResultAsync<HomePage>().Result;
+            var rs = await query.GetResultAsync<HomePage>();
             Assert.IsTrue(rs.Content.Hits.Count().Equals(2), $"Expected 2 items in range, but found {rs.Content.Hits.Count()}.");
         }
     }
