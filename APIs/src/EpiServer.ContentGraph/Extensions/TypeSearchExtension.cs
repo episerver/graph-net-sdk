@@ -113,5 +113,16 @@ namespace EPiServer.ContentGraph.Extensions
             return await typeQueryBuilder.ToQuery().BuildQueries().GetRawResultAsync();
         }
         #endregion
+
+        /// <summary>
+        /// Get single result item then cache this item separately. This will set cache_unique to true and require cache=true in graph client options.
+        /// </summary>
+        /// <param name="queryBuilder"></param>
+        /// <returns></returns>
+        public static async Task<ContentGraphResult> GetSingleResultCacheAsync<T>(this TypeQueryBuilder<T> typeQueryBuilder)
+        {
+            var query = typeQueryBuilder.ToQuery().BuildQueries();
+            return await query.SingleResultCache().GetResultAsync();
+        }
     }
 }
