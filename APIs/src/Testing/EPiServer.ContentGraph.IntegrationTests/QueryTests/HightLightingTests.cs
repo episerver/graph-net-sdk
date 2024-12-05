@@ -10,7 +10,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
     public class HightLightingTests : IntegrationFixture
     {
         [ClassInitialize]
-        public static void ClassInitialize(TestContext testContext)
+        public static async Task ClassInitialize(TestContext testContext)
         {
             var item1 = TestDataCreator.generateIndexActionJson("1", "en", new IndexActionData
             {
@@ -25,10 +25,10 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE
             });
 
-            SetupData<HomePage>(item1);
+            await SetupData<HomePage>(item1);
         }
         [TestMethod]
-        public void search_data_with_highlight_should_result_wrap_keyword_in_tag()
+        public async Task search_data_with_highlight_should_result_wrap_keyword_in_tag()
         {
             IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<HomePage>()
@@ -37,7 +37,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 .ToQuery()
                 .BuildQueries();
 
-            var rs = query.GetResultAsync<HomePage>().Result;
+            var rs = await query.GetResultAsync<HomePage>();
             Assert.IsTrue(rs.Content.Hits.First().MainBody.Contains("<em>American</em>"));
         }
     }

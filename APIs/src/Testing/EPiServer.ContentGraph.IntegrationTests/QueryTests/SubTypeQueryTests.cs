@@ -9,7 +9,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
     public class SubTypeQueryTests : IntegrationFixture
     {
         [ClassInitialize]
-        public static void ClassInitialize(TestContext testContext)
+        public static async Task ClassInitialize(TestContext testContext)
         {
             var item1 = TestDataCreator.generateIndexActionJson("1", "en", new IndexActionData
             {
@@ -48,35 +48,35 @@ namespace EPiServer.ContentGraph.IntegrationTests.QueryTests
                 RolesWithReadAccess = TestDataCreator.ROLES_EVERYONE
             });
 
-            SetupData<HomePage>(item1 + item2 + item3, "t14");
+            await SetupData<HomePage>(item1 + item2 + item3, "t14");
         }
 
         [TestCategory("Subtype test")]
         [TestMethod]
-        public void given_1_parent_and_2_children_objects_search_response_should_returns_total_3_hits()
+        public async Task given_1_parent_and_2_children_objects_search_response_should_returns_total_3_hits()
         {
             IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<Content>()
                 .Fields(x => x.Name)
-                    .AsType<HomePage>(x => x.MainBody)
+                    .InlineFragment<HomePage>(x => x.MainBody)
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResultAsync().Result;
+            var rs = await query.GetResultAsync();
             int actualHitsCount = rs.GetContent<Content, HomePage>().Hits.Count();
             Assert.IsTrue(actualHitsCount.Equals(3), $"Expected 3 hits, but got {actualHitsCount}.");
         }
 
         [TestCategory("Subtype test")]
         [TestMethod]
-        public void given_1_parent_and_2_children_objects_search_response_should_returns_children_items()
+        public async Task given_1_parent_and_2_children_objects_search_response_should_returns_children_items()
         {
             IQuery query = new GraphQueryBuilder(_configOptions, _httpClientFactory)
                 .ForType<Content>()
                 .Fields(x => x.Name)
-                    .AsType<HomePage>(x => x.MainBody)
+                    .InlineFragment<HomePage>(x => x.MainBody)
                 .ToQuery()
                 .BuildQueries();
-            var rs = query.GetResultAsync().Result;
+            var rs = await query.GetResultAsync();
             var homepages = rs.GetContent<Content, HomePage>().Hits.Where(x => x.MainBody?.Length > 0);
             int actualChildrenCount = homepages.Count();
             Assert.IsTrue(actualChildrenCount.Equals(2), $"Expected 2 children items, but got {actualChildrenCount}.");

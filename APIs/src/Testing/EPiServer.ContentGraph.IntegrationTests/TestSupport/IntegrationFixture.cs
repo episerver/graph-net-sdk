@@ -119,9 +119,10 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
                 }
             };
         }
-        protected static void ClearData<T>(string id = "test")
+        protected static async Task ClearData<T>(string id = "test")
         {
-            var res = _httpClient.DeleteAsync(INDEXING_PATH + $"?id={id}").Result;
+            var res = await _httpClient.DeleteAsync(INDEXING_PATH + $"?id={id}&mode=reset");
+            await Task.Delay(2000);
             if (res.StatusCode == HttpStatusCode.OK || res.StatusCode == HttpStatusCode.NoContent)
             {
                 //wait until docs had been deleted
@@ -129,20 +130,20 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
                 while (CountDoc<T>() && retry < MAX_RETRY)
                 {
                     Console.WriteLine("Deleting data...");
-                    Task.Delay(500);
+                    await Task.Delay(500);
                     retry++;
                 }
                 Console.WriteLine($"Deleted contents for source {id}");
-                ClearMapping(id);
+                //await ClearMapping(id);
             }
             else
             {
                 throw new Exception("Can not delete contents");
             }
         }        
-        protected static void ClearMapping(string id = "test")
+        protected static async Task ClearMapping(string id = "test")
         {
-            var res = _httpClient.DeleteAsync(CLEAR_MAPPING_AND_DATA_PATH + $"?id={id}").Result;
+            var res = await _httpClient.DeleteAsync(CLEAR_MAPPING_AND_DATA_PATH + $"?id={id}");
             if (res.StatusCode == HttpStatusCode.OK || res.StatusCode == HttpStatusCode.NotFound)
             {
                 Console.WriteLine($"Deleted mappings for source {id}");
@@ -152,9 +153,10 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
                 throw new Exception("Can not delete mappings");
             }
         }
-        protected static void PushMapping(string json, string id = "test")
+        protected static async Task PushMapping(string json, string id = "test")
         {
-            var res = _httpClient.PutAsync(MAPPING_PATH + $"?id={id}", new StringContent(json)).Result;
+            var res = await _httpClient.PutAsync(MAPPING_PATH + $"?id={id}", new StringContent(json));
+            await Task.Delay(2000);
             if (res.StatusCode == HttpStatusCode.OK || res.StatusCode == HttpStatusCode.Created)
             {
                 Console.WriteLine("Mapping done");
@@ -164,9 +166,10 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
                 throw new Exception("Can not create mapping");
             }
         }
-        protected static void BulkIndexing<T>(string bulk, string id = "test")
+        protected static async Task BulkIndexing<T>(string bulk, string id = "test")
         {
-            var res = _httpClient.PostAsync(INDEXING_PATH + $"?id={id}", new StringContent(bulk)).Result;
+            var res = await _httpClient.PostAsync(INDEXING_PATH + $"?id={id}", new StringContent(bulk));
+            await Task.Delay(2000);
             if (res.StatusCode == HttpStatusCode.OK || res.StatusCode == HttpStatusCode.Created)
             {
                 //wait until docs had been indexed
@@ -174,7 +177,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
                 while (!CountDoc<T>() && retry < MAX_RETRY)
                 {
                     Console.WriteLine("Indexing data...");
-                    Task.Delay(500);
+                    await Task.Delay(500);
                     retry++;
                 }
                 Console.WriteLine("Data has been created");
@@ -201,15 +204,16 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
                 return false;
             }
         }
-        protected static void SetupData<T>(string indexingData, string testId="test")
+        protected static async Task SetupData<T>(string indexingData, string testId="test")
         {
+            testId = "test";
             string path = $@"{WorkingDirectory}\TestingData\SimpleTypeMapping.json";
             using (StreamReader mappingReader = new StreamReader(path))
             {
                 string mapping = mappingReader.ReadToEnd();
-                ClearData<T>(testId);
-                PushMapping(mapping, testId);
-                BulkIndexing<T>(indexingData, testId);
+                await ClearData<T>(testId);
+                await PushMapping(mapping, testId);
+                await BulkIndexing<T>(indexingData, testId);
             }
         }
     }
