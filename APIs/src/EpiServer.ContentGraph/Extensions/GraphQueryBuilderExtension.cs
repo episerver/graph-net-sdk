@@ -22,5 +22,15 @@ namespace EPiServer.ContentGraph.Extensions
         {
             return queryBuilder.ForType(typeQueryBuilder);
         }
+        /// <summary>
+        /// Search result has single item will be cached. This will set cache_unique to true and require cache=true in graph client options.
+        /// </summary>
+        /// <param name="queryBuilder"></param>
+        /// <returns></returns>
+        public static GraphQueryBuilder SingleResultCache(this GraphQueryBuilder queryBuilder)
+        {
+            queryBuilder.RequestActions = request => request.AddRequestHeader("cache_uniq", "true");
+            return queryBuilder;
+        }
     }
 }

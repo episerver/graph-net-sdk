@@ -9,13 +9,8 @@ using EPiServer.Turnstile.Contracts.Hmac;
 using Microsoft.Extensions.Options;
 using System.Text.RegularExpressions;
 using EPiServer.ServiceLocation;
-using System.Net.Http;
-using System;
-using System.Threading.Tasks;
-using System.Linq;
-using System.IO;
-using System.Collections.Generic;
 using EPiServer.ContentGraph.Helpers.Text;
+using EPiServer.ContentGraph.Helpers;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {
@@ -29,6 +24,8 @@ namespace EPiServer.ContentGraph.Api.Querying
         private const string UnCachedPath = "?cache=false";
         private Dictionary<string, IFragmentBuilder> _fragmentBuilders;
         private readonly List<string> typeQueries = new List<string>();
+        public Action<JsonRequest> RequestActions;
+
         public GraphQueryBuilder()
         {
             _optiGraphOptions = new OptiGraphOptions();
@@ -319,8 +316,16 @@ namespace EPiServer.ContentGraph.Api.Querying
                 Regex regex = new Regex(@"\?cache=\w*");
                 _optiGraphOptions.QueryPath = _optiGraphOptions.QueryPath.Replace(regex.Match(_optiGraphOptions.QueryPath).Value, UnCachedPath);
             }
+            //apply actions on request before send
+            ApplyRequestActions(request);
         }
-
+        internal void ApplyRequestActions(JsonRequest request)
+        {
+            if (RequestActions.IsNotNull())
+            {
+                RequestActions(request);
+            }
+        }
         public void AddQuery(string typeQuery)
         {
             typeQueries.Add(typeQuery);
