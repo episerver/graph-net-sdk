@@ -100,7 +100,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
                 //o.EnablePreviewFeatures = true;// optional
             });
 
-            services.AddContentGraphClient();
+            services.AddContentGraphClient(options=> options.Cache = false);
             services.AddContentGraph();
             services.AddScoped<IFilterForVisitor, CustomForVisitor>();
             services.AddScoped<IFilterForVisitor, FilterPublishedForVisitor>();

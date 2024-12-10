@@ -11,10 +11,11 @@ using System.Text.RegularExpressions;
 using EPiServer.ServiceLocation;
 using EPiServer.ContentGraph.Helpers.Text;
 using EPiServer.ContentGraph.Helpers;
+using EPiServer.ContentGraph.Tracing;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {
-    public class GraphQueryBuilder : IQuery
+    public class GraphQueryBuilder : IQuery, ITraceable
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly HttpClient _httpClient;
@@ -24,7 +25,9 @@ namespace EPiServer.ContentGraph.Api.Querying
         private const string UnCachedPath = "?cache=false";
         private Dictionary<string, IFragmentBuilder> _fragmentBuilders;
         private readonly List<string> typeQueries = new List<string>();
-        public Action<JsonRequest> RequestActions;
+        public Action<OptiGraphOptions> GraphOptionsAction;
+
+        Guid ITraceable.TraceId => Guid.NewGuid();
 
         public GraphQueryBuilder()
         {
@@ -116,6 +119,7 @@ namespace EPiServer.ContentGraph.Api.Querying
         }
         private string GetServiceUrl()
         {
+            UpdateQueryPath();
             return _optiGraphOptions.GatewayAddress + _optiGraphOptions.QueryPath;
         }
         private string GetAuthorization(string body)
@@ -311,19 +315,22 @@ namespace EPiServer.ContentGraph.Api.Querying
             {
                 request.AddRequestHeader("cg-include-deleted", "true");
             }
-            if (!_optiGraphOptions.Cache)
-            {
-                Regex regex = new Regex(@"\?cache=\w*");
-                _optiGraphOptions.QueryPath = _optiGraphOptions.QueryPath.Replace(regex.Match(_optiGraphOptions.QueryPath).Value, UnCachedPath);
-            }
-            //apply actions on request before send
-            ApplyRequestActions(request);
         }
-        internal void ApplyRequestActions(JsonRequest request)
+        private void UpdateQueryPath()
         {
-            if (RequestActions.IsNotNull())
+            Regex regex = new Regex(@"\?cache=\w*");
+            if (regex.IsMatch(_optiGraphOptions.QueryPath))
             {
-                RequestActions(request);
+                _optiGraphOptions.QueryPath = 
+                    _optiGraphOptions.QueryPath
+                    .Replace(regex.Match(_optiGraphOptions.QueryPath).Value, $"?cache={_optiGraphOptions.Cache.ToString().ToLower()}");
+            }
+            else
+            {
+                _optiGraphOptions.QueryPath = $"{_optiGraphOptions.QueryPath}?cache={_optiGraphOptions.Cache.ToString().ToLower()}";
+            }
+            if (GraphOptionsAction.IsNotNull()) {
+                GraphOptionsAction(_optiGraphOptions);
             }
         }
         public void AddQuery(string typeQuery)

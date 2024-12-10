@@ -1,4 +1,6 @@
-﻿using EPiServer.ContentGraph.Api.Querying;
+﻿using Azure.Core;
+using EPiServer.ContentGraph.Api.Querying;
+using EPiServer.ContentGraph.Tracing;
 
 namespace EPiServer.ContentGraph.Extensions
 {
@@ -29,7 +31,18 @@ namespace EPiServer.ContentGraph.Extensions
         /// <returns></returns>
         public static GraphQueryBuilder SingleResultCache(this GraphQueryBuilder queryBuilder)
         {
-            queryBuilder.RequestActions = request => request.AddRequestHeader("cache_uniq", "true");
+            queryBuilder.GraphOptionsAction = options =>
+            {
+                if (options.QueryPath.Contains("cache=true"))
+                {
+                    options.QueryPath += "&cache_uniq=true";
+                }
+                else
+                {
+                    //log warning messge
+                    Trace.Instance.Add(new TraceEvent(queryBuilder, "cache_uniq is set to true but cache is not enable. Please enable it in the config before use."));
+                }
+            };
             return queryBuilder;
         }
     }
