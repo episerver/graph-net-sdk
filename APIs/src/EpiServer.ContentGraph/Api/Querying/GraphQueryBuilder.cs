@@ -42,6 +42,14 @@ namespace EPiServer.ContentGraph.Api.Querying
                 var httpClientFactory = ServiceLocator.Current.GetService(typeof(IHttpClientFactory)) as IHttpClientFactory;
                 if (transformAction != null)
                 {
+                    if (options.TransformActionBehaviour == TransformActionBehaviour.Clone)
+                    {
+                        var clonedOptions = (OptiGraphOptions)options.Clone();
+                        transformAction(clonedOptions);
+
+                        return new GraphQueryBuilder(clonedOptions, httpClientFactory);
+                    }
+
                     transformAction(options);
                 }
                 if (options != null)

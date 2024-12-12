@@ -5,7 +5,7 @@ using EPiServer.ServiceLocation;
 namespace EPiServer.ContentGraph.Configuration
 {
     [Options]
-    public class OptiGraphOptions
+    public class OptiGraphOptions : ICloneable
     {
         public const string ConfigSection = "Optimizely:ContentGraph";
 
@@ -56,6 +56,13 @@ namespace EPiServer.ContentGraph.Configuration
                 }
                 return $"epi-single {SingleKey}";
             }
+        }
+
+        public TransformActionBehaviour TransformActionBehaviour {  get; set; }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
         }
     }
 }
