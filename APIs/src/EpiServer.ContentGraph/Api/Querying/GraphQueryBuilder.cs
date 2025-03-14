@@ -12,6 +12,7 @@ using EPiServer.ServiceLocation;
 using EPiServer.ContentGraph.Helpers.Text;
 using EPiServer.ContentGraph.Helpers;
 using EPiServer.ContentGraph.Tracing;
+using System.Net;
 
 namespace EPiServer.ContentGraph.Api.Querying
 {
@@ -228,6 +229,11 @@ namespace EPiServer.ContentGraph.Api.Querying
                 }
                 catch (HttpRequestException e)
                 {
+                    if (e.StatusCode == HttpStatusCode.Unauthorized)
+                    {
+                        throw e;
+                    }
+
                     try
                     {
                         return JsonConvert.DeserializeObject<ContentGraphResult>(e.Message);
