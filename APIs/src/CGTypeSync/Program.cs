@@ -153,7 +153,8 @@ namespace Optimizely.Graph.Client.Tools
 
                 if (parentTypes != null && parentTypes.Count() > 0)
                 {
-                    inheritedFromType = string.Join(',', parentTypes.Select(type=> type.ToString()));
+                    //inheritedFromType = string.Join(',', parentTypes.Select(type=> type.ToString()));
+                    inheritedFromType = parentTypes.Select(type => type.ToString()).First();
                     inheritedFromType = $":{inheritedFromType}";
                 }
                 sb.AppendLine($"    public partial class {propertyTypeName}{inheritedFromType}");
