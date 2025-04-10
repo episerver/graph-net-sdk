@@ -62,6 +62,8 @@ namespace EPiServer.ContentGraph.Api.Result
         public string Cursor { get; set; }
         [JsonProperty("total")]
         public int Total { get; set; }
+        [JsonProperty("track")]
+        public string Track { get; set; }
         private void GetJArray<TReturn>(object jObject, string key, Dictionary<string, IEnumerable<TReturn>> keyValues)
         {
             switch (jObject.GetType().Name)

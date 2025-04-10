@@ -18,6 +18,7 @@ namespace EPiServer.ContentGraph.Api.Querying
         public StringBuilder SelectItems { get; set; } = new StringBuilder();
         public string Facets { get; set; } = string.Empty;
         public string Total { get; set; } = string.Empty;
+        public string Track { get; set; } = string.Empty;
         public override string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder();
@@ -42,6 +43,11 @@ namespace EPiServer.ContentGraph.Api.Querying
             {
                 stringBuilder.Append(' ');
                 stringBuilder.Append(Total);
+            }
+            if (!Track.IsNullOrEmpty())
+            {
+                stringBuilder.Append(' ');
+                stringBuilder.Append(Track);
             }
             if (!Cursor.IsNullOrEmpty())
             {

@@ -41,7 +41,7 @@ namespace EPiServer.ContentGraph.Configuration
 
         [Required(AllowEmptyStrings = false)]
         public string SingleKey { get; set; }
-
+        public string HmacKey { get; internal set; }
         [Required(AllowEmptyStrings = false)]
         public string AppKey { get; set; }
 
@@ -52,7 +52,7 @@ namespace EPiServer.ContentGraph.Configuration
             {
                 if (UseHmacKey)
                 {
-                    return $"epi-hmac {SingleKey}";
+                    return $"epi-hmac {HmacKey}";
                 }
                 return $"epi-single {SingleKey}";
             }
