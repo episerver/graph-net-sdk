@@ -336,6 +336,14 @@ namespace EPiServer.ContentGraph.Api.Querying
 
             return this;
         }
+        public TypeQueryBuilder<T> Track(string q)
+        {
+            graphObject.Filter = graphObject.Filter.IsNullOrEmpty() ?
+               $"track:\"{q}\"" :
+               $"{graphObject.Filter}, track:\"{q}\"";
+
+            return this;
+        }
         /// <summary>
         /// Get scroll id from search
         /// </summary>

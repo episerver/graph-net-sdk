@@ -137,7 +137,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             {
                 UTF8Encoding encoding = new UTF8Encoding();
                 byte[] byteArray = encoding.GetBytes(body.Trim());
-                _optiGraphOptions.SingleKey = GetHmacHeader(byteArray);
+                _optiGraphOptions.HmacKey = GetHmacHeader(byteArray);
             }
             return _optiGraphOptions.Authorization;
         }
