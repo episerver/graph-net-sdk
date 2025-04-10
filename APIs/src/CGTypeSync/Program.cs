@@ -7,6 +7,7 @@ namespace Optimizely.Graph.Client.Tools
     public class Program
     {
         private static string USER_AGENT => $"Optimizely-Graph-Tools/{typeof(Program).Assembly.GetName().Version}";
+        private static Dictionary<string, string> ExtensionMethodKeyPair = new Dictionary<string, string>(); //method name - class type
         static void Main(string[] args)
         {
             Console.WriteLine("**** Optimizely Content Graph Client Tools ****");
@@ -66,6 +67,10 @@ namespace Optimizely.Graph.Client.Tools
                         output = Path.Combine(di.FullName, defaultFileName);
                     }
                 }
+                else
+                {
+                    output = Path.Combine(Directory.GetCurrentDirectory(), defaultFileName);
+                }
 
                 if (args.Length > 2)
                 {
@@ -111,6 +116,8 @@ namespace Optimizely.Graph.Client.Tools
 
             Console.WriteLine("Writing files...");
             var sb = new StringBuilder();
+            var extensionBuilder = new StringBuilder();
+
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine("using EPiServer.Core;");
@@ -123,6 +130,8 @@ namespace Optimizely.Graph.Client.Tools
             sb.AppendLine("namespace " + modelNamespace);
             sb.AppendLine("{");
 
+            BeginExtension(modelNamespace, extensionBuilder);
+
             foreach (JProperty propertyType in propertyTypes)
             {
                 var propertyTypeName = propertyType.Name;
@@ -134,12 +143,14 @@ namespace Optimizely.Graph.Client.Tools
 
                 foreach (JProperty propertyProperty in properties)
                 {
+                    var enumProps = new List<string>();
                     var name = propertyProperty.Name;
                     var dataType = (propertyProperty.Children()["type"].First() as JValue).Value.ToString();
-                    dataType = ConvertType(dataType);
+                    dataType = ConvertType(dataType, out var typeExtension);
                     sb.Append($"        public {dataType} {name} ");
                     sb.AppendLine("{ get; set; }");
 
+                    BuildExtensionMethods(typeExtension, name, propertyTypeName, extensionBuilder);
                 }
 
                 sb.AppendLine("    }");
@@ -153,7 +164,8 @@ namespace Optimizely.Graph.Client.Tools
 
                 if (parentTypes != null && parentTypes.Count() > 0)
                 {
-                    inheritedFromType = string.Join(',', parentTypes.Select(type=> type.ToString()));
+                    //inheritedFromType = string.Join(',', parentTypes.Select(type=> type.ToString()));
+                    inheritedFromType = parentTypes.Select(type => type.ToString()).First();
                     inheritedFromType = $":{inheritedFromType}";
                 }
                 sb.AppendLine($"    public partial class {propertyTypeName}{inheritedFromType}");
@@ -166,7 +178,8 @@ namespace Optimizely.Graph.Client.Tools
                     var name = propertyProperty.Name;
                     var searchableAttr = (bool)((propertyProperty.Children()["searchable"].FirstOrDefault() as JValue)?.Value ?? false);
                     var dataType = (propertyProperty.Children()["type"].First() as JValue).Value.ToString();
-                    dataType = ConvertType(dataType);
+                    dataType = ConvertType(dataType, out var typeExtension);
+                    BuildExtensionMethods(typeExtension, name, propertyTypeName, extensionBuilder);
                     if (searchableAttr)
                     {
                         sb.AppendLine($"        [Searchable]");
@@ -175,12 +188,19 @@ namespace Optimizely.Graph.Client.Tools
                     sb.AppendLine("{ get; set; }");
 
                 }
-
+                //add system properties
+                //sb.AppendLine("[JsonProperty(\"_id\")]");
+                //sb.AppendLine("public string Id { get;set; }");
+                //end system properties
                 sb.AppendLine("    }");
             }
 
+            EndExtension(extensionBuilder);
 
             sb.AppendLine("}");
+            //append extension to file
+            sb.AppendLine("//Extension methods");
+            sb.Append(extensionBuilder);
             var classes = sb.ToString();
             FileInfo fi = new FileInfo(output);
             // Check if directory exists, create if not
@@ -196,41 +216,47 @@ namespace Optimizely.Graph.Client.Tools
             Console.WriteLine($"Optimizely Graph model C# classes have been written to {output}.");
         }
 
-        private static string ConvertType(string propType)
+        private static string ConvertType(string propType, out string typeExtension)
         {
             bool isIEnumerable = false;
+            bool isComplexType = false;
+            typeExtension = string.Empty;
+
             if (propType.StartsWith("[") && propType.EndsWith("]"))//Is IEnumerable
             {
                 propType = propType.Substring(1, propType.Length - 2);
                 isIEnumerable = true;
             }
-            if (propType.Equals("Date"))
+
+            switch (propType)
             {
-                propType = "DateTime";
+                case "Date":
+                    propType = "DateTime"; 
+                    break;
+                case "Bool":
+                    propType = "bool"; 
+                    break;
+                case "Boolean":
+                    propType = "bool"; 
+                    break;
+                case "String":
+                    propType = "string"; 
+                    break;
+                case "Int":
+                    propType = "int"; 
+                    break;
+                case "Float":
+                    propType = "float"; 
+                    break;
+                default:
+                    isComplexType = true;
+                    break;
             }
-            if (propType.Equals("Bool") || propType.Equals("Boolean"))
-            {
-                propType = "bool";
-            }
-            if (propType.Equals("String"))
-            {
-                propType = "string";
-            }
-            if (propType.Equals("LongString"))
-            {
-                propType = "string";
-            }
-            if (propType.Equals("Int"))
-            {
-                propType = "int";
-            }
-            if (propType.Equals("Float"))
-            {
-                propType = "float";
-            }
+
             if (isIEnumerable)
             {
-                propType = $"IEnumerable<{propType}>";
+                typeExtension = isComplexType ? propType : string.Empty;
+                return $"IEnumerable<{propType}>";
             }
 
             return propType;
@@ -291,6 +317,33 @@ namespace Optimizely.Graph.Client.Tools
                 AppKey = myconfigs.GetSection("ContentGraph:AppKey").Value,
                 SecretKey = myconfigs.GetSection("ContentGraph:Secret").Value
             };
+        }
+        private static void BeginExtension(string modelNamespace, StringBuilder builder)
+        {
+            builder.AppendLine($"namespace {modelNamespace}.Extension");
+            builder.AppendLine("{"); //begin namespace
+            builder.AppendLine($"    public static class GraphModelsExtension");
+            builder.AppendLine("    {"); //begin class
+        }
+        private static void EndExtension(StringBuilder builder)
+        {
+            builder.AppendLine("    }"); //end class
+            builder.AppendLine("}"); //end namespace
+        }
+        private static void BuildExtensionMethods(string returnType, string methodName, string classType, StringBuilder builder)
+        {
+            if (!string.IsNullOrEmpty(returnType))
+            {
+                if (ExtensionMethodKeyPair.ContainsKey(methodName) && ExtensionMethodKeyPair[methodName] == classType)
+                {
+                    return;
+                }
+                ExtensionMethodKeyPair.TryAdd(methodName, classType);
+                builder.Append($"        public static {returnType} {methodName}(this {classType} obj) ");
+                builder.AppendLine("    {");
+                builder.AppendLine("        return null;");
+                builder.AppendLine("    }");
+            }
         }
     }
     internal class Config

@@ -12,13 +12,14 @@
     <PackageId>Optimizely.Graph.Client.Tools</PackageId>
     <Authors>Optimizely</Authors>
     <Title>Optimizely Graph Client tool</Title>
-    <Version>$(version)</Version>
+    <!--<Version>$(version)</Version>-->
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/episerver/graph-net-sdk</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Description>Optimizely Graph Client tool for generating models from schema</Description>
     <Copyright>Copyright(c) Optimizely $(Year)</Copyright>
     <PackageTags>Optimizely Graph Client Tools</PackageTags>
+    <Version>$(ToolsVersion)$(ToolsVersion)</Version>
     <!--End nuget specs-->
   </PropertyGroup>
 
