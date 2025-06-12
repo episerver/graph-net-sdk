@@ -445,7 +445,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             }
             if (ranking == Ranking.SEMANTIC)
             {
-                graphObject.OrderBy += semanticWeight.HasValue ? $",_semanticWeight:{semanticWeight.Value}" : string.Empty;
+                graphObject.OrderBy += semanticWeight.HasValue ? $",_semanticWeight:{semanticWeight.Value.ToInvariantString()}" : string.Empty;
             }
             
             return this;

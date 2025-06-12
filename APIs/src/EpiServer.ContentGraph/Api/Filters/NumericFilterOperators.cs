@@ -74,52 +74,52 @@ namespace EPiServer.ContentGraph.Api.Filters
 
         public NumericFilterOperators Eq(float value)
         {
-            _query += _query.IsNullOrEmpty() ? $"eq: {value}" : $",eq: {value}";
+            _query += _query.IsNullOrEmpty() ? $"eq: {value.ToInvariantString()}" : $",eq: {value.ToInvariantString()}";
             return this;
         }
         public NumericFilterOperators NotEq(float value)
         {
-            _query += _query.IsNullOrEmpty() ? $"notEq: {value}" : $",notEq: {value}";
+            _query += _query.IsNullOrEmpty() ? $"notEq: {value.ToInvariantString()}" : $",notEq: {value.ToInvariantString()}";
             return this;
         }
         public NumericFilterOperators Gt(float value)
         {
-            _query += _query.IsNullOrEmpty() ? $"gt: {value}" : $",gt: {value}";
+            _query += _query.IsNullOrEmpty() ? $"gt: {value.ToInvariantString()}" : $",gt: {value.ToInvariantString()}";
             return this;
         }
         public NumericFilterOperators Gte(float value)
         {
-            _query += _query.IsNullOrEmpty() ? $"gte: {value}" : $",gte: {value}";
+            _query += _query.IsNullOrEmpty() ? $"gte: {value.ToInvariantString()}" : $",gte: {value.ToInvariantString()}";
             return this;
         }
         public NumericFilterOperators Lt(float value)
         {
-            _query += _query.IsNullOrEmpty() ? $"lt: {value}" : $",lt: {value}";
+            _query += _query.IsNullOrEmpty() ? $"lt: {value.ToInvariantString()}" : $",lt: {value.ToInvariantString()}";
             return this;
         }
         public NumericFilterOperators Lte(float value)
         {
-            _query += _query.IsNullOrEmpty() ? $"lte: {value}" : $",lte: {value}";
+            _query += _query.IsNullOrEmpty() ? $"lte: {value.ToInvariantString()}" : $",lte: {value.ToInvariantString()}";
             return this;
         }
         public NumericFilterOperators Gt(double value)
         {
-            _query += _query.IsNullOrEmpty() ? $"gt: {value}" : $",gt: {value}";
+            _query += _query.IsNullOrEmpty() ? $"gt: {value.ToInvariantString()}" : $",gt: {value.ToInvariantString()}";
             return this;
         }
         public NumericFilterOperators Gte(double value)
         {
-            _query += _query.IsNullOrEmpty() ? $"gte: {value}" : $",gte: {value}";
+            _query += _query.IsNullOrEmpty() ? $"gte: {value.ToInvariantString()}" : $",gte: {value.ToInvariantString()}";
             return this;
         }
         public NumericFilterOperators Lt(double value)
         {
-            _query += _query.IsNullOrEmpty() ? $"lt: {value}" : $",lt: {value}";
+            _query += _query.IsNullOrEmpty() ? $"lt: {value}" : $",lt: {value.ToInvariantString()}";
             return this;
         }
         public NumericFilterOperators Lte(double value)
         {
-            _query += _query.IsNullOrEmpty() ? $"lte: {value}" : $",lte: {value}";
+            _query += _query.IsNullOrEmpty() ? $"lte: {value.ToInvariantString()}" : $",lte: {value.ToInvariantString()}";
             return this;
         }
         public NumericFilterOperators In(params float[] values)

@@ -69,11 +69,11 @@ namespace EPiServer.ContentGraph.Api.Facets
             string query = string.Empty;
             if (range.from.HasValue)
             {
-                query = $"from:{range.from.Value}";
+                query = $"from:{range.from.Value.ToInvariantString()}";
             }
             if (range.to.HasValue)
             {
-                query += query.IsNullOrEmpty() ? $"to:{range.to.Value}" : $",to:{range.to.Value}";
+                query += query.IsNullOrEmpty() ? $"to:{range.to.Value.ToInvariantString()}" : $",to:{range.to.Value.ToInvariantString()}";
             }
             query = query.IsNullOrEmpty() ? query : $"{{{query}}}";
             return query;
