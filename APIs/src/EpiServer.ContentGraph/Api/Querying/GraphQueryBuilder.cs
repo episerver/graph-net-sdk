@@ -75,7 +75,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             _httpClient = _httpClientFactory.CreateClient("HttpClientWithAutoDecompression");
         }
 
-        public GraphQueryBuilder(IOptions<OptiGraphOptions> optiGraphOptions, IHttpClientFactory httpClientFactory) : 
+        public GraphQueryBuilder(IOptionsSnapshot<OptiGraphOptions> optiGraphOptions, IHttpClientFactory httpClientFactory) : 
             this(optiGraphOptions.Value, httpClientFactory)
         {
         }

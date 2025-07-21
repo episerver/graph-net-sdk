@@ -10,5 +10,6 @@ namespace EPiServer.ContentGraph.Api
         public const string SCORE = "_score";
         public const string TYPE_NAME = "__typename";
         public const string FULLTEXT = "_fulltext";
+        public const string TRACK = "_track";
     }
 }

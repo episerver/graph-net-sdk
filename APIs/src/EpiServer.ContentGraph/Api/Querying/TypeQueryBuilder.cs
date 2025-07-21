@@ -341,7 +341,7 @@ namespace EPiServer.ContentGraph.Api.Querying
             graphObject.Filter = graphObject.Filter.IsNullOrEmpty() ?
                $"track:\"{q}\"" :
                $"{graphObject.Filter}, track:\"{q}\"";
-
+            this.Field(FIELDS.TRACK);
             return this;
         }
         /// <summary>

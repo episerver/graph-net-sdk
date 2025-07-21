@@ -28,7 +28,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
         protected static string? WorkingDirectory;
         private static HttpClient? _httpClient;
         private static string USER_AGENT => $"Optimizely-Graph-NET-API/{typeof(IntegrationFixture).Assembly.GetName().Version}";
-        protected static IOptions<OptiGraphOptions> _configOptions;
+        protected static IOptionsSnapshot<OptiGraphOptions> _configOptions;
         protected static IHttpClientFactory _httpClientFactory;
 
         [AssemblyInitialize]
@@ -51,7 +51,7 @@ namespace EPiServer.ContentGraph.IntegrationTests.TestSupport
                 .ConfigureServices(services => ConfigureServices(services))
                 .Build();
 
-            _configOptions = testingHost.Services.GetService<IOptions<OptiGraphOptions>>();
+            _configOptions = testingHost.Services.GetService<IOptionsSnapshot<OptiGraphOptions>>();
             _httpClientFactory = testingHost.Services.GetService<IHttpClientFactory>();
             _httpClient = CreateHttpClient();
         }
